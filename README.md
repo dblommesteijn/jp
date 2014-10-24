@@ -15,6 +15,11 @@ Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtual
 *Sorry Windows users, no support for you.*
 
 
+### Known issues
+
+* stub
+
+
 ### Installation
 
 ```bash
