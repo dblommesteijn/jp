@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#! /bin/sh
 
 # java home msg
 if [ -z $JAVA_HOME ]; then
