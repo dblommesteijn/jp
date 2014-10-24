@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+
+# java home msg
+if [ -z $JAVA_HOME ]; then
+	echo "JAVA_HOME not set!"
+	exit 1
+fi
+# detect java version
+JAVA_PATH=`which java`
+JAVA_VERSION="$($JAVA_PATH -version 2>&1)"
+if [[ $JAVA_VERSION != *"Java(TM) SE Runtime Environment"* ]]; then
+	echo "Java not found! (try setting $JAVA_HOME)"
+	exit 1
+fi
+# detect maven version
+MVN_PATH=`which mvn`
+MVN_VERSION="$($MVN_PATH -version 2>&1)"
+if [[ $MVN_VERSION != *"Apache Maven 3"* ]]; then
+	echo "Maven3 not found!"
+fi
+
+
+
+#TODO: getopts, exec
+
+
+# finished
+echo "OK!"
