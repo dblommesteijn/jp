@@ -1,28 +1,85 @@
 #! /bin/sh
 
+### filter incorrect environments
+
 # java home msg
 if [ -z $JAVA_HOME ]; then
-	echo "JAVA_HOME not set!"
-	exit 1
+    echo "JAVA_HOME not set!"
+    exit 1
 fi
 # detect java version
 JAVA_PATH=`which java`
 JAVA_VERSION="$($JAVA_PATH -version 2>&1)"
 if [[ $JAVA_VERSION != *"Java(TM) SE Runtime Environment"* ]]; then
-	echo "Java not found! (try setting $JAVA_HOME)"
-	exit 1
+    echo "Java not found! (try setting $JAVA_HOME)"
+    exit 1
 fi
 # detect maven version
 MVN_PATH=`which mvn`
 MVN_VERSION="$($MVN_PATH -version 2>&1)"
 if [[ $MVN_VERSION != *"Apache Maven 3"* ]]; then
-	echo "Maven3 not found!"
+    echo "Maven3 not found!"
+fi
+
+### parse opt arguments
+
+# opts
+while getopts ":Vhv" opt; do
+  case $opt in
+    V)
+      echo "java packer version \"0.0.1\"" >&2
+      exit 0
+      ;;
+    h)
+      echo "Usage: jp [-options] [command] [args...]"
+      echo "Options:"
+      echo "   -h   Prints this help"
+      echo "   -V   Prints the version"
+      echo "   -v   Increase verbosity"
+      echo "Commands:"
+      echo "   new  [name] [groupId] Creates a new project"
+      echo "Examples:"
+      echo "   jp new [project_name] [groupId]"
+      exit 0
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 0
+      ;;
+  esac
+done
+# argument switch
+if [[ $1 == "new" ]]; then
+    PROJECT_NAME=$2
+    GROUP_ID=$3
+    if [[ -z $PROJECT_NAME ]]; then
+        echo "no project name given (try: \`jp new project-name\`)"
+        exit 0
+    fi
+    if [[ -z $GROUP_ID ]]; then
+        echo "no groupId provided (try: \`jp new myproject com.example.myproject\`)"
+        exit 0
+    fi
+    echo "creating new project: '$2'..."
+    # running mvn create command
+    mvn archetype:generate -DgroupId=$GROUP_ID \
+      -DartifactId=$PROJECT_NAME -DarchetypeArtifactId=maven-archetype-quickstart \
+      -DinteractiveMode=false &> /dev/null
+    # verify
+    if [[ $? != 0 ]]; then
+        echo "failed (try: verbose -v option)"
+        exit 0
+    fi
+    # prepare local repo
+    mkdir "$(pwd)/$PROJECT_NAME/repo"
+
+    # TODO: add repository to pom.xml
+
+
+# elif [[ $1 -eq "blaat" ]]; then
+#     echo "blaat"
 fi
 
 
 
-#TODO: getopts, exec
 
-
-# finished
-echo "OK!"
