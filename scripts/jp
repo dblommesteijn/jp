@@ -1,5 +1,8 @@
 #! /bin/sh
 
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+LIB_PREFIX=$CURRENT_DIR/../lib
+
 ### filter incorrect environments
 
 # java home msg
@@ -73,7 +76,8 @@ if [[ $1 == "new" ]]; then
     # prepare local repo
     mkdir "$(pwd)/$PROJECT_NAME/repo"
 
-    # TODO: add repository to pom.xml
+    # call add repository for current pom.xml
+    java -cp $LIB_PREFIX/jp-0.1.jar net.thepinguin.jp.AddRepository "$(pwd)/$PROJECT_NAME"
 
 
 # elif [[ $1 -eq "blaat" ]]; then

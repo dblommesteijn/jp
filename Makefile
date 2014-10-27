@@ -12,15 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+VERSION=0.1
+
 PREFIX=/usr/local
 INSTALLDIR=$(PREFIX)
 INSTALL=install
 TARGETS=
 
+build:
+	mvn package
+
 install: $(TARGETS)
 	$(INSTALL) -c -v -g 0 -m 0755 -o root scripts/jp $(INSTALLDIR)/bin
+	$(INSTALL) -c -v -g 0 -m 0755 -o root target/jp-$(VERSION).jar $(INSTALLDIR)/lib
 
 uninstall: $(TARGETS)
 	rm $(INSTALLDIR)/bin/jp
+	rm $(INSTALLDIR)/lib/jp-$(VERSION).jar
+
+clean:
+	mvn clean
 
 # EOB
