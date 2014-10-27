@@ -77,7 +77,8 @@ if [[ $1 == "new" ]]; then
     mkdir "$(pwd)/$PROJECT_NAME/repo"
 
     # call add repository for current pom.xml
-    java -cp $LIB_PREFIX/jp-0.1.jar net.thepinguin.jp.AddRepository "$(pwd)/$PROJECT_NAME"
+    java -cp $LIB_PREFIX/jp-0.1.jar net.thepinguin.jp.AddRepository \
+        "$(pwd)/$PROJECT_NAME/pom.xml"
 
 
 # elif [[ $1 -eq "blaat" ]]; then

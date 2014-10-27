@@ -14,7 +14,13 @@ Makefile.in
 /stamp-h1
 
 
-# java stuff
+# java binaries
 
 *.class
 target/
+
+# eclipse project
+
+.classpath
+.project
+.settings/
