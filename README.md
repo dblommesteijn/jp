@@ -25,6 +25,7 @@ Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtual
 ```bash
 git clone git@github.com:dblommesteijn/js.git
 cd js
+make
 sudo make install
 ```
 
@@ -33,4 +34,12 @@ Uninstall: `sudo make uninstall`.
 
 ### Usage
 
-* stub
+**Init scaffold**
+
+```bash
+cd /path/to/your/repos
+jp new myproject net.domain.myproject
+```
+
+
+
