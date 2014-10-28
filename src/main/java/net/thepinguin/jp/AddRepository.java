@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.thepinguin.jp.xml.Walker;
 import net.thepinguin.jp.xml.pom.Dependency;
+import net.thepinguin.jp.xml.pom.Repositories;
 import net.thepinguin.jp.xml.pom.Visitable;
 
 public class AddRepository {
@@ -17,19 +18,28 @@ public class AddRepository {
 			Walker walker = Walker.parseFromFile(pomXml);
 			
 			// visit nodes in walker and lookup
-			List<Visitable<Dependency>> dependencies = walker.visit(new Dependency());
-			if(dependencies == null){
+			List<Visitable<Repositories>> repositories = walker.visit(new Repositories());
+			if(repositories == null){
 				System.out.println("not found");
 				System.exit(-1);
 			}
-			for(Visitable<Dependency> dep : dependencies){
-				Dependency d = (Dependency)dep;
+			if(repositories.isEmpty()){
 				
-				System.out.println("groupId: " + d.getGroupId());
-				System.out.println("artifactId: " + d.getArtifactId());
-				System.out.println("version: " + d.getVersion());
-				System.out.println("scope: " + d.getScope());
 			}
+			
+			
+			for(Visitable<Repositories> repos : repositories){
+				System.out.println(repos);
+			}
+			
+//			for(Visitable<Dependency> dep : dependencies){
+//				Dependency d = (Dependency)dep;
+//				
+//				System.out.println("groupId: " + d.getGroupId());
+//				System.out.println("artifactId: " + d.getArtifactId());
+//				System.out.println("version: " + d.getVersion());
+//				System.out.println("scope: " + d.getScope());
+//			}
 			
 			
 			//TODO: test existance of repository
