@@ -1,14 +1,10 @@
 package net.thepinguin.jp;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.util.List;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.helpers.DefaultHandler;
-
-import net.thepinguin.jp.xml.SaxHandler;
+import net.thepinguin.jp.xml.Walker;
+import net.thepinguin.jp.xml.pom.Dependency;
+import net.thepinguin.jp.xml.pom.Visitable;
 
 public class AddRepository {
 
@@ -16,19 +12,25 @@ public class AddRepository {
 		try{
 //			String pom_xml = args[0];
 			
-			// read from xml file
+			// read from xml file and make tree
 			String pomXml = "/Users/dennisb/Programming/github/test/pom.xml";
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			InputStream xmlInput  = new FileInputStream(pomXml);
-			SAXParser saxParser = factory.newSAXParser();
-			SaxHandler handler = new SaxHandler();
-			saxParser.parse(xmlInput, handler);
+			Walker walker = Walker.parseFromFile(pomXml);
 			
-			System.out.println(handler.toString());
+			// visit nodes in walker and lookup
+			List<Visitable<Dependency>> dependencies = walker.visit(new Dependency());
+			if(dependencies == null){
+				System.out.println("not found");
+				System.exit(-1);
+			}
+			for(Visitable<Dependency> dep : dependencies){
+				Dependency d = (Dependency)dep;
+				
+				System.out.println("groupId: " + d.getGroupId());
+				System.out.println("artifactId: " + d.getArtifactId());
+				System.out.println("version: " + d.getVersion());
+				System.out.println("scope: " + d.getScope());
+			}
 			
-			// list dependencies
-//			for(String dependency : handler.getDependencies())
-//				System.out.println(dependency);
 			
 			//TODO: test existance of repository
 			//TODO: append repository

@@ -1,7 +1,14 @@
-package net.thepinguin.jp.xml.orm;
+package net.thepinguin.jp.xml.base;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
+
+import net.thepinguin.jp.xml.pom.Dependency;
+import net.thepinguin.jp.xml.pom.Visitable;
 
 import org.xml.sax.Attributes;
 
@@ -31,16 +38,28 @@ public class Element {
 		_elements.add(element);
 	}
 
-	public Element pop() {
-		return _parent;
-	}
-
 	public String getName() {
 		return _name;
 	}
 
 	public String getParentName() {
 		return _parent.getName();
+	}
+	
+	public String getValue() {
+		return _value;
+	}
+	
+	public boolean hasAttributes(){
+		return _attribute.hasValues();
+	}
+	
+	public Attribute getAttribute(){
+		return _attribute;
+	}
+	
+	public boolean hasElements(){
+		return !_elements.isEmpty();
 	}
 	
 	public String toString(int offset){
@@ -58,6 +77,27 @@ public class Element {
 
 	public void setValue(String value) {
 		_value = value;
+	}
+
+	public <T> List<Visitable<T>> findElement(Visitable<T> visitor) {	
+		List<Visitable<T>> ret = new LinkedList<Visitable<T>>();
+		
+//		visitor.isTypeOf((Visitable<?>)visitor, this);
+		
+		Visitable<T> a = visitor.isTypeOf(visitor, this);
+		// append if type is found
+		if(a != null){
+			ret.add(a);
+		}
+		// iterate nested elements
+		for(Element e : _elements){
+			ret.addAll(e.findElement(visitor));
+		}
+		return ret;
+	}
+
+	public List<Element> getElements() {
+		return _elements;
 	}
 
 }

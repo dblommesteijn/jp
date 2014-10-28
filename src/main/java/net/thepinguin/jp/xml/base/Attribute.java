@@ -1,4 +1,4 @@
-package net.thepinguin.jp.xml.orm;
+package net.thepinguin.jp.xml.base;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +14,10 @@ public class Attribute {
 		for(int i = 0; i < attributes.getLength(); i++){
 			_values.put(attributes.getQName(i), attributes.getValue(i));
 		}
+	}
+	
+	public boolean hasValues(){
+		return !_values.isEmpty();
 	}
 	
 	public Map<String, String> getValues(){

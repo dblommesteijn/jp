@@ -1,17 +1,17 @@
-package net.thepinguin.jp.xml;
+package net.thepinguin.jp.xml.base;
 
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-import net.thepinguin.jp.xml.orm.Attribute;
-import net.thepinguin.jp.xml.orm.Element;
+import net.thepinguin.jp.xml.pom.Visitable;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class SaxHandler extends DefaultHandler {
+public class Document extends DefaultHandler {
 	
 	Element _document = new Element("document");
 	Stack<Element> _stack = new Stack<Element>();
@@ -50,8 +50,11 @@ public class SaxHandler extends DefaultHandler {
 	}
 
 	public String toString(){
-//		return "";
 		return _document.toString(0);
+	}
+
+	public <T> List<Visitable<T>> findElement(Visitable<T> visitor) {
+		return _document.findElement(visitor);
 	}
 
 }
