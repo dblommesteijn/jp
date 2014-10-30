@@ -1,5 +1,7 @@
 package net.thepinguin.jp.xml.base;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +12,10 @@ import net.thepinguin.jp.xml.pom.Visitable;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 public class Document extends DefaultHandler {
 	String _xml = "";
@@ -61,8 +67,26 @@ public class Document extends DefaultHandler {
 		return _root.findElement(visitor);
 	}
 
+	@SuppressWarnings("restriction")
 	public void write() {
-		_root.write();
+		XMLOutputFactory factory = XMLOutputFactory.newInstance();
+		try {
+			FileWriter f = new FileWriter(_xml);
+			XMLStreamWriter writer = factory.createXMLStreamWriter(f);
+			writer.writeStartDocument();
+			writer.writeCharacters("\n");
+			_root.write(writer, -1);
+			writer.writeEndDocument();
+			writer.flush();
+		    writer.close();
+		} catch (XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	

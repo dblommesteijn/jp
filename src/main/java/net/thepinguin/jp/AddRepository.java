@@ -26,6 +26,7 @@ public class AddRepository {
 			//TODO: change something!!!
 			
 			doc.write();
+			System.out.println("done");
 					
 			
 			//TODO: look for <repositories>

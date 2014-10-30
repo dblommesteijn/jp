@@ -7,6 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
 import net.thepinguin.jp.xml.pom.Dependency;
 import net.thepinguin.jp.xml.pom.Visitable;
 
@@ -100,8 +103,36 @@ public class Element {
 		return _elements;
 	}
 
-	public void write() {
-		
+	@SuppressWarnings("restriction")
+	public void write(XMLStreamWriter writer, int depth) throws XMLStreamException {
+		System.out.println("-" + _name + "------------------");
+		System.out.println("depth? " + depth);
+		System.out.println("value? " + !_value.isEmpty());
+		System.out.println("elements? " + !_elements.isEmpty());
+		System.out.println("-------------------");
+		if(!_name.equals("root")){
+			// start element
+			// TODO: fix duplicate newlines!
+			writer.writeCharacters("\n");
+			for(int i=0; i<depth; i++)
+				writer.writeCharacters("  ");
+			writer.writeStartElement(_name);
+			if (this.hasAttributes())
+				_attribute.write(writer);
+			else
+				writer.writeCharacters(_value);
+		}
+		// nested elements
+		for(Element e: _elements){
+			e.write(writer, depth + 1);
+		}
+		if(!_name.equals("root")){
+			// end element
+			writer.writeEndElement();
+			writer.writeCharacters("\n");
+			for(int i=0; i<depth-1; i++)
+				writer.writeCharacters("  ");
+		}
 	}
 
 }

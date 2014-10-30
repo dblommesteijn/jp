@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
 import org.xml.sax.Attributes;
 
 public class Attribute {
@@ -30,5 +33,15 @@ public class Attribute {
 			sb.append(s.getKey()).append(":").append(s.getValue()).append(", ");
 		}
 		return sb.toString();
+	}
+
+	@SuppressWarnings("restriction")
+	public void write(XMLStreamWriter writer) throws XMLStreamException {
+		for(Entry<String, String> s : _values.entrySet())
+			writer.writeAttribute(s.getKey(), s.getValue());
+	}
+
+	public boolean isEmpty() {
+		return _values.isEmpty();
 	}
 }
