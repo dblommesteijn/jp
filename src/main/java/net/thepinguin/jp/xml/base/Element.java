@@ -100,4 +100,8 @@ public class Element {
 		return _elements;
 	}
 
+	public void write() {
+		
+	}
+
 }

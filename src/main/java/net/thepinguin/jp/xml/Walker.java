@@ -14,12 +14,13 @@ public class Walker {
 
 	public static Walker parseFromFile(String pomXml) {
 		try{
+			//TODO: push sax parser into Document
 			// read xml from file
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			InputStream xmlInput  = new FileInputStream(pomXml);
 			SAXParser saxParser = factory.newSAXParser();
 			// parse to document handle
-			Document document = new Document();
+			Document document = new Document(pomXml);
 			saxParser.parse(xmlInput, document);
 			// return instance of walker containing the document
 			return new Walker(document);

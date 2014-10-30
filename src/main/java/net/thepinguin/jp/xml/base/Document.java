@@ -12,12 +12,16 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class Document extends DefaultHandler {
-	
-	Element _document = new Element("document");
+	String _xml = "";
+	Element _root = new Element("root");
 	Stack<Element> _stack = new Stack<Element>();
 	
+	public Document(String xml) {
+		_xml = xml;
+	}
+
 	public void startDocument() throws SAXException {
-		_stack.push(_document);
+		_stack.push(_root);
 	}
 
 	public void endDocument() throws SAXException {
@@ -50,11 +54,17 @@ public class Document extends DefaultHandler {
 	}
 
 	public String toString(){
-		return _document.toString(0);
+		return _root.toString(0);
 	}
 
 	public <T> List<Visitable<T>> findElement(Visitable<T> visitor) {
-		return _document.findElement(visitor);
+		return _root.findElement(visitor);
 	}
+
+	public void write() {
+		_root.write();
+	}
+	
+	
 
 }

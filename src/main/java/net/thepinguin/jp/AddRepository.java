@@ -3,8 +3,11 @@ package net.thepinguin.jp;
 import java.util.List;
 
 import net.thepinguin.jp.xml.Walker;
+import net.thepinguin.jp.xml.base.Document;
 import net.thepinguin.jp.xml.pom.Dependency;
+import net.thepinguin.jp.xml.pom.Project;
 import net.thepinguin.jp.xml.pom.Repositories;
+import net.thepinguin.jp.xml.pom.Repository;
 import net.thepinguin.jp.xml.pom.Visitable;
 
 public class AddRepository {
@@ -15,7 +18,21 @@ public class AddRepository {
 			
 			// read from xml file and make tree
 			String pomXml = "/Users/dennisb/Programming/github/test/pom.xml";
+			
 			Walker walker = Walker.parseFromFile(pomXml);
+			
+			Document doc = walker.getDocument();
+			
+			//TODO: change something!!!
+			
+			doc.write();
+					
+			
+			//TODO: look for <repositories>
+			//TODO: add if not exists
+			//TODO: look for <repository>
+			//TODO: add if not exists
+
 			
 			// visit nodes in walker and lookup
 			List<Visitable<Repositories>> repositories = walker.visit(new Repositories());
@@ -24,13 +41,16 @@ public class AddRepository {
 				System.exit(-1);
 			}
 			if(repositories.isEmpty()){
+				// TODO: add repositories
 				
 			}
 			
-			
-			for(Visitable<Repositories> repos : repositories){
-				System.out.println(repos);
-			}
+//			for(Visitable<Dependency> deps : dependencies){
+//				Dependency d = (Dependency) deps;
+//				
+//				System.out.println(d.getGroupId());
+//				System.out.println(d.getArtifactId());
+//			}
 			
 //			for(Visitable<Dependency> dep : dependencies){
 //				Dependency d = (Dependency)dep;
