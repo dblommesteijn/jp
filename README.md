@@ -45,13 +45,11 @@ cd /path/to/your/repos
 jp new myproject net.domain.myproject
 ```
 
-*NOTE: projects are Maven3 projects (with a few settings), thus you can run all your `mvn` commands.
+*NOTE: projects are Maven3 projects (with a few settings), thus you can run all your `mvn` commands.*
 
 **Collect Dependencies**
 
 Each time you add a local dependency (or update the code in the dependency) you need to collect the changes.
-
-*In order to copy from the correct location you need to provide the location
 
 *NOTE: Global dependencies are resolved via Maven Central.*
 
@@ -59,8 +57,6 @@ Each time you add a local dependency (or update the code in the dependency) you 
 jp collect
 ```
 
-
-mvn deploy:deploy-file -Durl=file:///Users/dennisb/Programming/github/hatta-example/repo -Dfile=/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar -DgroupId=net.thepinguin.hatta -DartifactId=hatta -Dpackaging=jar -Dversion=0.1
 
 
 
