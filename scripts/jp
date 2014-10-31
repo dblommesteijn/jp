@@ -84,7 +84,7 @@ if [[ $1 == "new" ]]; then
       "add_default_repository $(pwd)/$PROJECT_NAME/pom.xml"
 
     # create metadata package with paths to local dependencies
-    touch "$(pwd)/$PROJECT_NAME/JPacker"
+    echo "{\"dependencies\": []}" > "$(pwd)/$PROJECT_NAME/JPacker"
 
 
 # elif [[ $1 -eq "blaat" ]]; then

@@ -47,13 +47,33 @@ jp new myproject net.domain.myproject
 
 *NOTE: projects are Maven3 projects (with a few settings), thus you can run all your `mvn` commands.*
 
+**JPacker metadata**
+
+Project metadata is kept in the JPacker file, and is located in the project root. `jp new ...` will create this file for you.
+
+```json
+{ "dependencies": [
+
+	~add your dependencies here~
+
+	{
+		"name": "com.domain.myproject#myproject",
+		"version": "0.1",
+		"file": "/path/to/your/project/binary.jar"
+	}
+]}
+```
+
 **Collect Dependencies**
 
-Each time you add a local dependency (or update the code in the dependency) you need to collect the changes.
+Collecting local dependencies, parse JPacker file, and store dependencies with the project `myproject/repo`. Effectively all .jar files will be copied here.
 
-*NOTE: Global dependencies are resolved via Maven Central.*
+*NOTE: Each time you add a local dependency (or update the code in the dependency) you need to collect the changes again.*
+
+*NOTE2: Global dependencies are resolved via Maven Central.*
 
 ```bash
+# NOT YET IMPLEMENTED!!
 jp collect
 ```
 
