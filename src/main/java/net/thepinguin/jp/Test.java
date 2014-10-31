@@ -14,12 +14,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 public class Test {
-	public static void main(String[] args){
-		System.out.println("blaat");
-		
+	public static void main(String[] args){		
 		
 		try {
-			String filename = "/Users/dennisb/Programming/github/test/JPacker";
+			String filename = "/Users/dennisb/Programming/github/jp/JPacker";
 			
 			// read from file
 			String all = "";
