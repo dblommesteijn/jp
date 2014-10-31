@@ -53,9 +53,7 @@ Project metadata is kept in the JPacker file, and is located in the project root
 
 ```json
 { "dependencies": [
-
 	~add your dependencies here~
-
 	{
 		"name": "com.domain.myproject#myproject",
 		"version": "0.1",
@@ -66,11 +64,11 @@ Project metadata is kept in the JPacker file, and is located in the project root
 
 **Collect Dependencies**
 
-Collecting local dependencies, parse JPacker file, and store dependencies with the project `myproject/repo`. Effectively all .jar files will be copied here.
+In order to update local dependencies you have to collect the changed `.jar` files. Dependencies are stored in the project's `/repo` folder. Effectively all `.jar` files will be copied there. Moreover, global dependencies are resolved via Maven Central, they keep working! 
+
+JPacker will add your dependencies to your `pom.xml` file when they are missing. So no need to update them on two separate places.
 
 *NOTE: Each time you add a local dependency (or update the code in the dependency) you need to collect the changes again.*
-
-*NOTE2: Global dependencies are resolved via Maven Central.*
 
 ```bash
 # NOT YET IMPLEMENTED!!
