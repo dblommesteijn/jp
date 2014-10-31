@@ -20,11 +20,11 @@ INSTALL=install
 TARGETS=
 
 build:
-	mvn package
+	mvn assembly:assembly -DdescriptorId=jar-with-dependencies
 
 install: $(TARGETS)
 	$(INSTALL) -c -v -g 0 -m 0755 -o root scripts/jp $(INSTALLDIR)/bin
-	$(INSTALL) -c -v -g 0 -m 0755 -o root target/jp-$(VERSION).jar $(INSTALLDIR)/lib
+	$(INSTALL) -c -v -g 0 -m 0755 -o root target/jp-$(VERSION)-jar-with-dependencies.jar $(INSTALLDIR)/lib
 
 uninstall: $(TARGETS)
 	rm $(INSTALLDIR)/bin/jp

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
+import net.thepinguin.jp.xml.NotFoundException;
 import net.thepinguin.jp.xml.pom.Visitable;
 
 import org.xml.sax.Attributes;
@@ -66,6 +67,10 @@ public class Document extends DefaultHandler {
 	public <T> List<Visitable<T>> findElement(Visitable<T> visitor) {
 		return _root.findElement(visitor);
 	}
+	
+	public List<Element> findElement(String name) {
+		return _root.findElement(name);
+	}
 
 	@SuppressWarnings("restriction")
 	public void write() {
@@ -88,7 +93,8 @@ public class Document extends DefaultHandler {
 		}
 		
 	}
-	
+
+
 	
 
 }

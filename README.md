@@ -4,7 +4,7 @@ JP is a toolkit for Java that allows packing Maven Central, and local JARs into 
 
 Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtualenv](https://virtualenv.readthedocs.org/en/latest/) with [Pip](https://pip.readthedocs.org/en/latest/).
 
-**Dependencies**
+**Prerequisites**
 
 * Unix OS (OS X, Linux)
 * Shell
@@ -22,6 +22,8 @@ Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtual
 
 ### Installation
 
+Clone the github repository and install it.
+
 ```bash
 git clone git@github.com:dblommesteijn/js.git
 cd js
@@ -29,17 +31,37 @@ make
 sudo make install
 ```
 
-Uninstall: `sudo make uninstall`.
+*Uninstall: `sudo make uninstall`.*
 
 
 ### Usage
 
-**Init scaffold**
+**Create Project**
+
+Creating a JP project in the current folder named `myproject` with groupId `net.domain.myproject`.
 
 ```bash
 cd /path/to/your/repos
 jp new myproject net.domain.myproject
 ```
+
+*NOTE: projects are Maven3 projects (with a few settings), thus you can run all your `mvn` commands.
+
+**Collect Dependencies**
+
+Each time you add a local dependency (or update the code in the dependency) you need to collect the changes.
+
+*In order to copy from the correct location you need to provide the location
+
+*NOTE: Global dependencies are resolved via Maven Central.*
+
+```bash
+jp collect
+```
+
+
+mvn deploy:deploy-file -Durl=file:///Users/dennisb/Programming/github/hatta-example/repo -Dfile=/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar -DgroupId=net.thepinguin.hatta -DartifactId=hatta -Dpackaging=jar -Dversion=0.1
+
 
 
 

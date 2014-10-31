@@ -10,6 +10,7 @@ import java.util.Stack;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import net.thepinguin.jp.xml.NotFoundException;
 import net.thepinguin.jp.xml.pom.Dependency;
 import net.thepinguin.jp.xml.pom.Visitable;
 
@@ -35,10 +36,21 @@ public class Element {
 	public Element(String name) {
 		_name = name;
 	}
+	
+	public Element(String name, String value){
+		_name = name;
+		_value = value;
+	}
 
 	public void addElement(Element parent, Element element) {
 		_parent = parent;
 		_elements.add(element);
+	}
+	
+	public Element addElementSelf(Element element) {
+		_parent = this;
+		_elements.add(element);
+		return this;
 	}
 
 	public String getName() {
@@ -54,7 +66,7 @@ public class Element {
 	}
 	
 	public boolean hasAttributes(){
-		return _attribute.hasValues();
+		return (_attribute != null && _attribute.hasValues());
 	}
 	
 	public Attribute getAttribute(){
@@ -63,6 +75,14 @@ public class Element {
 	
 	public boolean hasElements(){
 		return !_elements.isEmpty();
+	}
+	
+	public Element getElementByName(String name){
+		for(Element e : _elements){
+			if(e.getName().equals(name))
+				return e;
+		}
+		return null;
 	}
 	
 	public String toString(int offset){
@@ -98,6 +118,15 @@ public class Element {
 		}
 		return ret;
 	}
+	
+	public List<Element> findElement(String name) {
+		List<Element> ret = new LinkedList<Element>();
+		if(_name.equals(name))
+			ret.add(this);
+		for(Element e : _elements)
+			ret.addAll(e.findElement(name));
+		return ret;
+	}
 
 	public List<Element> getElements() {
 		return _elements;
@@ -105,33 +134,31 @@ public class Element {
 
 	@SuppressWarnings("restriction")
 	public void write(XMLStreamWriter writer, int depth) throws XMLStreamException {
-		System.out.println("-" + _name + "------------------");
-		System.out.println("depth? " + depth);
-		System.out.println("value? " + !_value.isEmpty());
-		System.out.println("elements? " + !_elements.isEmpty());
-		System.out.println("-------------------");
+		//TODO: remove root element check, refactor indentation
+		// start element
 		if(!_name.equals("root")){
-			// start element
-			// TODO: fix duplicate newlines!
 			writer.writeCharacters("\n");
 			for(int i=0; i<depth; i++)
 				writer.writeCharacters("  ");
 			writer.writeStartElement(_name);
 			if (this.hasAttributes())
 				_attribute.write(writer);
-			else
+			else{
 				writer.writeCharacters(_value);
+			}
 		}
 		// nested elements
-		for(Element e: _elements){
-			e.write(writer, depth + 1);
-		}
-		if(!_name.equals("root")){
-			// end element
-			writer.writeEndElement();
+		if(!_elements.isEmpty()){
+			for(Element e: _elements){
+				e.write(writer, depth + 1);
+			}
 			writer.writeCharacters("\n");
-			for(int i=0; i<depth-1; i++)
+			for(int i=0; i<depth; i++)
 				writer.writeCharacters("  ");
+		}
+		// end element
+		if(!_name.equals("root")){
+			writer.writeEndElement();
 		}
 	}
 

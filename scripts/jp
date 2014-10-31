@@ -2,6 +2,8 @@
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 LIB_PREFIX=$CURRENT_DIR/../lib
+BINARY="jp-0.1-jar-with-dependencies.jar"
+MAIN_CLASS="net.thepinguin.jp.App"
 
 ### filter incorrect environments
 
@@ -22,6 +24,7 @@ MVN_PATH=`which mvn`
 MVN_VERSION="$($MVN_PATH -version 2>&1)"
 if [[ $MVN_VERSION != *"Apache Maven 3"* ]]; then
     echo "Maven3 not found!"
+    exit 1
 fi
 
 ### parse opt arguments
@@ -76,13 +79,19 @@ if [[ $1 == "new" ]]; then
     # prepare local repo
     mkdir "$(pwd)/$PROJECT_NAME/repo"
 
-    # call add repository for current pom.xml
-    java -cp $LIB_PREFIX/jp-0.1.jar net.thepinguin.jp.AddRepository \
-        "$(pwd)/$PROJECT_NAME/pom.xml"
+    # add default repository to pom.xml
+    java -cp $LIB_PREFIX/$BINARY $MAIN_CLASS \
+      "add_default_repository $(pwd)/$PROJECT_NAME/pom.xml"
+
+    # create metadata package with paths to local dependencies
+    touch "$(pwd)/$PROJECT_NAME/JPacker"
 
 
 # elif [[ $1 -eq "blaat" ]]; then
 #     echo "blaat"
+else
+  echo "no command given (try -h)"
+  exit 1
 fi
 
 
