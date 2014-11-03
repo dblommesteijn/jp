@@ -14,7 +14,8 @@ public class Test {
 				System.exit(1);
 			
 			System.out.println(root.toString());
-			root.dependencies.get(1).cloneRespository();
+			
+			root.dependencies.get(1).cloneRespository("d58b28fb41c0350aac9db93470a6baca337a8903");
 			
 			
 			 

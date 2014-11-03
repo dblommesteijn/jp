@@ -39,7 +39,9 @@ public class Dependency {
 		return name.split("#")[0];
 	}
 	
-	public void cloneRespository() throws Exception{
+	public void cloneRespository(String ref) throws Exception{
+		if(ref.equals(""))
+			ref = "HEAD";
 		if(github.startsWith("git"))
 			throw new Exception("cannot clone git via ssh");
 		String groupId = this.getGroupId();
@@ -54,9 +56,12 @@ public class Dependency {
 		// clone repository
 		Git git = Git.cloneRepository().setURI(github).setDirectory(tmpClone).call();
 		Repository repo = git.getRepository();
+		repo.getRef(ref);
 		// get last commit, and rename folder
-		String name = repo.resolve("HEAD").name();
-		System.out.println(name);
+		String name = repo.resolve(ref).name();
+		
+		// TODO: determine what version to checkout
+		
 		File newClone = new File(deps, name);
 		if(!newClone.exists()){
 			// rename to commit ref
