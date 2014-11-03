@@ -1,5 +1,8 @@
 {"dependencies": [
   {"name": "net.thepinguin.hatta#hatta",
     "file": "/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar",
-    "version": "0.1"} 
+    "version": "0.1"},
+   {"name": "net.thepinguin.hatta#hatta",
+    "github": "https://github.com/dblommesteijn/hatta",
+    "version": "0.1"}
 ]}
