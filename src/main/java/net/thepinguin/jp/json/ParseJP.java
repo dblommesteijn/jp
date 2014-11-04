@@ -25,4 +25,8 @@ public class ParseJP {
 		return (new Gson()).toJson(this);
 	}
 
+	public static Root parseFromString(String rawJson) {
+		return Root.factory(rawJson);
+	}
+
 }
