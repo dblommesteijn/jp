@@ -31,6 +31,9 @@ public class Dependency {
 	@SerializedName("version")
 	public String version = "";
 	
+	@SerializedName("commit")
+	public String commit = "";
+	
 	public String getArtifactId(){
 		return name.split("#")[1];
 	}
@@ -38,8 +41,55 @@ public class Dependency {
 	public String getGroupId(){
 		return name.split("#")[0];
 	}
+
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("[ ");
+		sb.append("artifactId: `").append(this.getArtifactId()).append("`, ");
+		sb.append("groupId: `").append(this.getGroupId()).append("`, ");
+		sb.append("file: `").append(file).append("`, ");
+		sb.append("github: `").append(github).append("`, ");
+		sb.append("version: `").append(version).append("`");
+		sb.append(" ]");
+		return sb.toString();
+	}
 	
-	public void cloneRespository(String ref) throws Exception{
+	public String getCannonicalName(){
+		if(this.isFile()){
+			return this.getArtifactId() + "(.jar)";
+		} else if(this.isGithub()){
+			return this.getArtifactId() + "(" + github + ")";
+ 		}
+		return "";
+	}
+
+	public boolean resolve() {
+		if(this.isGithub()){
+			try{
+				this.cloneRespository();
+			} catch (Exception e){
+				return false;
+			}
+			return true;
+		} else if(this.isFile()){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isGithub(){
+		boolean https = github.startsWith("http");
+		boolean empty = file.isEmpty();
+		if(empty && !https) System.out.println("can only resolve github http(s)");
+		return empty && https;
+	}
+	
+	public boolean isFile(){
+		return !file.isEmpty();
+	}
+	
+	private void cloneRespository() throws Exception{
+		String ref = commit;
 		if(ref.equals(""))
 			ref = "HEAD";
 		if(github.startsWith("git"))
@@ -71,18 +121,6 @@ public class Dependency {
 			FileUtils.deleteDirectory(tmpClone);
 		}
 		git.close();
-	}
-
-	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		sb.append("[ ");
-		sb.append("artifactId: `").append(this.getArtifactId()).append("`, ");
-		sb.append("groupId: `").append(this.getGroupId()).append("`, ");
-		sb.append("file: `").append(file).append("`, ");
-		sb.append("github: `").append(github).append("`, ");
-		sb.append("version: `").append(version).append("`");
-		sb.append(" ]");
-		return sb.toString();
 	}
 	
 }

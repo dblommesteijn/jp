@@ -10,12 +10,12 @@ public class Test {
 			String filename = "/Users/dennisb/Programming/github/jp/JPacker";
 			
 			Root root = ParseJP.parseFromFile(filename);
+			System.out.println(root);
 			if (root == null)
 				System.exit(1);
 			
 			System.out.println(root.toString());
-			
-			root.dependencies.get(1).cloneRespository("d58b28fb41c0350aac9db93470a6baca337a8903");
+			root.resolveDependencies();
 			
 			
 			 

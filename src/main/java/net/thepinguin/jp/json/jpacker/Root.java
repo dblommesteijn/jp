@@ -17,13 +17,13 @@ public class Root {
 		try{
 			return (new Gson()).fromJson(jsonRaw, Root.class);
 		}catch(JsonSyntaxException e){
+			System.out.println("JPacker syntax error");
 			return null;
 		}
 	}
 	
 	@SerializedName("dependencies")
 	public List<Dependency> dependencies;
-	
 	
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
@@ -32,6 +32,17 @@ public class Root {
 			sb.append(d);
 		sb.append(" ]");
 		return sb.toString();
+	}
+
+	public void resolveDependencies() {
+		System.out.println("Resolving...");
+		for(Dependency d : dependencies){
+			System.out.print(d.getCannonicalName() + ".");
+			if(d.resolve())
+				System.out.print("OK\n");
+			else
+				System.out.print("ERR\n");
+		}
 	}
 	
 }
