@@ -17,7 +17,7 @@ public class Root {
 		try{
 			return (new Gson()).fromJson(jsonRaw, Root.class);
 		}catch(JsonSyntaxException e){
-			e.printStackTrace();
+//			e.printStackTrace();
 //			System.out.println("JPacker syntax error");
 			return null;
 		}

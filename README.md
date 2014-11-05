@@ -57,7 +57,8 @@ Project metadata is kept in the JPacker file, and is located in the project root
 	{
 		"name": "com.domain.myproject#myproject",
 		"version": "0.1",
-		"file": "/path/to/your/project/binary.jar"
+		"file": "/path/to/your/project/binary.jar" OR "github": "https://github.com/yourname/repo.git"
+		// OPTIONAL: "commit": "~your github commitId~"
 	}
 ]}
 ```
@@ -73,6 +74,15 @@ JPacker will add your dependencies to your `pom.xml` file when they are missing.
 ```bash
 # NOT YET IMPLEMENTED!!
 jp collect
+```
+
+
+## Development
+
+**Running Tests**
+
+```bash
+mvn test
 ```
 
 

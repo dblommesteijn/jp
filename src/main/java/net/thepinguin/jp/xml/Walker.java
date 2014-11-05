@@ -27,7 +27,7 @@ public class Walker {
 			// return instance of walker containing the document
 			return new Walker(document);
 		} catch(Exception e){
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		return null;
 	}
@@ -43,7 +43,7 @@ public class Walker {
 			// return instance of walker containing the document
 			return new Walker(document);
 		} catch(Exception e){
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		return null;
 	}
