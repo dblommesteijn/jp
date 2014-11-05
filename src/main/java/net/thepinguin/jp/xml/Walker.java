@@ -7,6 +7,8 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.IOUtils;
+
 import net.thepinguin.jp.xml.base.Document;
 import net.thepinguin.jp.xml.pom.Visitable;
 
@@ -21,6 +23,22 @@ public class Walker {
 			SAXParser saxParser = factory.newSAXParser();
 			// parse to document handle
 			Document document = new Document(pomXml);
+			saxParser.parse(xmlInput, document);
+			// return instance of walker containing the document
+			return new Walker(document);
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static Walker parseFromString(String validXml) {
+		try{
+			SAXParserFactory factory = SAXParserFactory.newInstance();
+			InputStream xmlInput = IOUtils.toInputStream(validXml, "UTF-8");
+			SAXParser saxParser = factory.newSAXParser();
+			// parse to document handle
+			Document document = new Document(validXml);
 			saxParser.parse(xmlInput, document);
 			// return instance of walker containing the document
 			return new Walker(document);

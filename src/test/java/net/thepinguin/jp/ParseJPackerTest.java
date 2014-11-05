@@ -7,14 +7,14 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 
-public class ParseDepsTest extends TestCase {
+public class ParseJPackerTest extends TestCase {
 
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public ParseDepsTest( String testName )
+    public ParseJPackerTest( String testName )
     {
         super( testName );
     }
@@ -24,7 +24,7 @@ public class ParseDepsTest extends TestCase {
      */
     public static Test suite()
     {
-        return new TestSuite( ParseDepsTest.class );
+        return new TestSuite( ParseJPackerTest.class );
     }
     
     private static final String __VALID_JSON = "{\"dependencies\": []}";

@@ -17,7 +17,8 @@ public class Root {
 		try{
 			return (new Gson()).fromJson(jsonRaw, Root.class);
 		}catch(JsonSyntaxException e){
-			System.out.println("JPacker syntax error");
+			e.printStackTrace();
+//			System.out.println("JPacker syntax error");
 			return null;
 		}
 	}
@@ -35,7 +36,7 @@ public class Root {
 	}
 
 	public void resolveDependencies() {
-		System.out.println("Resolving...");
+//		System.out.println("Resolving...");
 		for(Dependency d : dependencies){
 			System.out.print(d.getCannonicalName() + ".");
 			if(d.resolve())
