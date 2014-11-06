@@ -25,8 +25,8 @@ Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtual
 Clone the github repository and install it.
 
 ```bash
-git clone git@github.com:dblommesteijn/js.git
-cd js
+git clone git@github.com:dblommesteijn/jp.git
+cd jp
 make
 sudo make install
 ```
@@ -77,13 +77,22 @@ jp collect
 ```
 
 
-## Development
+## Development/ Contributing
 
 **Running Tests**
 
 ```bash
 mvn test
 ```
+
+**Using Eclipse**
+
+```bash
+mvn eclipse:eclipse
+```
+
+*NOTE: after importing the project into your workspace convert it to a Maven project.*
+
 
 
 

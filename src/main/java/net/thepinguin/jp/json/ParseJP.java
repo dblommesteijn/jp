@@ -1,6 +1,7 @@
 package net.thepinguin.jp.json;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -14,7 +15,7 @@ public class ParseJP {
 	public static Root parseFromFile(String filename) throws IOException {
 		// read from file
 		StringBuilder sb = new StringBuilder();
-		List<String> ss = Files.readAllLines(Paths.get(filename));
+		List<String> ss = Files.readAllLines(Paths.get(filename), Charset.defaultCharset());
 		for(String s : ss){
 			sb.append(s);
 		}
