@@ -1,14 +1,12 @@
 package net.thepinguin.jp;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.thepinguin.jp.json.ParseJP;
-import net.thepinguin.jp.json.jpacker.Root;
 import net.thepinguin.jp.xml.Walker;
 import net.thepinguin.jp.xml.base.Document;
 import net.thepinguin.jp.xml.base.Element;
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -102,19 +100,19 @@ public class ParsePomTest extends TestCase {
     
     public void testParseValidXml(){
     	Walker walker = Walker.parseFromString(__VALID_POM);
-    	this.assertNotNull(walker);
+    	Assert.assertNotNull(walker);
     }
     
     public void testParseInvalidXml(){
     	Walker walker = Walker.parseFromString(__INVALID_POM);
-    	this.assertNull(walker);
+    	Assert.assertNull(walker);
     }
     
     public void testParseValidPom(){
     	Walker walker = Walker.parseFromString(__VALID_LARGE_POM);
-    	this.assertNotNull(walker);
+    	Assert.assertNotNull(walker);
     	Document doc = walker.getDocument();
-    	this.assertNotNull(doc);
+    	Assert.assertNotNull(doc);
     	// find unique elements in xml
     	elementHelper(doc, "modelVersion");
     	elementHelper(doc, "groupId");
@@ -138,31 +136,29 @@ public class ParsePomTest extends TestCase {
     	elementHelper(doc, "descriptorRef");
     }
     
-    @SuppressWarnings("static-access")
     private void elementHelper(Document doc, String elementName){
     	List<Element> e = doc.findElement(elementName);
-    	this.assertFalse(e.isEmpty());
+    	Assert.assertFalse(e.isEmpty());
     }
     
-    @SuppressWarnings("static-access")
 	public void testParseWalkPom(){
     	Walker walker = Walker.parseFromString(__VALID_LARGE_POM);
     	Document doc = walker.getDocument();
-    	this.assertNotNull(doc);
+    	Assert.assertNotNull(doc);
     	// find project element
     	List<Element> project = doc.findElement("project");
-    	this.assertTrue(project.size() == 1);
+    	Assert.assertTrue(project.size() == 1);
     	List<Element> es = project.get(0).getElements();
     	// test nested elements in project
-    	this.assertTrue(es.get(0).getName().equals("modelVersion"));
-    	this.assertTrue(es.get(1).getName().equals("groupId"));
-    	this.assertTrue(es.get(2).getName().equals("artifactId"));
-    	this.assertTrue(es.get(3).getName().equals("packaging"));
-    	this.assertTrue(es.get(4).getName().equals("version"));
-    	this.assertTrue(es.get(5).getName().equals("name"));
-    	this.assertTrue(es.get(6).getName().equals("url"));
-    	this.assertTrue(es.get(7).getName().equals("dependencies"));
-    	this.assertTrue(es.get(8).getName().equals("build"));
+    	Assert.assertTrue(es.get(0).getName().equals("modelVersion"));
+    	Assert.assertTrue(es.get(1).getName().equals("groupId"));
+    	Assert.assertTrue(es.get(2).getName().equals("artifactId"));
+    	Assert.assertTrue(es.get(3).getName().equals("packaging"));
+    	Assert.assertTrue(es.get(4).getName().equals("version"));
+    	Assert.assertTrue(es.get(5).getName().equals("name"));
+    	Assert.assertTrue(es.get(6).getName().equals("url"));
+    	Assert.assertTrue(es.get(7).getName().equals("dependencies"));
+    	Assert.assertTrue(es.get(8).getName().equals("build"));
     	// test nested element in project > dependencies
     	List<Element> ds = es.get(7).getElements();
     	List<String> groupIds = Arrays.asList(new String[] {"junit", "gnu.getopt", 
@@ -172,44 +168,44 @@ public class ParsePomTest extends TestCase {
     	List<String> versions = Arrays.asList(new String[] {"3.8.1", "1.0.13", 
     			"2.3", "3.5.1.201410131835-r", "1.3.2"}); 
     	for(Element q : ds){
-    		this.assertEquals(q.getName(), "dependency");
+    		Assert.assertEquals(q.getName(), "dependency");
     		Element groupId = q.getElementByName("groupId");
     		Element artifactId = q.getElementByName("artifactId");
     		Element version = q.getElementByName("version");
-    		this.assertNotNull(groupId);
-    		this.assertNotNull(artifactId);
-    		this.assertNotNull(version);
-    		this.assertTrue(groupIds.contains(groupId.getValue()));
-    		this.assertTrue(artifactIds.contains(artifactId.getValue()));
-    		this.assertTrue(versions.contains(version.getValue()));
+    		Assert.assertNotNull(groupId);
+    		Assert.assertNotNull(artifactId);
+    		Assert.assertNotNull(version);
+    		Assert.assertTrue(groupIds.contains(groupId.getValue()));
+    		Assert.assertTrue(artifactIds.contains(artifactId.getValue()));
+    		Assert.assertTrue(versions.contains(version.getValue()));
     	}
     	// test nested build > plugins
     	Element plugins = es.get(8).getElementByName("plugins");
-    	this.assertNotNull(plugins);
+    	Assert.assertNotNull(plugins);
     	Element plugin = plugins.getElementByName("plugin");
-    	this.assertNotNull(plugin);
+    	Assert.assertNotNull(plugin);
     	Element artifactId = plugin.getElementByName("artifactId");
-    	this.assertNotNull(artifactId);
-    	this.assertEquals(artifactId.getValue(), "maven-assembly-plugin");
+    	Assert.assertNotNull(artifactId);
+    	Assert.assertEquals(artifactId.getValue(), "maven-assembly-plugin");
     	Element executions = plugin.getElementByName("executions");
-    	this.assertNotNull(executions);
+    	Assert.assertNotNull(executions);
     	Element execution = executions.getElementByName("execution");
-    	this.assertNotNull(execution);
+    	Assert.assertNotNull(execution);
     	Element phase = execution.getElementByName("phase");
-    	this.assertNotNull(phase);
-    	this.assertEquals(phase.getValue(), "package");
+    	Assert.assertNotNull(phase);
+    	Assert.assertEquals(phase.getValue(), "package");
     	Element goals = execution.getElementByName("goals");
-    	this.assertNotNull(goals);
+    	Assert.assertNotNull(goals);
     	Element goal = goals.getElementByName("goal");
-    	this.assertNotNull(goal);
-    	this.assertEquals(goal.getValue(), "single");
+    	Assert.assertNotNull(goal);
+    	Assert.assertEquals(goal.getValue(), "single");
     	Element configuration = plugin.getElementByName("configuration");
-    	this.assertNotNull(configuration);
+    	Assert.assertNotNull(configuration);
     	Element descriptorRefs = configuration.getElementByName("descriptorRefs");
-    	this.assertNotNull(descriptorRefs);
+    	Assert.assertNotNull(descriptorRefs);
     	Element descriptorRef = descriptorRefs.getElementByName("descriptorRef");
-    	this.assertNotNull(descriptorRef);
-    	this.assertEquals(descriptorRef.getValue(), "jar-with-dependencies");
+    	Assert.assertNotNull(descriptorRef);
+    	Assert.assertEquals(descriptorRef.getValue(), "jar-with-dependencies");
     }
     
 

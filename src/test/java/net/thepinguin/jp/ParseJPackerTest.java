@@ -1,7 +1,11 @@
 package net.thepinguin.jp;
 
+import java.util.List;
+
 import net.thepinguin.jp.json.ParseJP;
+import net.thepinguin.jp.json.jpacker.Dependency;
 import net.thepinguin.jp.json.jpacker.Root;
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -46,20 +50,32 @@ public class ParseJPackerTest extends TestCase {
     
     public void testValidJson(){
     	Root root = ParseJP.parseFromString(__VALID_JSON);
-		this.assertNotNull(root);
+    	Assert.assertNotNull(root);
     }
     
     public void testInvalidJson(){
     	Root root = ParseJP.parseFromString(__INVALID_JSON);
-		this.assertNull(root);
+    	Assert.assertNull(root);
     }
     
     public void testParseValidJPackerJson(){
     	Root root = ParseJP.parseFromString(__VALID_LARGE_JSON);
-    	this.assertNotNull(root);
-    	// TODO: add JPacker specific tests here!!!
+    	Assert.assertNotNull(root);
     	
+    	Assert.assertFalse(root.dependencies.isEmpty());
     	
+    	List<Dependency> deps = root.dependencies;
+    	
+    	Dependency hatta = deps.get(0);
+    	Assert.assertEquals(hatta.name, "net.thepinguin.hatta#hatta");
+		Assert.assertEquals(hatta.file, "/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar");
+		Assert.assertEquals(hatta.version, "0.1");
+
+		Dependency hatta_github = deps.get(1);
+		Assert.assertEquals(hatta_github.name, "net.thepinguin.hatta#hatta");
+		Assert.assertEquals(hatta_github.github, "https://github.com/dblommesteijn/hatta");
+		Assert.assertEquals(hatta_github.version, "0.1");
+		
     }
     
     

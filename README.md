@@ -17,7 +17,7 @@ Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtual
 
 ### Known issues
 
-* stub
+* Not tested on Linux (yet)
 
 
 ### Installation
