@@ -25,7 +25,7 @@ Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtual
 Clone the github repository and install it.
 
 ```bash
-git clone git@github.com:dblommesteijn/jp.git
+git clone git@github.com:java-packer/jp.git
 cd jp
 make
 sudo make install
@@ -65,7 +65,7 @@ Project metadata is kept in the JPacker file, and is located in the project root
 
 **Collect Dependencies**
 
-In order to update local dependencies you have to collect the changed `.jar` files. Dependencies are stored in the project's `/repo` folder. Effectively all `.jar` files will be copied there. Moreover, global dependencies are resolved via Maven Central, they keep working! 
+In order to update local dependencies you have to collect the changed `.jar` files. Dependencies are stored in the project's `/repo` folder. Effectively all `.jar` files will be copied there. Moreover, global dependencies are resolved via Maven Central, they keep working!
 
 JPacker will add your dependencies to your `pom.xml` file when they are missing. So no need to update them on two separate places.
 
