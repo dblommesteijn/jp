@@ -2,6 +2,9 @@ package net.thepinguin.jp.json.jpacker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import net.thepinguin.jp.Common;
@@ -80,7 +83,7 @@ public class Dependency {
 	public boolean isGithub(){
 		boolean https = github.startsWith("http");
 		boolean empty = file.isEmpty();
-		if(empty && !https) System.out.println("can only resolve github http(s)");
+//		if(empty && !https) System.out.println("can only resolve github http(s)");
 		return empty && https;
 	}
 	
@@ -121,6 +124,17 @@ public class Dependency {
 			FileUtils.deleteDirectory(tmpClone);
 		}
 		git.close();
+	}
+
+	public Boolean isValid() {
+		if(this.isFile() || this.isGithub()){
+			if(!name.isEmpty() && !version.isEmpty())
+				return true;
+			else
+				return false;
+		}
+		else
+			return false;
 	}
 	
 }

@@ -21,6 +21,9 @@ TARGETS=
 
 build:
 	mvn assembly:assembly -DdescriptorId=jar-with-dependencies
+	
+test:
+	mvn test
 
 install: $(TARGETS)
 	$(INSTALL) -c -v -g 0 -m 0755 -o root scripts/jp $(INSTALLDIR)/bin

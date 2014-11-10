@@ -245,7 +245,6 @@ public class PomTest extends TestCase {
 		// find element by name
 		Element newRepo2 = repo.getElementByName("repository");
 		Assert.assertEquals(newRepo, newRepo2);
-		Assert.assertEquals(newRepo, newRepo2);
 	}
 
 }

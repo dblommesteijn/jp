@@ -1,5 +1,6 @@
 package net.thepinguin.jp.json.jpacker;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,6 +45,19 @@ public class Root {
 			else
 				System.out.print("ERR\n");
 		}
+	}
+	
+	public boolean isValid(){
+		List<Boolean> ret = new ArrayList<Boolean>(20);
+		if(dependencies != null){
+			for(Dependency d : dependencies){
+				ret.add(d.isValid());
+			}
+		}
+		else
+			ret.add(false);
+		System.out.println(ret);
+		return !ret.contains(false);
 	}
 	
 }

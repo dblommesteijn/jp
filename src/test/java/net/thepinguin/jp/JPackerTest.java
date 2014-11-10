@@ -72,4 +72,43 @@ public class JPackerTest extends TestCase {
 		Assert.assertEquals(hatta_github.github, "https://github.com/dblommesteijn/hatta");
 		Assert.assertEquals(hatta_github.version, "0.1");
     }
+    
+    public void testParseMissingDependencies(){
+    	String input = "{\"\": ["
+            	+ "{\"name\": \"net.thepinguin.hatta#hatta\","
+            	+ "\"file\": \"/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar\","
+            	+ "\"version\": \"0.1\"} ]}";
+    	Root root = ParseJP.parseFromString(input);
+    	Assert.assertNotNull(root);
+    	Assert.assertFalse(root.isValid());
+    }
+    
+    public void testParseMissingFile(){
+    	String input = "{\"dependencies\": ["
+            	+ "{\"name\": \"net.thepinguin.hatta#hatta\","
+            	+ "\"version\": \"0.1\"} ]}";
+    	Root root = ParseJP.parseFromString(input);
+    	Assert.assertNotNull(root);
+    	Assert.assertFalse(root.isValid());
+    }
+    
+    public void testParseMissingName(){
+    	String input = "{\"dependencies\": ["
+            	+ "{"
+            	+ "\"file\": \"/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar\","
+            	+ "\"version\": \"0.1\"} ]}";
+    	Root root = ParseJP.parseFromString(input);
+    	Assert.assertNotNull(root);
+    	Assert.assertFalse(root.isValid());
+    }
+    
+    public void testParseMissingVersion(){
+    	String input = "{\"dependencies\": ["
+    			+ "{\"name\": \"net.thepinguin.hatta#hatta\","
+            	+ "\"file\": \"/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar\"}"
+            	+ " ]}";
+    	Root root = ParseJP.parseFromString(input);
+    	Assert.assertNotNull(root);
+    	Assert.assertFalse(root.isValid());
+    }
 }
