@@ -11,13 +11,13 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class ParsePomTest extends TestCase {
+public class PomTest extends TestCase {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public ParsePomTest( String testName )
+    public PomTest( String testName )
     {
         super( testName );
     }
@@ -27,7 +27,7 @@ public class ParsePomTest extends TestCase {
      */
     public static Test suite()
     {
-        return new TestSuite( ParsePomTest.class );
+        return new TestSuite( PomTest.class );
     }
     
     private static final String __VALID_POM = "<xml><project></project></xml>";
@@ -207,7 +207,4 @@ public class ParsePomTest extends TestCase {
     	Assert.assertNotNull(descriptorRef);
     	Assert.assertEquals(descriptorRef.getValue(), "jar-with-dependencies");
     }
-    
-
-    
 }

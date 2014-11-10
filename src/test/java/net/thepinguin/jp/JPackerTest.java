@@ -11,14 +11,14 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 
-public class ParseJPackerTest extends TestCase {
+public class JPackerTest extends TestCase {
 
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public ParseJPackerTest( String testName )
+    public JPackerTest( String testName )
     {
         super( testName );
     }
@@ -28,7 +28,7 @@ public class ParseJPackerTest extends TestCase {
      */
     public static Test suite()
     {
-        return new TestSuite( ParseJPackerTest.class );
+        return new TestSuite( JPackerTest.class );
     }
     
     private static final String __VALID_JSON = "{\"dependencies\": []}";
@@ -48,12 +48,12 @@ public class ParseJPackerTest extends TestCase {
     public void tearDown(){
     }
     
-    public void testValidJson(){
+    public void testParseValidJson(){
     	Root root = ParseJP.parseFromString(__VALID_JSON);
     	Assert.assertNotNull(root);
     }
     
-    public void testInvalidJson(){
+    public void testParseInvalidJson(){
     	Root root = ParseJP.parseFromString(__INVALID_JSON);
     	Assert.assertNull(root);
     }
@@ -61,22 +61,15 @@ public class ParseJPackerTest extends TestCase {
     public void testParseValidJPackerJson(){
     	Root root = ParseJP.parseFromString(__VALID_LARGE_JSON);
     	Assert.assertNotNull(root);
-    	
     	Assert.assertFalse(root.dependencies.isEmpty());
-    	
     	List<Dependency> deps = root.dependencies;
-    	
     	Dependency hatta = deps.get(0);
     	Assert.assertEquals(hatta.name, "net.thepinguin.hatta#hatta");
 		Assert.assertEquals(hatta.file, "/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar");
 		Assert.assertEquals(hatta.version, "0.1");
-
 		Dependency hatta_github = deps.get(1);
 		Assert.assertEquals(hatta_github.name, "net.thepinguin.hatta#hatta");
 		Assert.assertEquals(hatta_github.github, "https://github.com/dblommesteijn/hatta");
 		Assert.assertEquals(hatta_github.version, "0.1");
-		
     }
-    
-    
 }
