@@ -207,4 +207,45 @@ public class PomTest extends TestCase {
     	Assert.assertNotNull(descriptorRef);
     	Assert.assertEquals(descriptorRef.getValue(), "jar-with-dependencies");
     }
+	
+	public void testAppendRepositoriesPom(){
+		// load valid pom from string
+		Walker walker = Walker.parseFromString(__VALID_LARGE_POM);
+    	Document doc = walker.getDocument();
+    	Assert.assertNotNull(doc);
+    	List<Element> project = doc.findElement("project");
+    	Assert.assertTrue(project.size() == 1);
+    	Element p = project.get(0);
+    	Assert.assertNotNull(p);
+    	// get repositories element
+		List<Element> repos = p.findElement("repositories");
+		Element repo;
+		Element newRepos = new Element("repositories");
+		if(repos.isEmpty())
+			repo = p.addElement(newRepos);
+		else
+			repo = repos.get(0);
+		// addElementSelf should return the passed element
+		Assert.assertEquals(newRepos, repo);
+		// repo should be an instance of Element
+		Assert.assertEquals(repo.getClass(), Element.class);
+		// append repository element
+		String id = "project.local";
+		String name = "project";
+		String url = "file:${project.basedir}/repo";
+		Element dep_id = new Element("id", id);
+		Element dep_name = new Element("name", name);
+		Element dep_url = new Element("url", url);
+		Element newRepo = new Element("repository");
+		Element ret = newRepo.addElementSelf(dep_id).addElementSelf(dep_name).addElementSelf(dep_url);
+		// addElementSelf returns the called element (not the passed element)
+		Assert.assertEquals(ret, newRepo);
+		// append repository to repositories
+		repo.addElement(newRepo);
+		// find element by name
+		Element newRepo2 = repo.getElementByName("repository");
+		Assert.assertEquals(newRepo, newRepo2);
+		Assert.assertEquals(newRepo, newRepo2);
+	}
+
 }

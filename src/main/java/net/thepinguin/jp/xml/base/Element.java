@@ -42,12 +42,35 @@ public class Element {
 		_value = value;
 	}
 
-	public void addElement(Element parent, Element element) {
+	/**
+	 * Add a new Element to the current Element
+	 * @param parent specify Element parent
+	 * @param element Element to append to current Element
+	 * @return reference to appended Element
+	 */
+	public Element addElement(Element parent, Element element) {
 		_parent = parent;
 		_elements.add(element);
+		return element;
 	}
 	
-	public Element addElementSelf(Element element) {
+	/**
+	 * Add a new Element to the current Element
+	 * @param element Element to append to current Element
+	 * @return reference to appended Element
+	 */
+	public Element addElement(Element element) {
+		_parent = this;
+		_elements.add(element);
+		return element;
+	}
+	
+	/**
+	 * Add a new Element to the current Element
+	 * @param element Element to append to current Element
+	 * @return reference to itself
+	 */
+	public Element addElementSelf(Element element){
 		_parent = this;
 		_elements.add(element);
 		return this;
