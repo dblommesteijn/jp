@@ -1,13 +1,9 @@
 package net.thepinguin.jp.json;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
+import org.apache.commons.io.IOUtils;
 import com.google.gson.Gson;
-
 import net.thepinguin.jp.json.jpacker.Root;
 
 public class ParseJP {
@@ -15,10 +11,12 @@ public class ParseJP {
 	public static Root parseFromFile(String filename) throws IOException {
 		// read from file
 		StringBuilder sb = new StringBuilder();
-		List<String> ss = Files.readAllLines(Paths.get(filename), Charset.defaultCharset());
-		for(String s : ss){
-			sb.append(s);
-		}
+		FileInputStream inputStream = new FileInputStream(filename);
+	    try {
+	        sb.append(IOUtils.toString(inputStream));
+	    } finally {
+	        inputStream.close();
+	    }
 		return Root.factory(sb.toString());
 	}
 	
