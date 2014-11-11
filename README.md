@@ -4,21 +4,15 @@ JP is a toolkit for Java that allows packing Maven Central, and local JARs into 
 
 Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtualenv](https://virtualenv.readthedocs.org/en/latest/) with [Pip](https://pip.readthedocs.org/en/latest/).
 
+[![Build Status](https://travis-ci.org/java-packer/jp.svg?branch=master)](https://travis-ci.org/java-packer/jp)
+
 **Prerequisites**
 
-* Unix OS (OS X, Linux)
-* Shell
-* make
-* Java6/7/8
-* Maven3
+* Unix based OS
+* Java (6,7,8)
+* Maven
 
 *Sorry Windows users, no support for you.*
-
-
-### Known issues
-
-* Not tested on Linux (yet)
-
 
 ### Installation
 
