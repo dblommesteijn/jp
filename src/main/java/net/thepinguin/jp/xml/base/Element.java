@@ -75,6 +75,19 @@ public class Element {
 		_elements.add(element);
 		return this;
 	}
+	
+	public void removeElement(Element element) {
+		_elements.remove(element);
+	}
+	
+	public void removeElement(String name) {
+		for(Element e : _elements){
+			if(e.getName().equals(name)){
+				_elements.remove(e);
+				break;
+			}
+		}
+	}
 
 	public String getName() {
 		return _name;

@@ -208,7 +208,7 @@ public class PomTest extends TestCase {
     	Assert.assertEquals(descriptorRef.getValue(), "jar-with-dependencies");
     }
 	
-	public void testAppendRepositoriesPom(){
+	public void testAppendRemoveRepositoriesPom(){
 		// load valid pom from string
 		Walker walker = Walker.parseFromString(__VALID_LARGE_POM);
     	Document doc = walker.getDocument();
@@ -245,6 +245,16 @@ public class PomTest extends TestCase {
 		// find element by name
 		Element newRepo2 = repo.getElementByName("repository");
 		Assert.assertEquals(newRepo, newRepo2);
+		// remove element by object
+		repo.removeElement(newRepo);
+		newRepo2 = repo.getElementByName("repository");
+		Assert.assertNull(newRepo2);
+		repo.addElement(newRepo);
+		newRepo2 = repo.getElementByName("repository");
+		Assert.assertNotNull(newRepo2);
+		repo.removeElement(newRepo.getName());
+		newRepo2 = repo.getElementByName("repository");
+		Assert.assertNull(newRepo2);
 	}
 
 }
