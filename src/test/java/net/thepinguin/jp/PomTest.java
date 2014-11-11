@@ -1,5 +1,6 @@
 package net.thepinguin.jp;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -98,6 +99,22 @@ public class PomTest extends TestCase {
     public void tearDown(){
     }
     
+	public void testParseValidXmlFile(){
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("valid_pom.xml").getFile());
+		Walker walker = Walker.parseFromFile(file.toString());
+		Assert.assertNotNull(walker);
+    	Document doc = walker.getDocument();
+    	Assert.assertNotNull(doc);
+	}
+	
+	public void testParseInvalidXmlFile(){
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("invalid_pom.xml").getFile());
+		Walker walker = Walker.parseFromFile(file.toString());
+		Assert.assertNull(walker);
+	}
+	
     public void testParseValidXml(){
     	Walker walker = Walker.parseFromString(__VALID_POM);
     	Assert.assertNotNull(walker);
@@ -256,5 +273,7 @@ public class PomTest extends TestCase {
 		newRepo2 = repo.getElementByName("repository");
 		Assert.assertNull(newRepo2);
 	}
+	
+
 
 }

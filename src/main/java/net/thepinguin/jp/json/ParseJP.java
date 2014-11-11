@@ -8,14 +8,16 @@ import net.thepinguin.jp.json.jpacker.Root;
 
 public class ParseJP {
 
-	public static Root parseFromFile(String filename) throws IOException {
+	public static Root parseFromFile(String filename) {
 		// read from file
 		StringBuilder sb = new StringBuilder();
-		FileInputStream inputStream = new FileInputStream(filename);
-	    try {
+		FileInputStream inputStream = null;
+		try {
+			inputStream = new FileInputStream(filename);
 	        sb.append(IOUtils.toString(inputStream));
-	    } finally {
 	        inputStream.close();
+		} catch(IOException e){
+			return null;
 	    }
 		return Root.factory(sb.toString());
 	}

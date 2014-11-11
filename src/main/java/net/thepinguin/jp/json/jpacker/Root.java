@@ -56,7 +56,6 @@ public class Root {
 		}
 		else
 			ret.add(false);
-		System.out.println(ret);
 		return !ret.contains(false);
 	}
 	

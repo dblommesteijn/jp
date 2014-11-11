@@ -1,0 +1,4 @@
+{"dependencies": [
+  {"name": "com.example.project#myproject",
+    "file": "some/path/to/myproject.jar",
+    "version": "0.1"}

@@ -1,5 +1,6 @@
 package net.thepinguin.jp;
 
+import java.io.File;
 import java.util.List;
 
 import net.thepinguin.jp.json.ParseJP;
@@ -46,6 +47,20 @@ public class JPackerTest extends TestCase {
     }
     
     public void tearDown(){
+    }
+    
+    public void testParseValidJsonFile(){
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("valid_jpacker.json").getFile());
+		Root root = ParseJP.parseFromFile(file.toString());
+    	Assert.assertNotNull(root);
+    }
+    
+    public void testParseInvalidJsonFile(){
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("invalid_jpacker.json").getFile());
+		Root root = ParseJP.parseFromFile(file.toString());
+    	Assert.assertNull(root);
     }
     
     public void testParseValidJson(){
@@ -110,5 +125,9 @@ public class JPackerTest extends TestCase {
     	Root root = ParseJP.parseFromString(input);
     	Assert.assertNotNull(root);
     	Assert.assertFalse(root.isValid());
+    }
+    
+    public void testResolveFile(){
+    	
     }
 }
