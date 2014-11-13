@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,9 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import com.google.gson.annotations.SerializedName;
 
 public class Dependency {
+	
+	private List<String> _errorMessages = new LinkedList<String>();
+	
 	@SerializedName("name")
 	public String name = "";
 	
@@ -69,7 +73,7 @@ public class Dependency {
 	public boolean resolve() {
 		if(this.isGithub()){
 			try{
-				this.cloneRespository();
+				this.cloneRepository();
 			} catch (Exception e){
 				return false;
 			}
@@ -83,7 +87,7 @@ public class Dependency {
 	public boolean isGithub(){
 		boolean https = github.startsWith("http");
 		boolean empty = file.isEmpty();
-//		if(empty && !https) System.out.println("can only resolve github http(s)");
+		if(empty && !https) _errorMessages.add("github ssh not supported (use https)");
 		return empty && https;
 	}
 	
@@ -91,19 +95,23 @@ public class Dependency {
 		return !file.isEmpty();
 	}
 	
-	private void cloneRespository() throws Exception{
+	public File cloneRepository() throws Exception{
 		String ref = commit;
 		if(ref.equals(""))
 			ref = "HEAD";
-		if(github.startsWith("git"))
+		if(github.startsWith("git")){
+			_errorMessages.add("cannot clone git via ssh");
 			throw new Exception("cannot clone git via ssh");
+		}
 		String groupId = this.getGroupId();
 		String artifactId = this.getArtifactId();
 		String uuid = UUID.randomUUID().toString();
 		groupId = "deps/" + groupId.replace('.', '/') + "/" + artifactId + "/" + version + "/";
 		File deps = new File(Common.JP_HOME, groupId);
-		if(!deps.isDirectory() && !deps.mkdirs())
+		if(!deps.isDirectory() && !deps.mkdirs()){
+			_errorMessages.add("cannot create home: `" + deps + "`");
 			throw new Exception("cannot create home: `" + deps + "`");
+		}
 		// set tmp clone directory
 		File tmpClone = new File(deps, uuid);
 		// clone repository
@@ -124,6 +132,7 @@ public class Dependency {
 			FileUtils.deleteDirectory(tmpClone);
 		}
 		git.close();
+		return newClone;
 	}
 
 	public Boolean isValid() {
@@ -135,6 +144,14 @@ public class Dependency {
 		}
 		else
 			return false;
+	}
+
+	public List<String> getErrorMessages() {
+		return _errorMessages;
+	}
+	
+	public void reset(){
+		_errorMessages.clear();
 	}
 	
 }

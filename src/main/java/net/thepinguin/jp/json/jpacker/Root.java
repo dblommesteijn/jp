@@ -58,5 +58,12 @@ public class Root {
 			ret.add(false);
 		return !ret.contains(false);
 	}
+
+	public List<String> getErrorMessages() {
+		List<String> ret = new ArrayList<String>(5);
+		for(Dependency d : dependencies)
+			ret.addAll(d.getErrorMessages());
+		return ret;
+	}
 	
 }
