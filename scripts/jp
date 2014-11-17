@@ -9,21 +9,21 @@ MAIN_CLASS="net.thepinguin.jp.App"
 
 # java home msg
 if [ -z $JAVA_HOME ]; then
-    echo "JAVA_HOME not set!"
+    echo "jp: JAVA_HOME not set!"
     exit 1
 fi
 # detect java version
 JAVA_PATH=`which java`
 JAVA_VERSION="$($JAVA_PATH -version 2>&1)"
 if [[ $JAVA_VERSION != *"Java(TM) SE Runtime Environment"* ]]; then
-    echo "Java not found! (try setting $JAVA_HOME)"
+    echo "jp: Java not found! (try setting $JAVA_HOME)"
     exit 1
 fi
 # detect maven version
 MVN_PATH=`which mvn`
 MVN_VERSION="$($MVN_PATH -version 2>&1)"
 if [[ $MVN_VERSION != *"Apache Maven 3"* ]]; then
-    echo "Maven3 not found!"
+    echo "jp: Maven3 not found!"
     exit 1
 fi
 
@@ -33,7 +33,7 @@ fi
 while getopts ":Vhv" opt; do
   case $opt in
     V)
-      echo "java packer version \"0.0.1\"" >&2
+      echo "jp: java packer version \"0.0.1\"" >&2
       exit 0
       ;;
     h)
@@ -49,7 +49,7 @@ while getopts ":Vhv" opt; do
       exit 0
       ;;
     \?)
-      echo "Invalid option: -$OPTARG" >&2
+      echo "jp: Invalid option: -$OPTARG" >&2
       exit 0
       ;;
   esac
@@ -59,11 +59,11 @@ if [[ $1 == "new" ]]; then
     PROJECT_NAME=$2
     GROUP_ID=$3
     if [[ -z $PROJECT_NAME ]]; then
-        echo "no project name given (try: \`jp new project-name\`)"
+        echo "jp: no project name given (try: \`jp new project-name\`)"
         exit 0
     fi
     if [[ -z $GROUP_ID ]]; then
-        echo "no groupId provided (try: \`jp new myproject com.example.myproject\`)"
+        echo "jp: no groupId provided (try: \`jp new myproject com.example.myproject\`)"
         exit 0
     fi
     echo "creating new project: '$2'..."
@@ -73,7 +73,7 @@ if [[ $1 == "new" ]]; then
       -DinteractiveMode=false &> /dev/null
     # verify
     if [[ $? != 0 ]]; then
-        echo "failed (try: verbose -v option)"
+        echo "jp: failed (try: verbose -v option)"
         exit 0
     fi
     # prepare local repo
@@ -86,12 +86,10 @@ if [[ $1 == "new" ]]; then
     # create metadata package with paths to local dependencies
     echo "{\"dependencies\": []}" > "$(pwd)/$PROJECT_NAME/JPacker"
 elif [[ $1 == "collect" ]]; then
-    echo "blaat"
     java -cp $LIB_PREFIX/$BINARY $MAIN_CLASS \
-      "collect" "$(pwd)/pom.xml"
-    echo $?
+      "collect" "$(pwd)/pom.xml" "$(pwd)/JPacker"
 else
-  echo "no command given (try -h)"
+  echo "jp: no command given (try -h)"
   exit 1
 fi
 

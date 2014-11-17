@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.thepinguin.jp.json.ParseJP;
+import net.thepinguin.jp.json.jpacker.Dependency;
 import net.thepinguin.jp.json.jpacker.Root;
 import net.thepinguin.jp.xml.Walker;
 import net.thepinguin.jp.xml.base.Document;
@@ -25,7 +26,8 @@ public class App
         	if(action.equals("add_default_repository")){
         		App.addDefaultRepository(pomXml);
         	} else if(action.equals("collect")){
-        		App.collect(pomXml);
+        		String jpacker = args[2];
+        		App.collect(pomXml, jpacker);
         	} else{
         		throw new Exception();
         	}
@@ -86,8 +88,7 @@ public class App
 		doc.write();
     }
     
-    static void collect(String pomXml) throws Exception{
-    	System.out.println(pomXml);
+    static void collect(String pomXml, String jpacker) throws Exception{
     	// parse pom file
 		Walker walker = Walker.parseFromFile(pomXml);
 		Document doc = walker.getDocument();
@@ -98,8 +99,15 @@ public class App
 		}
 		Element project = pss.get(0);
 		
-		
-//    	Root root = ParseJP.parseFromFile();
+		// parse jpacker file
+    	Root root = ParseJP.parseFromFile(jpacker);
+    	if(root == null && root.isValid())
+    		throw new Exception("invalid JPacker");
+    	if(root.dependencies == null)
+    		throw new Exception("missing dependencies list");
+    	
+    	root.resolveDependencies();
+    	System.out.println("jp: collect not implemented :(");
 
     }
 }
