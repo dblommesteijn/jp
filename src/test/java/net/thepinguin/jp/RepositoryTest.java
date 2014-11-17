@@ -83,4 +83,22 @@ public class RepositoryTest extends TestCase {
     	// TODO: stub
     }
     
+    public void testLookupLocal(){
+    	String jpacker = "{\"dependencies\": ["
+            	+ "{\"name\": \"net.thepinguin.jp#jp\","
+            	+ "\"file\": \"target/jp-0.1-jar-with-dependencies.jar\","
+            	+ "\"version\": \"0.1\"} ]}";
+    	Root root = ParseJP.parseFromString(jpacker);
+    	Assert.assertNotNull(root);
+    	Assert.assertTrue(root.isValid());
+    	Assert.assertFalse(root.dependencies.isEmpty());
+    	List<Dependency> deps = root.dependencies;
+    	Dependency jp = deps.get(0);
+    	Assert.assertTrue(jp.isFile());
+    	Assert.assertFalse(jp.isGithub());
+
+    	// TODO: lookup local jar and add to classpath!
+    	
+    }
+    
 }

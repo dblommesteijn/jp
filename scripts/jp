@@ -85,10 +85,8 @@ if [[ $1 == "new" ]]; then
 
     # create metadata package with paths to local dependencies
     echo "{\"dependencies\": []}" > "$(pwd)/$PROJECT_NAME/JPacker"
-
-
-# elif [[ $1 -eq "blaat" ]]; then
-#     echo "blaat"
+elif [[ $1 == "collect" ]]; then
+    echo "collect not implemented, sorry!"
 else
   echo "no command given (try -h)"
   exit 1

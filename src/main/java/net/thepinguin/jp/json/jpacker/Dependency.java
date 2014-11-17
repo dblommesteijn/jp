@@ -135,7 +135,7 @@ public class Dependency {
 		return newClone;
 	}
 
-	public Boolean isValid() {
+	public boolean isValid() {
 		if(this.isFile() || this.isGithub()){
 			if(!name.isEmpty() && !version.isEmpty())
 				return true;
