@@ -21,7 +21,7 @@ TARGETS=
 
 build:
 	mvn assembly:assembly -DdescriptorId=jar-with-dependencies
-	
+
 test:
 	mvn test
 
@@ -31,7 +31,7 @@ install: $(TARGETS)
 
 uninstall: $(TARGETS)
 	rm $(INSTALLDIR)/bin/jp
-	rm $(INSTALLDIR)/lib/jp-$(VERSION).jar
+	rm $(INSTALLDIR)/lib/jp-$(VERSION)-jar-with-dependencies.jar
 
 clean:
 	mvn clean

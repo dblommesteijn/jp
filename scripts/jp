@@ -81,12 +81,15 @@ if [[ $1 == "new" ]]; then
 
     # add default repository to pom.xml
     java -cp $LIB_PREFIX/$BINARY $MAIN_CLASS \
-      "add_default_repository $(pwd)/$PROJECT_NAME/pom.xml"
+      "add_default_repository" "$(pwd)/$PROJECT_NAME/pom.xml"
 
     # create metadata package with paths to local dependencies
     echo "{\"dependencies\": []}" > "$(pwd)/$PROJECT_NAME/JPacker"
 elif [[ $1 == "collect" ]]; then
-    echo "collect not implemented, sorry!"
+    echo "blaat"
+    java -cp $LIB_PREFIX/$BINARY $MAIN_CLASS \
+      "collect" "$(pwd)/pom.xml"
+    echo $?
 else
   echo "no command given (try -h)"
   exit 1

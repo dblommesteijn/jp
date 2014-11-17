@@ -3,6 +3,8 @@ package net.thepinguin.jp;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.thepinguin.jp.json.ParseJP;
+import net.thepinguin.jp.json.jpacker.Root;
 import net.thepinguin.jp.xml.Walker;
 import net.thepinguin.jp.xml.base.Document;
 import net.thepinguin.jp.xml.base.Element;
@@ -10,8 +12,7 @@ import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
 /**
- * Hello world!
- *
+ * Main entry point
  */
 public class App
 {
@@ -23,12 +24,14 @@ public class App
         	
         	if(action.equals("add_default_repository")){
         		App.addDefaultRepository(pomXml);
-        	}
-        	else{
+        	} else if(action.equals("collect")){
+        		App.collect(pomXml);
+        	} else{
         		throw new Exception();
         	}
     	}catch(Exception e){
-    		System.out.println(e.getMessage());
+    		e.printStackTrace();
+//    		System.out.println(e.getMessage());
     		System.exit(1);
     	}
 
@@ -81,5 +84,22 @@ public class App
 		}
 		// write changes to pom.xml
 		doc.write();
+    }
+    
+    static void collect(String pomXml) throws Exception{
+    	System.out.println(pomXml);
+    	// parse pom file
+		Walker walker = Walker.parseFromFile(pomXml);
+		Document doc = walker.getDocument();
+		// find project element
+		List<Element> pss = doc.findElement("project");
+		if(pss.isEmpty()){
+			throw new Exception("invalid pom!");
+		}
+		Element project = pss.get(0);
+		
+		
+//    	Root root = ParseJP.parseFromFile();
+
     }
 }
