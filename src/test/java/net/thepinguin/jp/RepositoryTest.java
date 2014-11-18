@@ -42,6 +42,7 @@ public class RepositoryTest extends TestCase {
     	String jpacker = "{\"dependencies\": ["
             	+ "{\"name\": \"net.thepinguin.jp#jp\","
             	+ "\"github\": \"https://github.com/java-packer/jp\","
+            	+ "\"target\": \"target/jp-0.1-jar-with-dependencies.jar\","
             	+ "\"commit\": \"558a7b5e52edeb4165d32c306ee145b71df5b0a7\","
             	+ "\"version\": \"0.1\"} ]}";
     	Root root = ParseJP.parseFromString(jpacker);
@@ -67,6 +68,7 @@ public class RepositoryTest extends TestCase {
     	String jpacker = "{\"dependencies\": ["
             	+ "{\"name\": \"net.thepinguin.jp#jp\","
             	+ "\"github\": \"git@github.com:java-packer/jp.git\","
+            	+ "\"target\": \"target/jp-0.1-jar-with-dependencies.jar\","
             	+ "\"commit\": \"6cd474bcbfadf10f2b336b2674d4d1bf4a84e2ca\","
             	+ "\"version\": \"0.1\"} ]}";
     	Root root = ParseJP.parseFromString(jpacker);
@@ -99,6 +101,10 @@ public class RepositoryTest extends TestCase {
 
     	// TODO: lookup local jar and add to classpath!
     	
+    }
+    
+    public void testResolveDependencies(){
+    	// TODO: test root.resolveDependencies()
     }
     
 }

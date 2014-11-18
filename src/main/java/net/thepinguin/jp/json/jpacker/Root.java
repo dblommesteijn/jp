@@ -1,5 +1,7 @@
 package net.thepinguin.jp.json.jpacker;
 
+import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,15 +38,25 @@ public class Root {
 		return sb.toString();
 	}
 
-	public void resolveDependencies() {
-//		System.out.println("Resolving...");
+	public List<File> resolveDependencies(PrintStream out) {
+		List<File> ret = new LinkedList<File>();
+		if(out != null) out.println("Resolving...");
 		for(Dependency d : dependencies){
-			System.out.print(d.getCannonicalName() + ".");
-			if(d.resolve())
-				System.out.print("OK\n");
-			else
-				System.out.print("ERR\n");
+			if(out != null) out.print(d.getCannonicalName() + ".");
+			if(d.resolve()){
+				File loc = d.getFile();
+				if(loc != null)
+					ret.add(loc);
+				if(out != null) 
+					out.print("OK\n");
+			} else
+				if(out != null) out.print("ERR\n");
 		}
+		if(out != null){
+//			if(dependencies.isEmpty()) out.println(""); 
+			out.println("DONE");
+		}
+		return ret;
 	}
 	
 	public boolean isValid(){

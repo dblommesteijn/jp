@@ -26,6 +26,11 @@ if [[ $MVN_VERSION != *"Apache Maven 3"* ]]; then
     echo "jp: Maven3 not found!"
     exit 1
 fi
+# mvn home
+if [ -z $M3_HOME ]; then
+    echo "jp: M3_HOME not set!"
+    exit 1
+fi
 
 ### parse opt arguments
 

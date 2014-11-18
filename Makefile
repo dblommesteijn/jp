@@ -21,6 +21,9 @@ TARGETS=
 
 build:
 	mvn assembly:assembly -DdescriptorId=jar-with-dependencies
+	
+build-no-test:
+	mvn assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true
 
 test:
 	mvn test

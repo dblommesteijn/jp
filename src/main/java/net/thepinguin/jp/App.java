@@ -1,5 +1,6 @@
 package net.thepinguin.jp;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,8 +107,15 @@ public class App
     	if(root.dependencies == null)
     		throw new Exception("missing dependencies list");
     	
-    	root.resolveDependencies();
-    	System.out.println("jp: collect not implemented :(");
+    	List<File> folders = root.resolveDependencies(System.out);
+    	for(File f : folders){
+    		System.out.println(f.getAbsolutePath());
+    	}
+    	
+    	
+//    	System.out.println("jp: collect not implemented :(");
+    	
+    	
 
     }
 }

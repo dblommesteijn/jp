@@ -3,6 +3,7 @@ package net.thepinguin.jp.json.jpacker;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,10 @@ import java.util.UUID;
 import net.thepinguin.jp.Common;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.Invoker;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
@@ -23,6 +28,8 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import com.google.gson.annotations.SerializedName;
 
 public class Dependency {
+	
+	private File _jarLocation;
 	
 	private List<String> _errorMessages = new LinkedList<String>();
 	
@@ -40,6 +47,9 @@ public class Dependency {
 	
 	@SerializedName("commit")
 	public String commit = "";
+	
+	@SerializedName("target")
+	public String target = "";
 	
 	public String getArtifactId(){
 		return name.split("#")[1];
@@ -63,9 +73,9 @@ public class Dependency {
 	
 	public String getCannonicalName(){
 		if(this.isFile()){
-			return this.getArtifactId() + "(.jar)";
+			return " " + this.getArtifactId() + " (.jar)";
 		} else if(this.isGithub()){
-			return this.getArtifactId() + "(" + github + ")";
+			return " " + this.getArtifactId() + " (" + github + ")";
  		}
 		return "";
 	}
@@ -73,12 +83,15 @@ public class Dependency {
 	public boolean resolve() {
 		if(this.isGithub()){
 			try{
-				this.cloneRepository();
+				File repo = this.cloneRepository();
+//				this.build();
+				_jarLocation = new File(repo, "target/");
 			} catch (Exception e){
 				return false;
 			}
 			return true;
 		} else if(this.isFile()){
+			_jarLocation = new File(file);
 			return true;
 		}
 		return false;
@@ -86,14 +99,21 @@ public class Dependency {
 	
 	public boolean isGithub(){
 		boolean https = github.startsWith("http");
-		boolean empty = file.isEmpty();
-		if(empty && !https) _errorMessages.add("github ssh not supported (use https)");
-		return empty && https;
+		boolean fileEmpty = file.isEmpty();
+		boolean targetEmpty = target.isEmpty();
+		if(targetEmpty) _errorMessages.add("github requires target key");
+		if(fileEmpty && !https) _errorMessages.add("github ssh not supported (use https)");
+		return fileEmpty && https && !targetEmpty;
 	}
 	
 	public boolean isFile(){
 		return !file.isEmpty();
 	}
+	
+	public File getFile(){
+		return _jarLocation;
+	}
+	
 	
 	public File cloneRepository() throws Exception{
 		String ref = commit;
@@ -132,6 +152,18 @@ public class Dependency {
 			FileUtils.deleteDirectory(tmpClone);
 		}
 		git.close();
+		
+		// build cloned repo
+		InvocationRequest request = new DefaultInvocationRequest();
+		File pomLoc = new File( newClone, "pom.xml" );
+		System.out.println(newClone);
+		request.setPomFile( pomLoc );
+		request.setGoals( Arrays.asList( "assembly:assembly", "-DdescriptorId=jar-with-dependencies" ) );
+		Invoker invoker = new DefaultInvoker();
+//		invoker.setWorkingDirectory(newClone);
+//		invoker.setMavenHome(newClone);
+		invoker.setMavenHome(Common.M3_HOME);
+		invoker.execute( request );
 		return newClone;
 	}
 
@@ -153,5 +185,4 @@ public class Dependency {
 	public void reset(){
 		_errorMessages.clear();
 	}
-	
 }
