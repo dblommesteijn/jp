@@ -158,7 +158,8 @@ public class Dependency {
 		File pomLoc = new File( newClone, "pom.xml" );
 		System.out.println(newClone);
 		request.setPomFile( pomLoc );
-		request.setGoals( Arrays.asList( "assembly:assembly", "-DdescriptorId=jar-with-dependencies" ) );
+//		request.setMavenOpts();
+		request.setGoals( Arrays.asList( "assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true") );
 		Invoker invoker = new DefaultInvoker();
 //		invoker.setWorkingDirectory(newClone);
 //		invoker.setMavenHome(newClone);
