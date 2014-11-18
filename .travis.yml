@@ -7,5 +7,5 @@ jdk:
   - openjdk7
 
 before_install:
-  - which mvn
   - mvn --version
+  - export M3_HOME="/usr/local/maven"
