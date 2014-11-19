@@ -156,13 +156,9 @@ public class Dependency {
 		// build cloned repo
 		InvocationRequest request = new DefaultInvocationRequest();
 		File pomLoc = new File( newClone, "pom.xml" );
-		System.out.println(newClone);
 		request.setPomFile( pomLoc );
-//		request.setMavenOpts();
 		request.setGoals( Arrays.asList( "assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true") );
 		Invoker invoker = new DefaultInvoker();
-//		invoker.setWorkingDirectory(newClone);
-//		invoker.setMavenHome(newClone);
 		invoker.setMavenHome(Common.M3_HOME);
 		invoker.execute( request );
 		return newClone;
