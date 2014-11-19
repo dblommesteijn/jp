@@ -198,4 +198,13 @@ public class Element {
 		}
 	}
 
+	public boolean hasElementContains(String string) {
+		for(Element e : _elements){
+			if(e.getValue().equals(string)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

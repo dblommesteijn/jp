@@ -1,8 +1,16 @@
 package net.thepinguin.jp;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import net.thepinguin.jp.json.ParseJP;
 import net.thepinguin.jp.json.jpacker.Dependency;
@@ -10,6 +18,7 @@ import net.thepinguin.jp.json.jpacker.Root;
 import net.thepinguin.jp.xml.Walker;
 import net.thepinguin.jp.xml.base.Document;
 import net.thepinguin.jp.xml.base.Element;
+import net.thepinguin.jp.xml.pom.Visitable;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
@@ -19,7 +28,7 @@ import gnu.getopt.LongOpt;
 public class App
 {
     public static void main( String[] args )
-    {
+    {    	
     	try{
     		String action = args[0];
         	String pomXml = args[1];
@@ -28,6 +37,8 @@ public class App
         		App.addDefaultRepository(pomXml);
         	} else if(action.equals("collect")){
         		String jpacker = args[2];
+//        		String base = new File(jpacker);
+//        		String base = FilenameUtils.getPath(jpacker);
         		App.collect(pomXml, jpacker);
         	} else{
         		throw new Exception();
@@ -99,6 +110,10 @@ public class App
 			throw new Exception("invalid pom!");
 		}
 		Element project = pss.get(0);
+		Element deps = project.getElementByName("dependencies");
+		List<Visitable<net.thepinguin.jp.xml.pom.Dependency>> ds = project.findElement(new net.thepinguin.jp.xml.pom.Dependency());
+		
+		//TODO: check what dependencies to remove from the pom (changes to the JPacker)
 		
 		// parse jpacker file
     	Root root = ParseJP.parseFromFile(jpacker);
@@ -107,15 +122,55 @@ public class App
     	if(root.dependencies == null)
     		throw new Exception("missing dependencies list");
     	
-    	List<File> folders = root.resolveDependencies(System.out);
-    	for(File f : folders){
-    		System.out.println(f.getAbsolutePath());
+    	// resolve dependencies
+    	System.out.println("jp: collecting...");
+    	for(Dependency d : root.dependencies){
+    		System.out.print("  " + d.getArtifactId() + ".");
+    		if(d.isGithub()){
+    			System.out.print("(" + d.github + "#" + d.getCommit() + ")");
+    		} else if (d.isFile()){
+    			System.out.print("(" + d.file + ")");
+    		}
+    		System.out.print(".");
+    		d.resolve();
+    		System.out.print(".");
+    		if(!d.isValid()){
+    			System.out.println(" FAIL");
+//    			System.out.println("jp: " + d.getArtifactId() + ": " + d.getErrorMessages());
+    			continue;
+    		} else {
+    			
+    		}
+    		// deploy dependency to local repository
+    		if(d.deployToProjectRepo(pomXml, FilenameUtils.getFullPath(jpacker))){
+    			// check if dependency is in pom.xml already
+    			boolean found = false;
+    			for(Visitable<net.thepinguin.jp.xml.pom.Dependency> q : ds){
+    				net.thepinguin.jp.xml.pom.Dependency q1 = (net.thepinguin.jp.xml.pom.Dependency) q;
+    				if(q1.equalsJPacker(d)){
+    					found = true;
+    					break;
+    				}
+    			}
+    			System.out.print(".");
+    			// add dependency to pom.xml (if not found)
+    			if(!found){
+    				Element tmp = new Element("dependency");
+    				tmp.addElementSelf(new Element("groupId", d.getGroupId()));
+    				tmp.addElementSelf(new Element("artifactId", d.getArtifactId()));
+    				tmp.addElementSelf(new Element("version", d.getVersion()));
+    				tmp.addElementSelf(new Element("scope", "compile"));
+    				deps.addElement(tmp);
+    			}
+    			System.out.println(" OK");
+    		} else {
+    			//TODO: this is dirty! move errors into dependency!
+    			System.out.println(Mvn.getErrorMessages());
+    			Mvn.resetErrorMessages();
+    		}
     	}
-    	
-    	
-//    	System.out.println("jp: collect not implemented :(");
-    	
-    	
-
+    	// write pom.xml with dependencies
+    	if(doc.write())
+    		System.out.println("finished");
     }
 }

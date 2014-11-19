@@ -38,15 +38,15 @@ public class Root {
 		return sb.toString();
 	}
 
-	public List<File> resolveDependencies(PrintStream out) {
-		List<File> ret = new LinkedList<File>();
+	public List<Dependency> resolveDependencies(PrintStream out) {
+		List<Dependency> ret = new LinkedList<Dependency>();
 		if(out != null) out.println("Resolving...");
 		for(Dependency d : dependencies){
 			if(out != null) out.print(d.getCannonicalName() + ".");
 			if(d.resolve()){
 				File loc = d.getFile();
 				if(loc != null)
-					ret.add(loc);
+					ret.add(d);
 				if(out != null) 
 					out.print("OK\n");
 			} else

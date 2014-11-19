@@ -51,4 +51,9 @@ public class Dependency implements Visitable<Dependency> {
 		return _scope;
 	}
 
+	public boolean equalsJPacker(net.thepinguin.jp.json.jpacker.Dependency d) {
+		//TODO: add version match!
+		return d.getArtifactId().equals(this.getArtifactId()) && d.getGroupId().equals(this.getGroupId());
+	}
+
 }

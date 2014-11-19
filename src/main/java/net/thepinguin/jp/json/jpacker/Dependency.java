@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.thepinguin.jp.Common;
+import net.thepinguin.jp.Mvn;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -58,6 +59,11 @@ public class Dependency {
 	public String getGroupId(){
 		return name.split("#")[0];
 	}
+	
+	public String getCommit(){
+		if(commit.isEmpty()) commit = "HEAD";
+		return commit;
+	}
 
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
@@ -84,8 +90,7 @@ public class Dependency {
 		if(this.isGithub()){
 			try{
 				File repo = this.cloneRepository();
-//				this.build();
-				_jarLocation = new File(repo, "target/");
+				_jarLocation = new File(repo, target);
 			} catch (Exception e){
 				return false;
 			}
@@ -101,24 +106,26 @@ public class Dependency {
 		boolean https = github.startsWith("http");
 		boolean fileEmpty = file.isEmpty();
 		boolean targetEmpty = target.isEmpty();
-		if(targetEmpty) _errorMessages.add("github requires target key");
+		// github specific error messages
+		if(fileEmpty && targetEmpty) _errorMessages.add("github requires `target` key");
 		if(fileEmpty && !https) _errorMessages.add("github ssh not supported (use https)");
 		return fileEmpty && https && !targetEmpty;
 	}
 	
 	public boolean isFile(){
-		return !file.isEmpty();
+		boolean fileEmpty = file.isEmpty();
+		boolean targetEmpty = target.isEmpty();
+		// jar file specific error messages
+		if(!fileEmpty && !targetEmpty) _errorMessages.add("file has `target` key, ignoring");
+		return !fileEmpty;
 	}
 	
 	public File getFile(){
 		return _jarLocation;
 	}
 	
-	
 	public File cloneRepository() throws Exception{
-		String ref = commit;
-		if(ref.equals(""))
-			ref = "HEAD";
+		String ref = this.getCommit();
 		if(github.startsWith("git")){
 			_errorMessages.add("cannot clone git via ssh");
 			throw new Exception("cannot clone git via ssh");
@@ -139,10 +146,7 @@ public class Dependency {
 		Repository repo = git.getRepository();
 		repo.getRef(ref);
 		// get last commit, and rename folder
-		String name = repo.resolve(ref).name();
-		
-		// TODO: determine what version to checkout
-		
+		String name = repo.resolve(ref).name();		
 		File newClone = new File(deps, name);
 		if(!newClone.exists()){
 			// rename to commit ref
@@ -154,19 +158,18 @@ public class Dependency {
 		git.close();
 		
 		// build cloned repo
-		InvocationRequest request = new DefaultInvocationRequest();
-		File pomLoc = new File( newClone, "pom.xml" );
-		request.setPomFile( pomLoc );
-		request.setGoals( Arrays.asList( "assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true") );
-		Invoker invoker = new DefaultInvoker();
-		invoker.setMavenHome(Common.M3_HOME);
-		invoker.execute( request );
+		List<String> goals = Arrays.asList( "assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true");
+		Mvn.invokeMaven(new File( newClone, "pom.xml" ), goals);
+		//TODO: handle return code!
 		return newClone;
 	}
 
 	public boolean isValid() {
+		this.reset();
 		if(this.isFile() || this.isGithub()){
-			if(!name.isEmpty() && !version.isEmpty())
+			boolean versionEmpty = version.isEmpty();
+			if(versionEmpty) _errorMessages.add("dep. requires `version` key");
+			if(!name.isEmpty() && !versionEmpty)
 				return true;
 			else
 				return false;
@@ -182,4 +185,25 @@ public class Dependency {
 	public void reset(){
 		_errorMessages.clear();
 	}
+
+	public boolean deployToProjectRepo(String pomXml, String base) {
+		String target = this.getFile().toString();
+		List<String> goals = Arrays.asList( "deploy:deploy-file", "-Durl=file://" + base + "repo/ ",
+				"-Dfile=" + target,
+				"-DgroupId=" + this.getGroupId(), 
+				"-DartifactId=" + this.getArtifactId(), 
+				"-Dpackaging=jar",
+				"-Dversion=" + this.version);
+		if(Mvn.invokeMaven(new File(pomXml), goals))
+			return true;
+		else{
+			return false;
+		}
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+
 }

@@ -73,7 +73,7 @@ public class Document extends DefaultHandler {
 	}
 
 	@SuppressWarnings("restriction")
-	public void write() {
+	public boolean write() {
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		try {
 			FileWriter f = new FileWriter(_xml);
@@ -84,14 +84,16 @@ public class Document extends DefaultHandler {
 			writer.writeEndDocument();
 			writer.flush();
 		    writer.close();
+		    return true;
 		} catch (XMLStreamException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
-		
 	}
 
 
