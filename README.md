@@ -1,8 +1,8 @@
 ## Java Packer
 
-JP is a toolkit for Java that allows packing Maven Central, and local JARs into your project. The toolkit manages your `pom.xml` files, so you don't have to handle tons of XML.
+Java Packer (JP) is a toolkit for Java that allows packing Maven Central, and local JARs into a single project. The toolkit manages your `pom.xml`, and integrate with local, and [Github](http://github.com) remote jars!
 
-Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtualenv](https://virtualenv.readthedocs.org/en/latest/) with [Pip](https://pip.readthedocs.org/en/latest/).
+Packer is inspired by Ruby's [Bundler](http://bundler.io/), Python's [virtualenv](https://virtualenv.readthedocs.org/en/latest/) and [Pip](https://pip.readthedocs.org/en/latest/).
 
 [![Build Status](https://travis-ci.org/java-packer/jp.svg?branch=master)](https://travis-ci.org/java-packer/jp)
 
@@ -10,7 +10,7 @@ Packer is inspired by Ruby's [Bundler](http://bundler.io/) and Python's [virtual
 
 * Unix based OS
 * Java (6,7,8)
-* Maven
+* Maven 3
 
 *Sorry Windows users, no support for you.*
 
@@ -37,49 +37,77 @@ Creating a JP project in the current folder named `myproject` with groupId `net.
 ```bash
 cd /path/to/your/repos
 jp new myproject net.domain.myproject
+cd myproject/
 ```
 
-*NOTE: projects are Maven3 projects (with a few settings), thus you can run all your `mvn` commands.*
+*NOTE: all JPacker projects are based on Maven 3, thus all your `mvn` commands will run.*
 
-**JPacker metadata**
 
-Project metadata is kept in the JPacker file, and is located in the project root. `jp new ...` will create this file for you.
+**JPacker Metadata File**
+
+JP generates an empty JPacker metadata file, which will contain all your dependencies. By appending JSON objects to the dependency list they will become available in your project.
 
 ```json
-{ "dependencies": [
-	~add your dependencies here~
-	{
-		"name": "com.domain.myproject#myproject",
-		"version": "0.1",
-		"file": "/path/to/your/project/binary.jar" OR "github": "https://github.com/yourname/repo.git"
-		// OPTIONAL: "commit": "~your github commitId~"
-	}
-]}
+{ "dependencies": [ ] }
+```
+
+*Example 1: buildin*
+
+```json
+{
+	"name": "groupId#artifactId#version",
+	"version": "version.number",
+	"scope": "test"
+}
+```
+
+*Example 2: github*
+
+NOTE: github https supported only, optional `"commit": "hash"`.
+
+```json
+{
+	"name": "groupId#artifactId#version",
+	"github": "https://github.com/username/yourproject",
+	"target": "target/yourproject-version.jar",
+	"scope": "compile"
+}
+```
+
+*Example 3: local file*
+
+```json
+{
+	"name": "groupId#artifactId#version",
+	"file": "/path/to/your/jarfile.jar",
+	"scope": "compile"
+}
 ```
 
 **Collect Dependencies**
 
-In order to update local dependencies you have to collect the changed `.jar` files. Dependencies are stored in the project's `/repo` folder. Effectively all `.jar` files will be copied there. Moreover, global dependencies are resolved via Maven Central, they keep working!
+Reading the `JPacker` metadata file, and processing three types of sources: `buildin`, `local file`, and `Github`. Subsequently local file will deploy the supplied `.jar` to the `repo/` folder. Github will clone the repository (or supplied branch, commit, tag), build the project and deploy the `.jar` to `repo/`. Build-ins are appended to `pom.xml` only. All dependencies from `JPacker` are appeded to `pom.xml`.
 
-JPacker will add your dependencies to your `pom.xml` file when they are missing. So no need to update them on two separate places.
-
-*NOTE: Each time you add a local dependency (or update the code in the dependency) you need to collect the changes again.*
+*NOTE: the `dependencies` element of `pom.xml` will be cleared and reappended.*
 
 ```bash
-# NOT YET IMPLEMENTED!!
 jp collect
 ```
 
 
 ## Development/ Contributing
 
+You can contribute to Java Packer by forking and creating pull-requests. Below are some commands that can be helpful.
+
 **Running Tests**
+
+Requires internet.
 
 ```bash
 mvn test
 ```
 
-**Using Eclipse**
+**Creating Eclipse project**
 
 ```bash
 mvn eclipse:eclipse
