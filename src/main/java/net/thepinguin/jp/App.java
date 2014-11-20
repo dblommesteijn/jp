@@ -110,18 +110,25 @@ public class App
 			throw new Exception("invalid pom!");
 		}
 		Element project = pss.get(0);
-		Element deps = project.getElementByName("dependencies");
-		List<Visitable<net.thepinguin.jp.xml.pom.Dependency>> ds = project.findElement(new net.thepinguin.jp.xml.pom.Dependency());
-		
-		//TODO: check what dependencies to remove from the pom (changes to the JPacker)
-		
+		List<Element> dss = project.findElement("dependencies");
+		Element deps = null;
+		if(dss.isEmpty()){
+			// create new repositories element
+			deps = new Element("dependencies");
+			project.addElementSelf(deps);
+		}
+		else{
+			// use found repositories element
+			deps = dss.get(0);
+		}
+
+		deps.removeAll();
 		// parse jpacker file
     	Root root = ParseJP.parseFromFile(jpacker);
     	if(root == null && root.isValid())
     		throw new Exception("invalid JPacker");
     	if(root.dependencies == null)
     		throw new Exception("missing dependencies list");
-    	
     	// resolve dependencies
     	System.out.println("jp: collecting...");
     	for(Dependency d : root.dependencies){
@@ -130,39 +137,36 @@ public class App
     			System.out.print("(" + d.github + "#" + d.getCommit() + ")");
     		} else if (d.isFile()){
     			System.out.print("(" + d.file + ")");
+    		} else if (d.isBuildIn()){
+    			System.out.print("(buildin)");
     		}
     		System.out.print(".");
     		d.resolve();
     		System.out.print(".");
     		if(!d.isValid()){
     			System.out.println(" FAIL");
-//    			System.out.println("jp: " + d.getArtifactId() + ": " + d.getErrorMessages());
     			continue;
-    		} else {
-    			
     		}
     		// deploy dependency to local repository
-    		if(d.deployToProjectRepo(pomXml, FilenameUtils.getFullPath(jpacker))){
-    			// check if dependency is in pom.xml already
-    			boolean found = false;
-    			for(Visitable<net.thepinguin.jp.xml.pom.Dependency> q : ds){
-    				net.thepinguin.jp.xml.pom.Dependency q1 = (net.thepinguin.jp.xml.pom.Dependency) q;
-    				if(q1.equalsJPacker(d)){
-    					found = true;
-    					break;
-    				}
-    			}
+    		if(d.getFile() != null && d.deployToProjectRepo(pomXml, FilenameUtils.getFullPath(jpacker))){
     			System.out.print(".");
     			// add dependency to pom.xml (if not found)
-    			if(!found){
-    				Element tmp = new Element("dependency");
-    				tmp.addElementSelf(new Element("groupId", d.getGroupId()));
-    				tmp.addElementSelf(new Element("artifactId", d.getArtifactId()));
-    				tmp.addElementSelf(new Element("version", d.getVersion()));
-    				tmp.addElementSelf(new Element("scope", "compile"));
-    				deps.addElement(tmp);
-    			}
+				Element tmp = new Element("dependency");
+				tmp.addElementSelf(new Element("groupId", d.getGroupId()));
+				tmp.addElementSelf(new Element("artifactId", d.getArtifactId()));
+				tmp.addElementSelf(new Element("version", d.getVersion()));
+				tmp.addElementSelf(new Element("scope", d.getScope()));
+				deps.addElement(tmp);
     			System.out.println(" OK");
+    		} else if(d.isBuildIn()){
+    			System.out.print("2");
+    			Element tmp = new Element("dependency");
+				tmp.addElementSelf(new Element("groupId", d.getGroupId()));
+				tmp.addElementSelf(new Element("artifactId", d.getArtifactId()));
+				tmp.addElementSelf(new Element("version", d.getVersion()));
+				tmp.addElementSelf(new Element("scope", d.getScope()));
+				deps.addElement(tmp);
+				System.out.println(" OK");
     		} else {
     			//TODO: this is dirty! move errors into dependency!
     			System.out.println(Mvn.getErrorMessages());
@@ -172,5 +176,7 @@ public class App
     	// write pom.xml with dependencies
     	if(doc.write())
     		System.out.println("finished");
+    	else
+    		System.out.println("failed");
     }
 }
