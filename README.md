@@ -56,7 +56,6 @@ JP generates an empty JPacker metadata file, which will contain all your depende
 ```json
 {
 	"name": "groupId#artifactId#version",
-	"version": "version.number",
 	"scope": "test"
 }
 ```
