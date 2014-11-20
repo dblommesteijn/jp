@@ -207,4 +207,8 @@ public class Element {
 		return false;
 	}
 
+	public void removeAll() {
+		_elements.clear();
+	}
+
 }

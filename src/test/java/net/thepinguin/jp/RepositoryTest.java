@@ -40,11 +40,11 @@ public class RepositoryTest extends TestCase {
     
     public void testCloneGithubCommit(){
     	String jpacker = "{\"dependencies\": ["
-            	+ "{\"name\": \"net.thepinguin.jp#jp\","
+            	+ "{\"name\": \"net.thepinguin.jp#jp#0.1\","
             	+ "\"github\": \"https://github.com/java-packer/jp\","
             	+ "\"target\": \"target/jp-0.1-jar-with-dependencies.jar\","
-            	+ "\"commit\": \"558a7b5e52edeb4165d32c306ee145b71df5b0a7\","
-            	+ "\"version\": \"0.1\"} ]}";
+            	+ "\"commit\": \"558a7b5e52edeb4165d32c306ee145b71df5b0a7\""
+            	+ "} ]}";
     	Root root = ParseJP.parseFromString(jpacker);
     	Assert.assertNotNull(root);
     	Assert.assertTrue(root.isValid());
@@ -87,9 +87,9 @@ public class RepositoryTest extends TestCase {
     
     public void testLookupLocal(){
     	String jpacker = "{\"dependencies\": ["
-            	+ "{\"name\": \"net.thepinguin.jp#jp\","
-            	+ "\"file\": \"target/jp-0.1-jar-with-dependencies.jar\","
-            	+ "\"version\": \"0.1\"} ]}";
+            	+ "{\"name\": \"net.thepinguin.jp#jp#0.1\","
+            	+ "\"file\": \"target/jp-0.1-jar-with-dependencies.jar\""
+            	+ "} ]}";
     	Root root = ParseJP.parseFromString(jpacker);
     	Assert.assertNotNull(root);
     	Assert.assertTrue(root.isValid());

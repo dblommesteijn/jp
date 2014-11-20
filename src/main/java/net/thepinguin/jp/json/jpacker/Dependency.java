@@ -43,8 +43,8 @@ public class Dependency {
 	@SerializedName("github")
 	public String github = "";
 	
-	@SerializedName("version")
-	public String version = "";
+//	@SerializedName("version")
+//	public String version = "";
 	
 	@SerializedName("commit")
 	public String commit = "";
@@ -52,17 +52,40 @@ public class Dependency {
 	@SerializedName("target")
 	public String target = "";
 	
+	@SerializedName("scope")
+	public String scope = "";
+	
 	public String getArtifactId(){
-		return name.split("#")[1];
+		String[] ns = name.split("#");
+		if(ns.length > 1)
+			return ns[1];
+		return "";
 	}
 	
 	public String getGroupId(){
-		return name.split("#")[0];
+		String[] ns = name.split("#");
+		if(ns.length > 0)
+			return ns[0];
+		return "";
+//		return name.split("#")[0];
+	}
+	
+	public String getVersion(){
+		String[] ns = name.split("#");
+		if(ns.length > 2)
+			return ns[2];
+		return "";
+//		return name.split("#")[2];
 	}
 	
 	public String getCommit(){
 		if(commit.isEmpty()) commit = "HEAD";
 		return commit;
+	}
+	
+	public String getScope(){
+		if(scope.isEmpty()) scope = "compile";
+		return scope;
 	}
 
 	public String toString(){
@@ -72,7 +95,8 @@ public class Dependency {
 		sb.append("groupId: `").append(this.getGroupId()).append("`, ");
 		sb.append("file: `").append(file).append("`, ");
 		sb.append("github: `").append(github).append("`, ");
-		sb.append("version: `").append(version).append("`");
+		sb.append("version: `").append(this.getVersion()).append("`, ");
+		sb.append("commit: `").append(commit).append("`");
 		sb.append(" ]");
 		return sb.toString();
 	}
@@ -112,6 +136,14 @@ public class Dependency {
 		return fileEmpty && https && !targetEmpty;
 	}
 	
+	public boolean isBuildIn(){
+		boolean fileEmpty = file.isEmpty();
+		boolean targetEmpty = target.isEmpty();
+		boolean nameEmpty = name.isEmpty();
+		boolean versionEmpty = this.getVersion().isEmpty();
+		return fileEmpty && targetEmpty && !nameEmpty && !versionEmpty;
+	}
+	
 	public boolean isFile(){
 		boolean fileEmpty = file.isEmpty();
 		boolean targetEmpty = target.isEmpty();
@@ -133,7 +165,7 @@ public class Dependency {
 		String groupId = this.getGroupId();
 		String artifactId = this.getArtifactId();
 		String uuid = UUID.randomUUID().toString();
-		groupId = "deps/" + groupId.replace('.', '/') + "/" + artifactId + "/" + version + "/";
+		groupId = "deps/" + groupId.replace('.', '/') + "/" + artifactId + "/" + this.getVersion() + "/";
 		File deps = new File(Common.JP_HOME, groupId);
 		if(!deps.isDirectory() && !deps.mkdirs()){
 			_errorMessages.add("cannot create home: `" + deps + "`");
@@ -166,10 +198,12 @@ public class Dependency {
 
 	public boolean isValid() {
 		this.reset();
-		if(this.isFile() || this.isGithub()){
-			boolean versionEmpty = version.isEmpty();
+		if(this.isFile() || this.isGithub() || this.isBuildIn()){
+			boolean nameEmpty = name.isEmpty();
+			boolean versionEmpty = this.getVersion().isEmpty();
+			if(nameEmpty) _errorMessages.add("dep. requires `name` key");
 			if(versionEmpty) _errorMessages.add("dep. requires `version` key");
-			if(!name.isEmpty() && !versionEmpty)
+			if(!nameEmpty && !versionEmpty)
 				return true;
 			else
 				return false;
@@ -193,17 +227,12 @@ public class Dependency {
 				"-DgroupId=" + this.getGroupId(), 
 				"-DartifactId=" + this.getArtifactId(), 
 				"-Dpackaging=jar",
-				"-Dversion=" + this.version);
+				"-Dversion=" + this.getVersion());
 		if(Mvn.invokeMaven(new File(pomXml), goals))
 			return true;
 		else{
 			return false;
 		}
 	}
-
-	public String getVersion() {
-		return version;
-	}
-
 
 }

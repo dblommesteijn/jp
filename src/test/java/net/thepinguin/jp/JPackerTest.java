@@ -35,13 +35,13 @@ public class JPackerTest extends TestCase {
     private static final String __VALID_JSON = "{\"dependencies\": []}";
     private static final String __INVALID_JSON = "{\" []}";
     private static final String __VALID_LARGE_JSON = "{\"dependencies\": ["
-    	+ "{\"name\": \"net.thepinguin.hatta#hatta\","
-    	+ "\"file\": \"/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar\","
-    	+ "\"version\": \"0.1\"},"
-    	+ "{\"name\": \"net.thepinguin.hatta#hatta\","
+    	+ "{\"name\": \"net.thepinguin.hatta#hatta#0.1\","
+    	+ "\"file\": \"/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar\""
+    	+ "},"
+    	+ "{\"name\": \"net.thepinguin.hatta#hatta#0.1\","
     	+ "\"github\": \"https://github.com/dblommesteijn/hatta\","
-    	+ "\"commit\": \"\","
-    	+ "\"version\": \"0.1\"} ]}";
+    	+ "\"target\": \"target/hatta-1.0-SNAPSHOT.jar\""
+    	+ "} ]}";
     
     public void setUp(){
     }
@@ -79,13 +79,13 @@ public class JPackerTest extends TestCase {
     	Assert.assertFalse(root.dependencies.isEmpty());
     	List<Dependency> deps = root.dependencies;
     	Dependency hatta = deps.get(0);
-    	Assert.assertEquals(hatta.name, "net.thepinguin.hatta#hatta");
+    	Assert.assertEquals(hatta.name, "net.thepinguin.hatta#hatta#0.1");
 		Assert.assertEquals(hatta.file, "/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar");
-		Assert.assertEquals(hatta.version, "0.1");
+		Assert.assertTrue(hatta.isFile());
 		Dependency hatta_github = deps.get(1);
-		Assert.assertEquals(hatta_github.name, "net.thepinguin.hatta#hatta");
+		Assert.assertEquals(hatta_github.name, "net.thepinguin.hatta#hatta#0.1");
 		Assert.assertEquals(hatta_github.github, "https://github.com/dblommesteijn/hatta");
-		Assert.assertEquals(hatta_github.version, "0.1");
+		Assert.assertTrue(hatta_github.isGithub());
     }
     
     public void testParseMissingDependencies(){
@@ -100,18 +100,19 @@ public class JPackerTest extends TestCase {
     
     public void testParseMissingFile(){
     	String input = "{\"dependencies\": ["
-            	+ "{\"name\": \"net.thepinguin.hatta#hatta\","
-            	+ "\"version\": \"0.1\"} ]}";
+            	+ "{\"name\": \"net.thepinguin.hatta#hatta#0.1\"}"
+            	+ "]}";
     	Root root = ParseJP.parseFromString(input);
     	Assert.assertNotNull(root);
-    	Assert.assertFalse(root.isValid());
+    	Assert.assertTrue(root.isValid());
+    	// NOTE: cannot determine if it's a dependency that is already resolved or missing `file` key
     }
     
     public void testParseMissingName(){
     	String input = "{\"dependencies\": ["
             	+ "{"
-            	+ "\"file\": \"/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar\","
-            	+ "\"version\": \"0.1\"} ]}";
+            	+ "\"file\": \"/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar\""
+            	+ "} ]}";
     	Root root = ParseJP.parseFromString(input);
     	Assert.assertNotNull(root);
     	Assert.assertFalse(root.isValid());
@@ -125,6 +126,17 @@ public class JPackerTest extends TestCase {
     	Root root = ParseJP.parseFromString(input);
     	Assert.assertNotNull(root);
     	Assert.assertFalse(root.isValid());
+    }
+    
+    public void testParseBuildIn(){
+    	String input = "{\"dependencies\": ["
+    			+ "{\"name\": \"junit#junit#3.8.1\","
+    			+ "\"scope\": \"test\""
+            	+ "} ]}";
+    	Root root = ParseJP.parseFromString(input);
+    	Assert.assertNotNull(root);
+    	Assert.assertTrue(root.isValid());
+    	Assert.assertTrue(root.dependencies.get(0).isBuildIn());
     }
     
     public void testResolveFile(){
