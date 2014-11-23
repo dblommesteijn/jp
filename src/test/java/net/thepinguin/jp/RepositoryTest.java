@@ -66,11 +66,11 @@ public class RepositoryTest extends TestCase {
     
     public void testCloneGithubSSH(){
     	String jpacker = "{\"dependencies\": ["
-            	+ "{\"name\": \"net.thepinguin.jp#jp\","
+            	+ "{\"name\": \"net.thepinguin.jp#jp#0.1\","
             	+ "\"github\": \"git@github.com:java-packer/jp.git\","
             	+ "\"target\": \"target/jp-0.1-jar-with-dependencies.jar\","
-            	+ "\"commit\": \"6cd474bcbfadf10f2b336b2674d4d1bf4a84e2ca\","
-            	+ "\"version\": \"0.1\"} ]}";
+            	+ "\"commit\": \"6cd474bcbfadf10f2b336b2674d4d1bf4a84e2ca\""
+            	+ "} ]}";
     	Root root = ParseJP.parseFromString(jpacker);
     	Assert.assertNotNull(root);
     	Assert.assertFalse(root.isValid());

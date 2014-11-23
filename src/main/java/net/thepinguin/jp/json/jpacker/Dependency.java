@@ -72,6 +72,7 @@ public class Dependency {
 	
 	public String getVersion(){
 		String[] ns = name.split("#");
+//		System.out.println("Version" + ns);
 		if(ns.length > 2)
 			return ns[2];
 		return "";
@@ -131,9 +132,12 @@ public class Dependency {
 		boolean fileEmpty = file.isEmpty();
 		boolean targetEmpty = target.isEmpty();
 		// github specific error messages
-		if(fileEmpty && targetEmpty) _errorMessages.add("github requires `target` key");
-		if(fileEmpty && !https) _errorMessages.add("github ssh not supported (use https)");
-		return fileEmpty && https && !targetEmpty;
+		boolean ret = fileEmpty && !targetEmpty;
+		if(ret){
+			if(fileEmpty && targetEmpty) _errorMessages.add("github requires `target` key");
+			if(fileEmpty && !https) _errorMessages.add("github ssh not supported (use https)");
+		}
+		return ret && https;
 	}
 	
 	public boolean isBuildIn(){

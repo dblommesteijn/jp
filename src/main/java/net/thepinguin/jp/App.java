@@ -41,11 +41,11 @@ public class App
 //        		String base = FilenameUtils.getPath(jpacker);
         		App.collect(pomXml, jpacker);
         	} else{
-        		throw new Exception();
+        		throw new Exception("invalid command");
         	}
     	}catch(Exception e){
-    		e.printStackTrace();
-//    		System.out.println(e.getMessage());
+//    		e.printStackTrace();
+    		System.out.println(e.getMessage());
     		System.exit(1);
     	}
 
@@ -132,7 +132,8 @@ public class App
     	// resolve dependencies
     	System.out.println("jp: collecting...");
     	for(Dependency d : root.dependencies){
-    		System.out.print("  " + d.getArtifactId() + ".");
+    		if(d == null) continue;
+    		System.out.print("  " + d.getArtifactId() + " ");
     		if(d.isGithub()){
     			System.out.print("(" + d.github + "#" + d.getCommit() + ")");
     		} else if (d.isFile()){
@@ -145,6 +146,7 @@ public class App
     		System.out.print(".");
     		if(!d.isValid()){
     			System.out.println(" FAIL");
+    			System.out.println(d.getErrorMessages());
     			continue;
     		}
     		// deploy dependency to local repository
@@ -159,7 +161,6 @@ public class App
 				deps.addElement(tmp);
     			System.out.println(" OK");
     		} else if(d.isBuildIn()){
-    			System.out.print("2");
     			Element tmp = new Element("dependency");
 				tmp.addElementSelf(new Element("groupId", d.getGroupId()));
 				tmp.addElementSelf(new Element("artifactId", d.getArtifactId()));
@@ -174,9 +175,19 @@ public class App
     		}
     	}
     	// write pom.xml with dependencies
-    	if(doc.write())
-    		System.out.println("finished");
-    	else
-    		System.out.println("failed");
+    	if(doc.write()){
+    		// build pom.xml
+        	List<String> goals = Arrays.asList("install");
+        	if(Mvn.invokeMaven(new File(pomXml), goals)){
+        		System.out.println("finished");
+        	} else {
+        		System.out.println("build failed");
+        		System.exit(1);
+        	}
+    	}
+    	else{
+    		System.out.println("write failed");
+    		System.exit(1);
+    	}
     }
 }
