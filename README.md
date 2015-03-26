@@ -69,7 +69,8 @@ NOTE: github https supported only, optional `"commit": "hash"`.
 	"name": "groupId#artifactId#version",
 	"github": "https://github.com/username/yourproject",
 	"target": "target/yourproject-version.jar",
-	"scope": "compile"
+	"scope": "compile",
+	"goal": "the mvn goal to build yourproject-version.jar file"
 }
 ```
 
