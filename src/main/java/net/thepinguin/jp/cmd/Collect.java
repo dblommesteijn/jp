@@ -25,7 +25,6 @@ public class Collect implements ICommand {
 	}
 
 	public void handle(String[] args) throws Exception {
-		System.out.println("jp: collecting");
 		String pomXml = args[1];
 		String jpacker = args[2];
 		// parse pom file
