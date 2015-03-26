@@ -97,9 +97,7 @@ public class Collect implements ICommand {
 				deps.addElement(tmp);
 				System.out.println(" OK");
 			} else {
-				// TODO: this is dirty! move errors into dependency!
-				System.out.println(Mvn.getErrorMessages());
-				Mvn.resetErrorMessages();
+				System.out.println(d.getErrorMessages());
 			}
 		}
 		// write pom.xml with dependencies

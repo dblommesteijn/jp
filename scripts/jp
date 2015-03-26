@@ -33,9 +33,9 @@ if [ -z $M3_HOME ]; then
 fi
 
 ### parse opt arguments
-
+VERBOSE="false"
 # opts
-while getopts ":Vhv" opt; do
+while getopts ":Vh:v" opt; do
   case $opt in
     V)
       echo "jp: java packer version \"0.0.1\"" >&2
@@ -53,16 +53,28 @@ while getopts ":Vhv" opt; do
       echo "   jp new [project_name] [groupId]"
       exit 0
       ;;
+    v)
+      VERBOSE="true"
+      ;;
     \?)
       echo "jp: Invalid option: -$OPTARG" >&2
       exit 0
       ;;
   esac
 done
+
+arr=()
+# filter flags
+for f in $@; do
+    if [[ $f != "-"* ]]; then
+        arr+=("$f")
+    fi
+done
+
 # argument switch
-if [[ $1 == "new" ]]; then
-    PROJECT_NAME=$2
-    GROUP_ID=$3
+if [[ ${arr[0]} == "new" ]]; then
+    PROJECT_NAME=${arr[1]}
+    GROUP_ID=${arr[2]}
     if [[ -z $PROJECT_NAME ]]; then
         echo "jp: no project name given (try: \`jp new project-name\`)"
         exit 0
@@ -71,14 +83,24 @@ if [[ $1 == "new" ]]; then
         echo "jp: no groupId provided (try: \`jp new myproject com.example.myproject\`)"
         exit 0
     fi
-    echo "creating new project: '$2'..."
-    # running mvn create command
-    mvn archetype:generate -DgroupId=$GROUP_ID \
-      -DartifactId=$PROJECT_NAME -DarchetypeArtifactId=maven-archetype-quickstart \
-      -DinteractiveMode=false &> /dev/null
+    echo "creating new project: '${arr[1]}'..."
+    # run mvn create command
+    if [[ $VERBOSE == "true" ]]; then
+        mvn archetype:generate -DgroupId=$GROUP_ID \
+          -DartifactId=$PROJECT_NAME -DarchetypeArtifactId=maven-archetype-quickstart \
+          -DinteractiveMode=false
+    else
+        mvn archetype:generate -DgroupId=$GROUP_ID \
+          -DartifactId=$PROJECT_NAME -DarchetypeArtifactId=maven-archetype-quickstart \
+          -DinteractiveMode=false &> /dev/null
+    fi
     # verify
     if [[ $? != 0 ]]; then
-        echo "jp: failed (try: verbose -v option)"
+        if [[ $VERBOSE == "true" ]]; then
+            echo "jp: failed"
+        else
+            echo "jp: failed (try: verbose -v option)"
+        fi
         exit 0
     fi
     # prepare local repo
