@@ -25,6 +25,7 @@ public class Collect implements ICommand {
 	}
 
 	public void handle(String[] args) throws Exception {
+		System.out.println("jp: collecting");
 		String pomXml = args[1];
 		String jpacker = args[2];
 		// parse pom file
@@ -50,8 +51,10 @@ public class Collect implements ICommand {
 		deps.removeAll();
 		// parse jpacker file
 		Root root = ParseJP.parseFromFile(jpacker);
-		if (root == null && root.isValid())
-			throw new Exception("invalid JPacker");
+		if (root == null)
+			throw new Exception("JPacker file not found");
+		if (!root.isValid())
+			throw new Exception("JPacker file corrupt");
 		if (root.dependencies == null)
 			throw new Exception("missing dependencies list");
 		// resolve dependencies

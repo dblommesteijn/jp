@@ -35,7 +35,7 @@ fi
 ### parse opt arguments
 VERBOSE="false"
 # opts
-while getopts ":Vh:v" opt; do
+while getopts "hVv" opt; do
   case $opt in
     V)
       echo "jp: java packer version \"0.0.1\"" >&2
