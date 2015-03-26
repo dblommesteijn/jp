@@ -55,6 +55,9 @@ public class Dependency {
 	@SerializedName("scope")
 	public String scope = "";
 	
+	@SerializedName("goal")
+	public String goal = "";
+	
 	public String getArtifactId(){
 		String[] ns = name.split("#");
 		if(ns.length > 1)
@@ -131,10 +134,12 @@ public class Dependency {
 		boolean https = github.startsWith("http");
 		boolean fileEmpty = file.isEmpty();
 		boolean targetEmpty = target.isEmpty();
+		boolean goalEmpty = goal.isEmpty();
 		// github specific error messages
-		boolean ret = fileEmpty && !targetEmpty;
+		boolean ret = fileEmpty && !targetEmpty && !goalEmpty;
 		if(ret){
 			if(fileEmpty && targetEmpty) _errorMessages.add("github requires `target` key");
+			if(fileEmpty && goalEmpty) _errorMessages.add("github requires `goal` key");
 			if(fileEmpty && !https) _errorMessages.add("github ssh not supported (use https)");
 		}
 		return ret && https;
@@ -194,7 +199,7 @@ public class Dependency {
 		git.close();
 		
 		// build cloned repo
-		List<String> goals = Arrays.asList( "assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true");
+		List<String> goals = Arrays.asList( goal );
 		Mvn.invokeMaven(new File( newClone, "pom.xml" ), goals);
 		//TODO: handle return code!
 		return newClone;
@@ -232,11 +237,16 @@ public class Dependency {
 				"-DartifactId=" + this.getArtifactId(), 
 				"-Dpackaging=jar",
 				"-Dversion=" + this.getVersion());
-		if(Mvn.invokeMaven(new File(pomXml), goals))
+		boolean invoke = Mvn.invokeMaven(new File(pomXml), goals);
+		_errorMessages.addAll(Mvn.getErrorMessages());
+		Mvn.resetErrorMessages();
+		if(invoke)
 			return true;
 		else{
 			return false;
 		}
 	}
+
+
 
 }

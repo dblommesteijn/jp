@@ -43,7 +43,8 @@ public class RepositoryTest extends TestCase {
             	+ "{\"name\": \"net.thepinguin.jp#jp#0.1\","
             	+ "\"github\": \"https://github.com/java-packer/jp\","
             	+ "\"target\": \"target/jp-0.1-jar-with-dependencies.jar\","
-            	+ "\"commit\": \"558a7b5e52edeb4165d32c306ee145b71df5b0a7\""
+            	+ "\"commit\": \"558a7b5e52edeb4165d32c306ee145b71df5b0a7\","
+            	+ "\"goal\": \"assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true\""
             	+ "} ]}";
     	Root root = ParseJP.parseFromString(jpacker);
     	Assert.assertNotNull(root);
@@ -69,7 +70,8 @@ public class RepositoryTest extends TestCase {
             	+ "{\"name\": \"net.thepinguin.jp#jp#0.1\","
             	+ "\"github\": \"git@github.com:java-packer/jp.git\","
             	+ "\"target\": \"target/jp-0.1-jar-with-dependencies.jar\","
-            	+ "\"commit\": \"6cd474bcbfadf10f2b336b2674d4d1bf4a84e2ca\""
+            	+ "\"commit\": \"6cd474bcbfadf10f2b336b2674d4d1bf4a84e2ca\","
+            	+ "\"goal\": \"assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true\""
             	+ "} ]}";
     	Root root = ParseJP.parseFromString(jpacker);
     	Assert.assertNotNull(root);

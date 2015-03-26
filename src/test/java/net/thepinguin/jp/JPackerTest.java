@@ -40,7 +40,8 @@ public class JPackerTest extends TestCase {
     	+ "},"
     	+ "{\"name\": \"net.thepinguin.hatta#hatta#0.1\","
     	+ "\"github\": \"https://github.com/dblommesteijn/hatta\","
-    	+ "\"target\": \"target/hatta-1.0-SNAPSHOT.jar\""
+    	+ "\"target\": \"target/hatta-1.0-SNAPSHOT.jar\","
+    	+ "\"goal\": \"assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true\""
     	+ "} ]}";
     
     public void setUp(){
