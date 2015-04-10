@@ -1,8 +1,8 @@
 ## Java Packer
 
-Java Packer (JP) is a toolkit for Java that allows packing Maven Central, and local JARs into a single project. The toolkit manages your `pom.xml`, and integrate with local, and [Github](http://github.com) remote jars!
+Java Packer (JP) is a toolkit for Java that automates packing Maven Central dependencies, and local JARs into a single project. JP manages your `pom.xml` dependencies, integrates with local, and [Github](http://github.com) projects (jars)!
 
-Packer is inspired by Ruby's [Bundler](http://bundler.io/), Python's [virtualenv](https://virtualenv.readthedocs.org/en/latest/) and [Pip](https://pip.readthedocs.org/en/latest/).
+JPacker is inspired by Ruby's [Bundler](http://bundler.io/), Python's [virtualenv](https://virtualenv.readthedocs.org/en/latest/) and [Pip](https://pip.readthedocs.org/en/latest/).
 
 [![Build Status](https://travis-ci.org/java-packer/jp.svg?branch=master)](https://travis-ci.org/java-packer/jp)
 
@@ -11,8 +11,6 @@ Packer is inspired by Ruby's [Bundler](http://bundler.io/), Python's [virtualenv
 * Unix based OS
 * Java (6,7,8)
 * Maven 3
-
-*Sorry Windows users, no support for you.*
 
 ### Installation
 
@@ -42,6 +40,10 @@ cd myproject/
 
 *NOTE: all JPacker projects are based on Maven 3, thus all your `mvn` commands will run.*
 
+**Initialize existing Project**
+
+* Coming soon
+
 
 **JPacker Metadata File**
 
@@ -51,7 +53,7 @@ JP generates an empty JPacker metadata file, which will contain all your depende
 { "dependencies": [ ] }
 ```
 
-*Example 1: buildin*
+*Maven Central deps*
 
 ```json
 {
@@ -60,7 +62,7 @@ JP generates an empty JPacker metadata file, which will contain all your depende
 }
 ```
 
-*Example 2: github*
+*Github integration*
 
 NOTE: github https supported only, optional `"commit": "hash"`.
 
@@ -74,7 +76,7 @@ NOTE: github https supported only, optional `"commit": "hash"`.
 }
 ```
 
-*Example 3: local file*
+*Local JAR*
 
 ```json
 {
@@ -86,7 +88,7 @@ NOTE: github https supported only, optional `"commit": "hash"`.
 
 **Collect Dependencies**
 
-Reading the `JPacker` metadata file, and processing three types of sources: `buildin`, `local file`, and `Github`. Subsequently local file will deploy the supplied `.jar` to the `repo/` folder. Github will clone the repository (or supplied branch, commit, tag), build the project and deploy the `.jar` to `repo/`. Build-ins are appended to `pom.xml` only. All dependencies from `JPacker` are appeded to `pom.xml`.
+Reading the `JPacker` metadata file, and processing three types of sources: `buildin`, `local file`, and `Github`. Subsequently local file will deploy the supplied `.jar` to the `repo/` folder. Github will clone the repository (or supplied branch, commit, tag), build the project based on the goal and deploy the `.jar` to `repo/`. Build-ins are appended to `pom.xml` only. All dependencies from `JPacker` are appeded to `pom.xml`.
 
 *NOTE: the `dependencies` element of `pom.xml` will be cleared and reappended.*
 
