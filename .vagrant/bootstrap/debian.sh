@@ -21,13 +21,17 @@ apt-get -qyo Dpkg::Options::="--force-confdef" install oracle-java8-installer ma
 export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
 export M3_HOME=$(readlink -f /usr/bin/mvn | sed "s:/bin/mvn::")
 
-
 echo " ** Building package **"
 
 cd /vagrant/
-build-no-test
-
+make build-no-test
 sudo make install
 
-
-
+echo " ** Testing package **"
+cd /home/vagrant/
+jp new testJpApp net.thepinguin.testJpApp
+cd testJpApp
+if [[ $? != 0 ]]; then
+    echo "jp not correctly installed"
+    exit 1
+fi
