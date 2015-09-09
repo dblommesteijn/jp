@@ -28,6 +28,8 @@ sudo make install
 
 ### Usage
 
+This requires JP to be installed onto your system.
+
 **Create Project**
 
 Creating a JP project in the current folder named `myproject` with groupId `net.domain.myproject`.
@@ -117,6 +119,14 @@ mvn eclipse:eclipse
 
 *NOTE: after importing the project into your workspace convert it to a Maven project.*
 
+
+## Vagrant
+
+Run a vagrant instance of Debian Jessy, and provision JP on it.
+
+```bash
+vagrant up
+```
 
 
 
