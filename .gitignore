@@ -26,3 +26,5 @@ target/
 .settings/
 
 pom-backup.xml
+
+.vagrant/machines/
