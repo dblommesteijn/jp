@@ -30,6 +30,9 @@ public class Collect implements ICommand {
 		String jpacker = pwd + "/JPacker";
 				
 		// parse pom file
+		if(!new File(pomXml).exists()){
+			throw new Exception("pom.xml file not found");
+		}
 		Walker walker = Walker.parseFromFile(pomXml);
 		Document doc = walker.getDocument();
 		// find project element
