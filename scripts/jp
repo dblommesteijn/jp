@@ -111,7 +111,7 @@ if [[ ${arr[0]} == "new" ]]; then
       "add_default_repository" "$(pwd)/$PROJECT_NAME/pom.xml"
 
     # create metadata package with paths to local dependencies
-    echo "{\"dependencies\": []}" > "$(pwd)/$PROJECT_NAME/JPacker"
+    echo "{\"dependencies\": [{\"name\": \"junit#junit#4.12\"}]}" > "$(pwd)/$PROJECT_NAME/JPacker"
 elif [[ $1 == "collect" ]]; then
     java -cp $LIB_PREFIX/$BINARY $MAIN_CLASS \
       "collect" "$(pwd)/pom.xml" "$(pwd)/JPacker"
