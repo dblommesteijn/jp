@@ -27,6 +27,7 @@ public class Walker {
 			// return instance of walker containing the document
 			return new Walker(document);
 		} catch(Exception e){
+//			throw new Exception("unable to parse");
 //			e.printStackTrace();
 		}
 		return null;

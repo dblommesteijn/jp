@@ -18,15 +18,17 @@ public class Collect implements ICommand {
 
 	private boolean _handled = false;
 
-	public boolean canHandle(String[] args) {
-		if (args.length > 0)
-			return args[0].equals("collect");
+	public boolean canHandle(List<String> args) {
+		if (args.size() > 1)
+			return args.get(1).equals("collect");
 		return false;
 	}
 
-	public void handle(String[] args) throws Exception {
-		String pomXml = args[1];
-		String jpacker = args[2];
+	public void handle(List<String> args) throws Exception {
+		String pwd = args.get(0);
+		String pomXml = pwd + "/pom.xml";
+		String jpacker = pwd + "/JPacker";
+				
 		// parse pom file
 		Walker walker = Walker.parseFromFile(pomXml);
 		Document doc = walker.getDocument();
@@ -100,15 +102,18 @@ public class Collect implements ICommand {
 				System.out.println(" OK");
 			} else {
 				System.out.println(d.getErrorMessages());
+				System.out.println("error");
 			}
 		}
 		// write pom.xml with dependencies
 		if (doc.write()) {
 			// build pom.xml
 			List<String> goals = Arrays.asList("install");
-			if (Mvn.invokeMaven(new File(pomXml), goals)) {
+			boolean b = Mvn.invokeMaven(new File(pomXml), goals);
+			if (b) {
 				System.out.println("finished");
 			} else {
+				System.out.println("jp: " + Mvn.getErrorMessages());
 				System.out.println("build failed");
 				System.exit(1);
 			}

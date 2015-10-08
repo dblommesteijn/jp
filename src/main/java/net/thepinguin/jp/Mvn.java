@@ -23,6 +23,7 @@ public class Mvn {
 	}
 	
 	public static boolean invokeMaven(File pomLocation, List<String> goals ){
+//		System.out.println("pom: " + pomLocation);
 		InvocationRequest request = new DefaultInvocationRequest();
 		request.setPomFile( pomLocation );
 		request.setGoals( goals );

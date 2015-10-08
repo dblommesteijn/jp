@@ -10,14 +10,15 @@ public class AddDefaultRepository implements ICommand {
 	
 	private boolean _handled = false;
 
-	public boolean canHandle(String[] args) {
-		if(args.length > 0)
-			return args[0].equals("add_default_repository");
+	public boolean canHandle(List<String> args) {
+		if(args.size() > 0)
+			return args.get(0).equals("add_default_repository");
 		return false;
 	}
 	
-	public void handle(String[] args) throws Exception {
-    	String pomXml = args[1];
+	public void handle(List<String> args) throws Exception {
+//    	String pomXml = args.get(1);
+		String pomXml = args.get(0);
     	
 		// parse file
 		Walker walker = Walker.parseFromFile(pomXml);

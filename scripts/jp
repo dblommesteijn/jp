@@ -4,22 +4,16 @@ CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 LIB_PREFIX=$CURRENT_DIR/../lib
 BINARY="jp-0.1-jar-with-dependencies.jar"
 MAIN_CLASS="net.thepinguin.jp.App"
-
-### filter incorrect environments
-
-# java home msg
 if [ -z $JAVA_HOME ]; then
     echo "jp: JAVA_HOME not set!"
     exit 1
 fi
-# detect java version
 JAVA_PATH=`which java`
 JAVA_VERSION="$($JAVA_PATH -version 2>&1)"
 if [[ $JAVA_VERSION != *"Java(TM) SE Runtime Environment"* ]]; then
     echo "jp: Java not found! (try setting $JAVA_HOME)"
     exit 1
 fi
-# detect maven version
 MVN_PATH=`which mvn`
 MVN_VERSION="$($MVN_PATH -version 2>&1)"
 if [[ $MVN_VERSION != *"Apache Maven 3"* ]]; then
@@ -31,6 +25,13 @@ if [ -z $M3_HOME ]; then
     echo "jp: M3_HOME not set!"
     exit 1
 fi
+java -cp $LIB_PREFIX/$BINARY $MAIN_CLASS "$(pwd)" $@
+exit $?
+
+
+
+
+
 
 ### parse opt arguments
 VERBOSE="false"
