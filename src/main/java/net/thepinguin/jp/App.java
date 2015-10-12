@@ -44,11 +44,14 @@ public class App
         		}
         	}
         	if(!handled){
-        		throw new Exception("invalid command: " + cs.get(0));
+        		throw new Exception("invalid command: " + cs.get(1));
         	}
     	} catch(Exception e) {
-            System.out.println("jp: " + e.getMessage());
-            System.out.println("error occured");
+    		String str = e.getMessage();
+    		if(str.length() > 0)
+    			System.out.println("jp: " + str);
+    		else
+    			System.out.println("jp: unknown error occured");
     		System.exit(1);
     	}
     }

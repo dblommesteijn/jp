@@ -36,26 +36,32 @@ Creating a JP project in the current folder named `myproject` with groupId `net.
 
 ```bash
 cd /path/to/your/repos
-jp new myproject net.domain.myproject
+# jp new `groupId` [`artifactId`]
+jp new net.domain.myproject (myproject-alt)
 cd myproject/
 ```
 
 *NOTE: all JPacker projects are based on Maven 3, thus all your `mvn` commands will run.*
+*NOTE2: optionally you can set an alternate name for the artifactId, it defaults to the least siginificant namespace of your groupId.*
 
-**Initialize existing Project**
+#### Initialize existing Project
 
-* Coming soon
+* Not available.
 
 
-**JPacker Metadata File**
+#### JPacker Metadata File
 
-JP generates an empty JPacker metadata file, which will contain all your dependencies. By appending JSON objects to the dependency list they will become available in your project.
+JP generates an JPacker metadata file, which will contain all your dependencies. By appending JSON objects to the dependency list they will become available in your project.
+
+*NOTE: jp has a default dependency on junit.*
 
 ```json
-{ "dependencies": [ ] }
+{ "dependencies": [
+	{"name": "junit#junit#4.12"}
+] }
 ```
 
-*Maven Central deps*
+**Maven Central deps**
 
 ```json
 {
@@ -64,9 +70,9 @@ JP generates an empty JPacker metadata file, which will contain all your depende
 }
 ```
 
-*Github integration*
+**Github integration**
 
-NOTE: github https supported only, optional `"commit": "hash"`.
+*NOTE: github https supported only, optional `"commit": "hash"`.*
 
 ```json
 {
@@ -78,7 +84,7 @@ NOTE: github https supported only, optional `"commit": "hash"`.
 }
 ```
 
-*Local JAR*
+**Local JAR**
 
 ```json
 {
@@ -88,7 +94,7 @@ NOTE: github https supported only, optional `"commit": "hash"`.
 }
 ```
 
-**Collect Dependencies**
+#### Collect Dependencies
 
 Reading the `JPacker` metadata file, and processing three types of sources: `buildin`, `local file`, and `Github`. Subsequently local file will deploy the supplied `.jar` to the `repo/` folder. Github will clone the repository (or supplied branch, commit, tag), build the project based on the goal and deploy the `.jar` to `repo/`. Build-ins are appended to `pom.xml` only. All dependencies from `JPacker` are appeded to `pom.xml`.
 
@@ -119,14 +125,24 @@ mvn eclipse:eclipse
 
 *NOTE: after importing the project into your workspace convert it to a Maven project.*
 
+**Shorthands**
 
-## Vagrant
+A few shorthand commands for building and installing.
+
+* `make deploy`: `make build-no-test && sudo make install` (with tests)
+* `make deploy-fast`: `make build-no-test && sudo make install` (without tests)
+* `make test`: `mvn test`
+* `make dev-eclipse`: `mvn eclipse:eclipse`
+
+### Vagrant
 
 Run a vagrant instance of Debian Jessy, and provision JP on it.
 
 ```bash
 vagrant up
 ```
+
+
 
 
 

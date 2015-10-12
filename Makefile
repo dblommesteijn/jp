@@ -35,6 +35,15 @@ install: $(TARGETS)
 uninstall: $(TARGETS)
 	rm $(INSTALLDIR)/bin/jp
 	rm $(INSTALLDIR)/lib/jp-$(VERSION)-jar-with-dependencies.jar
+	
+deploy:
+	make && sudo make install
+	
+deploy-fast: $(TARGETS)
+	make build-no-test && sudo make install
+
+dev-eclipse:
+	mvn eclipse:eclipse
 
 clean:
 	mvn clean
