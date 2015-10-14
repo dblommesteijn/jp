@@ -21,6 +21,7 @@ git clone git@github.com:java-packer/jp.git
 cd jp
 make
 sudo make install
+MAVEN_OPTS=-Xmx512m # to speedup the build (a little)
 ```
 
 *Uninstall: `sudo make uninstall`.*
@@ -116,6 +117,8 @@ Requires internet.
 ```bash
 mvn test
 ```
+
+Running single tests via `-Dtest=***`. Available tests are: `JPackerTest`, `PomTest`, `RepositoryTest`, `TestCommands`.
 
 **Creating Eclipse project**
 

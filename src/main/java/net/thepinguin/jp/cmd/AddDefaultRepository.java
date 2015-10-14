@@ -2,6 +2,7 @@ package net.thepinguin.jp.cmd;
 
 import java.util.List;
 
+import gnu.getopt.LongOpt;
 import net.thepinguin.jp.xml.Walker;
 import net.thepinguin.jp.xml.base.Document;
 import net.thepinguin.jp.xml.base.Element;
@@ -13,6 +14,17 @@ public class AddDefaultRepository implements ICommand {
 	public boolean canHandle(List<String> args) {
 		if(args.size() > 0)
 			return args.get(0).equals("add_default_repository");
+		return false;
+	}
+	
+	public int compareTo(ICommand o) {
+		if(this.getId() == o.getId())
+			return 0;
+		else
+			return 1;
+	}
+	
+	public boolean isEnabled() {
 		return false;
 	}
 	
@@ -71,5 +83,45 @@ public class AddDefaultRepository implements ICommand {
 	public boolean isHandled() {
 		return _handled;
 	}
+
+	public String getId() {
+		return "";
+	}
+
+	public LongOpt getLongOptInstance() {
+		return null;
+	}
+	
+	public char getOptVowel() {
+		return 0;
+	}
+	
+	public String getDescription() {
+		return "";
+	}
+
+	public boolean handleOpt(String optarg) {
+		return false;
+	}
+	
+	public boolean exitAfterHandleOpt() {
+		return false;
+	}
+
+	public String getOptString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean hasOptions() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean hasArguments() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

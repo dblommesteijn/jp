@@ -14,14 +14,39 @@ import net.thepinguin.jp.xml.base.Element;
 
 import org.apache.commons.io.FilenameUtils;
 
+import gnu.getopt.LongOpt;
+
 public class Collect implements ICommand {
 
 	private boolean _handled = false;
 
 	public boolean canHandle(List<String> args) {
 		if (args.size() > 1)
-			return args.get(1).equals("collect");
+			return args.get(1).equals(this.getId());
 		return false;
+	}
+	
+	public int compareTo(ICommand o) {
+		if(this.getId() == o.getId())
+			return 0;
+		else
+			return 1;
+	}
+	
+	public boolean isEnabled() {
+		return true;
+	}
+	
+	public boolean isHandled() {
+		return _handled;
+	}
+
+	public String getId() {
+		return "collect";
+	}
+	
+	public String getDescription(){
+		return "Collect dependencies";
 	}
 
 	public void handle(List<String> args) throws Exception {
@@ -114,22 +139,45 @@ public class Collect implements ICommand {
 			List<String> goals = Arrays.asList("install");
 			boolean b = Mvn.invokeMaven(new File(pomXml), goals);
 			if (b) {
-				System.out.println("finished");
+				System.out.println("jp: finished");
 			} else {
 				System.out.println("jp: " + Mvn.getErrorMessages());
 				System.out.println("build failed");
 				System.exit(1);
 			}
 		} else {
-			System.out.println("write failed");
-			System.exit(1);
+			throw new Exception("write failed: " + pomXml);
 		}
 		_handled = true;
 	}
 
-	public boolean isHandled() {
-		// TODO Auto-generated method stub
-		return _handled;
+	public String getOptString() {
+		return "";
+	}
+
+	public LongOpt getLongOptInstance() {
+		return new LongOpt("collect", LongOpt.NO_ARGUMENT, null, this.getOptVowel());
+	}
+
+	public char getOptVowel() {
+		return 0;
+	}
+	
+	public boolean handleOpt(String optarg) {
+		System.out.println(optarg);
+		return true;
+	}
+	
+	public boolean exitAfterHandleOpt() {
+		return false;
+	}
+	
+	public boolean hasOptions() {
+		return true;
+	}
+	
+	public boolean hasArguments() {
+		return false;
 	}
 
 }

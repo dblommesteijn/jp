@@ -3,56 +3,125 @@ package net.thepinguin.jp;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.reflections.Reflections;
 
+import gnu.getopt.Getopt;
+import gnu.getopt.LongOpt;
 import net.thepinguin.jp.cmd.ICommand;
+import net.thepinguin.jp.cmd.Verbose;
 
 /**
  * Main entry point
  */
-public class App
-{
-    public static void main( String[] args )
-    {   
-    	try{
-//    		System.out.println(args.length);
-//    		for(String s : args)
-//    			System.out.println(s);
-    		if(args.length <= 1){
-    			throw new Exception("invalid command.");
-    		}
-    		List<String> cs = Arrays.asList(args);
-    		// collect active commands implements ICommand
-    		Reflections reflections = new Reflections("net.thepinguin.jp.cmd");
-        	Set<Class<? extends ICommand>> classes = reflections.getSubTypesOf(ICommand.class);
-        	List<ICommand> cmds = new ArrayList<ICommand>(classes.size());
-        	// invoke classes
-        	for(Class<? extends ICommand> cmd : classes){
-        		cmds.add(cmd.newInstance());
-        	}
-        	// push through commands
-        	boolean handled = false;
-        	for(ICommand cmd : cmds){
-        		if(cmd.canHandle(cs)){
-        			cmd.handle(cs);
-        			if(cmd.isHandled()){
-        				handled = true;
-        				break;
-        			}
-        		}
-        	}
-        	if(!handled){
-        		throw new Exception("invalid command: " + cs.get(1));
-        	}
-    	} catch(Exception e) {
-    		String str = e.getMessage();
-    		if(str.length() > 0)
-    			System.out.println("jp: " + str);
-    		else
-    			System.out.println("jp: unknown error occured");
-    		System.exit(1);
-    	}
-    }
+public class App {
+	private static Map<String, ICommand> _cmds;
+
+	public static Map<String, ICommand> getCommands() {
+		return _cmds;
+	}
+
+	public static void main(String[] argv) {
+		for(String arg : argv)
+			System.out.println("arg: " + arg);
+		try {
+			List<LongOpt> longopts = new ArrayList<LongOpt>();
+			String optstring = "";
+			// get commands via reflection
+			Reflections reflections = new Reflections("net.thepinguin.jp.cmd");
+			Set<Class<? extends ICommand>> classes = reflections.getSubTypesOf(ICommand.class);
+			_cmds = new HashMap<String, ICommand>(classes.size());
+			// iterate classes
+			for (Class<? extends ICommand> cmd : classes) {
+				// invoke and append to command list
+				ICommand q = cmd.newInstance();
+				// filter disabled commands
+				if (q.isEnabled()) {
+					_cmds.put(q.getId(), q);
+					LongOpt l = q.getLongOptInstance();
+					if(l != null) {
+						longopts.add(l);
+						optstring += q.getOptString();
+						//TODO: check for vowel collisions
+					}
+				}
+			}
+			// handle cli arguments/ command here
+			Getopt g = new Getopt("jp", argv, optstring, longopts.toArray(new LongOpt[0]));
+			g.setOpterr(false);
+			int c;
+			while ((c = g.getopt()) != -1) {		
+				boolean handled = false;
+				if(c != '?'){
+					// iterate commands
+					for(ICommand cmd : _cmds.values() ){	
+						if(cmd.getOptVowel() == c){
+							handled = cmd.handleOpt(g.getOptarg());
+						}
+						// terminate program after specific command has handled arguments (help)
+						if (handled && cmd.exitAfterHandleOpt()){
+							// not exitting, but returning (test will fail otherwise)
+							return;
+						}
+					}
+				}
+				// check if given argument is handled, else throw exception
+				if(!handled){
+					throw new Exception("argument not found: -" + (char) g.getOptopt());
+				}
+			}
+			// message on verbosity
+			if(App.verbose()) {
+				System.out.println(" ### VERBOSE output");
+			}
+			// get cli arguments
+			List<String> args = new ArrayList<String>(argv.length);
+			for (int i = g.getOptind(); i < argv.length; i++) {
+				args.add(argv[i]);
+			}
+			// iterate implemented commands, pass cli args to them
+			boolean handled = false;
+			for(ICommand cmd : _cmds.values()){
+				if(App.verbose()){
+					System.out.println(" ### cmd found: " + cmd.getId());
+				}
+				if(cmd.canHandle(args)){
+					cmd.handle(args);
+					if(cmd.isHandled()){
+						handled = true;
+						break;
+					}
+				}
+			}
+			// throw exception when unknown command is given
+			if(!handled) {
+				if(args.size() <= 1)
+					throw new Exception("option missing");
+				else
+					throw new Exception("invalid option: " + args.get(1));
+			}
+		} catch(Exception e) {
+			if(App.verbose()) {
+				System.out.println(" ### -> ");
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+				System.out.println(" ### <- ");
+			}
+			System.out.println("jp: " + e.getMessage() + " (try -h)");
+			System.exit(1);
+		}
+	}
+
+	public static boolean verbose() {
+		ICommand cmd = _cmds.get("verbose");
+		if(cmd == null)
+			return false;
+		Verbose v = (Verbose) cmd;
+		return v.isActive();
+	}
 }
