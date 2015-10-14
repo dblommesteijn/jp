@@ -28,18 +28,18 @@ build-no-test:
 test:
 	mvn test
 
-install: $(TARGETS)
+install:
 	$(INSTALL) -c -v -g 0 -m 0755 -o root scripts/jp $(INSTALLDIR)/bin
 	$(INSTALL) -c -v -g 0 -m 0755 -o root target/jp-$(VERSION)-jar-with-dependencies.jar $(INSTALLDIR)/lib
 
-uninstall: $(TARGETS)
+uninstall:
 	rm $(INSTALLDIR)/bin/jp
 	rm $(INSTALLDIR)/lib/jp-$(VERSION)-jar-with-dependencies.jar
 	
 deploy:
 	make && sudo make install
 	
-deploy-fast: $(TARGETS)
+deploy-fast:
 	make build-no-test && sudo make install
 
 dev-eclipse:
