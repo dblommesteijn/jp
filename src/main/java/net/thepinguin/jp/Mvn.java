@@ -1,6 +1,8 @@
 package net.thepinguin.jp;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,11 +30,12 @@ public class Mvn {
 		request.setPomFile( pomLocation );
 		request.setGoals( goals );
 		// silent output
-		request.setOutputHandler(null);
 		Invoker invoker = new DefaultInvoker();
 		invoker.setMavenHome(Common.M3_HOME);
 		// silent output
-		invoker.setOutputHandler(null);
+		if(!App.verbose()){
+			request.setOutputHandler(null);
+		}
 		try {
 			invoker.execute( request );
 			return true;
@@ -41,4 +44,29 @@ public class Mvn {
 			return false;
 		}
 	}
+	
+	public static boolean newProject(String basedir, String groupId, String artifactId) {
+		InvocationRequest request = new DefaultInvocationRequest();
+		String[] goals = new String[]{"archetype:generate", "-DgroupId="+groupId, 
+			"-DartifactId="+artifactId, "-DarchetypeArtifactId=maven-archetype-quickstart",
+			"-DinteractiveMode=false"};
+		request.setBaseDirectory(new File(basedir));
+		request.setGoals(Arrays.asList(goals));
+		if(!App.verbose()){
+			request.setOutputHandler(null);
+		}
+		Invoker invoker = new DefaultInvoker();
+		invoker.setMavenHome(Common.M3_HOME);
+		try {
+			invoker.execute( request );
+			return true;
+		} catch (MavenInvocationException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			_errors.add(e.getMessage());
+			return false;
+		}
+	}
+	
+//	 mvn archetype:generate -DgroupId=net.thepinguin.jptest-1 -DartifactId=jptest-1 -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
 }

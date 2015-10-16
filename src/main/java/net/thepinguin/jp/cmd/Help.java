@@ -1,12 +1,9 @@
 package net.thepinguin.jp.cmd;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collector.Characteristics;
 
-import com.google.common.base.Strings;
 
 import gnu.getopt.LongOpt;
 import net.thepinguin.jp.App;

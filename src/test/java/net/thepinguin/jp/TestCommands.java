@@ -1,6 +1,7 @@
 package net.thepinguin.jp;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.PrintStream;
 import java.security.Permission;
 
@@ -10,6 +11,9 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class TestCommands extends TestCase {
+	
+	private File _testRepos;
+	
 	/**
 	 * Create the test case
 	 *
@@ -18,6 +22,11 @@ public class TestCommands extends TestCase {
 	 */
 	public TestCommands(String testName) {
 		super(testName);
+		_testRepos = new File(Common.JP_HOME, "test/repos/").getAbsoluteFile();
+		if(!_testRepos.exists())
+			_testRepos.mkdirs();
+		if(!_testRepos.isDirectory())
+			Assert.assertFalse(true);
 	}
 
 	/**
@@ -33,18 +42,18 @@ public class TestCommands extends TestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		// disable stdout stderr (App.main is echoing)
-		_stdout = System.out;
-		System.setOut(new PrintStream(new ByteArrayOutputStream()));
-		_stderr = System.err;
-		System.setErr(new PrintStream(new ByteArrayOutputStream()));
+//		_stdout = System.out;
+//		System.setOut(new PrintStream(new ByteArrayOutputStream()));
+//		_stderr = System.err;
+//		System.setErr(new PrintStream(new ByteArrayOutputStream()));
 		System.setSecurityManager(new NoExitSecurityManager());
 	}
 
 	public void tearDown() throws Exception {
 		System.setSecurityManager(null); // or save and restore original
 		// re-enable stdout, stderr
-		System.setOut(_stdout);
-		System.setErr(_stderr);
+//		System.setOut(_stdout);
+//		System.setErr(_stderr);
 		super.tearDown();
 	}
 
@@ -113,5 +122,46 @@ public class TestCommands extends TestCase {
 	}
 
 	// TODO: add option specific tests (new, collect)
+	
+	public void testOptionNewWithoutArtifactId() {
+		try {
+			long now = System.currentTimeMillis();
+			String target = _testRepos.getAbsolutePath();
+			String groupId = "net.thepinguin.jp.testoptionnewwithoutartifactid" + now;
+			String[] argv = new String[] { target, "new",  groupId};
+			App.main(argv);
+			Assert.assertTrue(true);
+			
+			// test newly created project
+			File testOptionNew = new File(target, groupId);
+			Assert.assertTrue(testOptionNew.exists());
+			Assert.assertTrue(testOptionNew.isDirectory());
+		
+			
+		} catch (ExitException e) {
+			Assert.assertTrue(false);
+		}
+	}
+	
+	public void testOptionNewWithArtifactId() {
+		try {
+			long now = System.currentTimeMillis();
+			String target = _testRepos.getAbsolutePath();
+			String groupId = "net.thepinguin.jp.testoptionnewwithartifactid";
+			String artifactId = "testaltartifactid" + now;
+			String[] argv = new String[] { target, "new",  groupId, artifactId};
+			App.main(argv);
+			Assert.assertTrue(true);
+			
+			// test newly created project
+			File testOptionNew = new File(target, groupId);
+			Assert.assertTrue(testOptionNew.exists());
+			Assert.assertTrue(testOptionNew.isDirectory());
+		
+			
+		} catch (ExitException e) {
+			Assert.assertTrue(false);
+		}
+	}
 
 }

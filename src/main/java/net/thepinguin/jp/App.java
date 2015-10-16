@@ -1,13 +1,9 @@
 package net.thepinguin.jp;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.reflections.Reflections;
 
@@ -27,8 +23,6 @@ public class App {
 	}
 
 	public static void main(String[] argv) {
-		for(String arg : argv)
-			System.out.println("arg: " + arg);
 		try {
 			List<LongOpt> longopts = new ArrayList<LongOpt>();
 			String optstring = "";
@@ -87,12 +81,12 @@ public class App {
 			// iterate implemented commands, pass cli args to them
 			boolean handled = false;
 			for(ICommand cmd : _cmds.values()){
-				if(App.verbose()){
-					System.out.println(" ### cmd found: " + cmd.getId());
-				}
 				if(cmd.canHandle(args)){
 					cmd.handle(args);
 					if(cmd.isHandled()){
+						if(App.verbose()){
+							System.out.println(" ### handling cmd found: " + cmd.getId());
+						}
 						handled = true;
 						break;
 					}
