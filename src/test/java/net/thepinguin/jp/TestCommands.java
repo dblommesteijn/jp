@@ -156,6 +156,7 @@ public class TestCommands extends TestCase {
 			Assert.assertTrue(testOptionNew.isDirectory());
 			FileUtils.deleteDirectory(testOptionNew);
 		} catch (ExitException e) {
+			enableOutput();
 			// main cannot throw exit -1
 			if(TRAVIS){
 				System.out.println("------------- TRAVIS");
@@ -164,6 +165,7 @@ public class TestCommands extends TestCase {
 			}
 //			Assert.assertTrue(false);
 		} catch (IOException e) {
+			enableOutput();
 			// cannot throw away test repo dir
 			if(TRAVIS){
 				System.out.println("------------- TRAVIS");
@@ -190,6 +192,7 @@ public class TestCommands extends TestCase {
 			Assert.assertTrue(testOptionNew.isDirectory());
 			FileUtils.deleteDirectory(testOptionNew);
 		} catch (ExitException e) {
+			enableOutput();
 			// main cannot exit with -1
 			if(TRAVIS){
 				System.out.println("------------- TRAVIS");
@@ -198,6 +201,7 @@ public class TestCommands extends TestCase {
 			}
 //			Assert.assertTrue(false);
 		} catch (IOException e) {
+			enableOutput();
 			// cannot throw away test repo dir
 			if(TRAVIS){
 				System.out.println("------------- TRAVIS");
