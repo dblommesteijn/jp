@@ -28,3 +28,4 @@ target/
 pom-backup.xml
 
 .vagrant/machines/
+*.swp
