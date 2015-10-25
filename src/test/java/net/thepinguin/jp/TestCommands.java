@@ -157,13 +157,19 @@ public class TestCommands extends TestCase {
 			FileUtils.deleteDirectory(testOptionNew);
 		} catch (ExitException e) {
 			// main cannot throw exit -1
-			if(TRAVIS)
+			if(TRAVIS){
+				System.out.println("------------- TRAVIS");
+				System.out.println(e.getMessage());
 				e.printStackTrace();
+			}
 			Assert.assertTrue(false);
 		} catch (IOException e) {
 			// cannot throw away test repo dir
-			if(TRAVIS)
+			if(TRAVIS){
+				System.out.println("------------- TRAVIS");
+				System.out.println(e.getMessage());
 				e.printStackTrace();
+			}
 			Assert.assertTrue(false);
 		}
 	}
@@ -185,13 +191,19 @@ public class TestCommands extends TestCase {
 			FileUtils.deleteDirectory(testOptionNew);
 		} catch (ExitException e) {
 			// main cannot exit with -1
-			if(TRAVIS)
+			if(TRAVIS){
+				System.out.println("------------- TRAVIS");
+				System.out.println(e.getMessage());
 				e.printStackTrace();
+			}
 			Assert.assertTrue(false);
 		} catch (IOException e) {
 			// cannot throw away test repo dir
-			if(TRAVIS)
+			if(TRAVIS){
+				System.out.println("------------- TRAVIS");
+				System.out.println(e.getMessage());
 				e.printStackTrace();
+			}
 			Assert.assertTrue(false);
 		}
 	}
