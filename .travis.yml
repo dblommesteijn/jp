@@ -9,3 +9,4 @@ jdk:
 before_install:
   - mvn --version
   - export M3_HOME="/usr/local/maven"
+  - export JP_TRAVIS="true"

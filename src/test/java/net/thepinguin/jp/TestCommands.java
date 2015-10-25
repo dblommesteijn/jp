@@ -18,6 +18,7 @@ public class TestCommands extends TestCase {
 	private File _testRepos;
 	
 	public static boolean VERBOSE = false;
+	public static boolean TRAVIS = false;
 	
 	
 	/**
@@ -36,6 +37,9 @@ public class TestCommands extends TestCase {
 		String s = System.getenv("JP_VERBOSE");
 		if(s != null)
 			VERBOSE = (s.equals("true"));
+		String t = System.getenv("JP_TRAVIS");
+		if(t != null)
+			TRAVIS = (t.equals("true"));
 	}
 
 	/**
@@ -150,9 +154,13 @@ public class TestCommands extends TestCase {
 			FileUtils.deleteDirectory(testOptionNew);
 		} catch (ExitException e) {
 			// main cannot throw exit -1
+			if(TRAVIS)
+				e.printStackTrace();
 			Assert.assertTrue(false);
 		} catch (IOException e) {
 			// cannot throw away test repo dir
+			if(TRAVIS)
+				e.printStackTrace();
 			Assert.assertTrue(false);
 		}
 	}
@@ -174,9 +182,13 @@ public class TestCommands extends TestCase {
 			FileUtils.deleteDirectory(testOptionNew);
 		} catch (ExitException e) {
 			// main cannot exit with -1
+			if(TRAVIS)
+				e.printStackTrace();
 			Assert.assertTrue(false);
 		} catch (IOException e) {
 			// cannot throw away test repo dir
+			if(TRAVIS)
+				e.printStackTrace();
 			Assert.assertTrue(false);
 		}
 	}
