@@ -112,6 +112,8 @@ public class App {
 	}
 
 	public static boolean verbose() {
+		if(_cmds == null)
+			return false;
 		ICommand cmd = _cmds.get("verbose");
 		if(cmd == null)
 			return false;

@@ -118,7 +118,9 @@ Requires internet.
 mvn test
 ```
 
-Running single tests via `-Dtest=***`. Available tests are: `JPackerTest`, `PomTest`, `RepositoryTest`, `TestCommands`.
+Running single test classes via `-Dtest=***`. Available tests are listed in `src/test/java/net/thepinguin/jp/*`.
+
+*NOTE: by default Main.app stderr/stdout are disabled in tests, enable it via `export JP_VERBOSE="true"`, before running `mvn test`.*
 
 **Creating Eclipse project**
 

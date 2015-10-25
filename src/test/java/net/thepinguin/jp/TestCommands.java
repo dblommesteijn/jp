@@ -2,8 +2,11 @@ package net.thepinguin.jp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.security.Permission;
+
+import org.apache.commons.io.FileUtils;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -13,6 +16,9 @@ import junit.framework.TestSuite;
 public class TestCommands extends TestCase {
 	
 	private File _testRepos;
+	
+	public static boolean VERBOSE = false;
+	
 	
 	/**
 	 * Create the test case
@@ -27,6 +33,9 @@ public class TestCommands extends TestCase {
 			_testRepos.mkdirs();
 		if(!_testRepos.isDirectory())
 			Assert.assertFalse(true);
+		String s = System.getenv("JP_VERBOSE");
+		if(s != null)
+			VERBOSE = (s.equals("true"));
 	}
 
 	/**
@@ -41,20 +50,12 @@ public class TestCommands extends TestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		// disable stdout stderr (App.main is echoing)
-//		_stdout = System.out;
-//		System.setOut(new PrintStream(new ByteArrayOutputStream()));
-//		_stderr = System.err;
-//		System.setErr(new PrintStream(new ByteArrayOutputStream()));
 		System.setSecurityManager(new NoExitSecurityManager());
 	}
 
 	public void tearDown() throws Exception {
-		System.setSecurityManager(null); // or save and restore original
-		// re-enable stdout, stderr
-//		System.setOut(_stdout);
-//		System.setErr(_stderr);
 		super.tearDown();
+		System.setSecurityManager(null); // or save and restore original
 	}
 
 	protected static class ExitException extends SecurityException {
@@ -86,7 +87,9 @@ public class TestCommands extends TestCase {
 	public void testEmptyOptionWithoutArguments() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/" };
+			disableOutput();
 			App.main(argv);
+			enableOutput();
 		} catch (ExitException e) {
 			Assert.assertEquals(e.status, 1);
 		}
@@ -95,7 +98,9 @@ public class TestCommands extends TestCase {
 	public void testEmptyOptionWithArgumentVerbose() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/", "-v" };
+			disableOutput();
 			App.main(argv);
+			enableOutput();
 		} catch (ExitException e) {
 			Assert.assertEquals(e.status, 1);
 		}
@@ -104,7 +109,9 @@ public class TestCommands extends TestCase {
 	public void testEmptyOptionWithArgumentHelp() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/", "-h" };
+			disableOutput();
 			App.main(argv);
+			enableOutput();
 			Assert.assertTrue(true);
 		} catch (ExitException e) {
 			Assert.assertTrue(false);
@@ -114,7 +121,9 @@ public class TestCommands extends TestCase {
 	public void testOptionWithoutArgumentHelp() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/", "help" };
+			disableOutput();
 			App.main(argv);
+			enableOutput();
 			Assert.assertTrue(true);
 		} catch (ExitException e) {
 			Assert.assertTrue(false);
@@ -124,43 +133,71 @@ public class TestCommands extends TestCase {
 	// TODO: add option specific tests (new, collect)
 	
 	public void testOptionNewWithoutArtifactId() {
+		
+		long now = System.currentTimeMillis();
+		String target = _testRepos.getAbsolutePath();
+		String artifactId = "testoptionnewwithoutartifactid" + now;
+		String groupId = "net.thepinguin.jp." + artifactId;
+		File testOptionNew = new File(target, artifactId);
 		try {
-			long now = System.currentTimeMillis();
-			String target = _testRepos.getAbsolutePath();
-			String groupId = "net.thepinguin.jp.testoptionnewwithoutartifactid" + now;
 			String[] argv = new String[] { target, "new",  groupId};
+			disableOutput();
 			App.main(argv);
-			Assert.assertTrue(true);
-			
+			enableOutput();
 			// test newly created project
-			File testOptionNew = new File(target, groupId);
 			Assert.assertTrue(testOptionNew.exists());
 			Assert.assertTrue(testOptionNew.isDirectory());
-		
-			
+			FileUtils.deleteDirectory(testOptionNew);
 		} catch (ExitException e) {
+			// main cannot throw exit -1
+			Assert.assertTrue(false);
+		} catch (IOException e) {
+			// cannot throw away test repo dir
 			Assert.assertTrue(false);
 		}
 	}
 	
 	public void testOptionNewWithArtifactId() {
+		long now = System.currentTimeMillis();
+		String target = _testRepos.getAbsolutePath();
+		String groupId = "net.thepinguin.jp.testoptionnewwithartifactid";
+		String artifactId = "testaltartifactid" + now;
+		File testOptionNew = new File(target, artifactId);
 		try {
-			long now = System.currentTimeMillis();
-			String target = _testRepos.getAbsolutePath();
-			String groupId = "net.thepinguin.jp.testoptionnewwithartifactid";
-			String artifactId = "testaltartifactid" + now;
 			String[] argv = new String[] { target, "new",  groupId, artifactId};
+			disableOutput();
 			App.main(argv);
-			Assert.assertTrue(true);
-			
+			enableOutput();
 			// test newly created project
-			File testOptionNew = new File(target, groupId);
 			Assert.assertTrue(testOptionNew.exists());
 			Assert.assertTrue(testOptionNew.isDirectory());
-		
-			
+			FileUtils.deleteDirectory(testOptionNew);
 		} catch (ExitException e) {
+			// main cannot exit with -1
 			Assert.assertTrue(false);
+		} catch (IOException e) {
+			// cannot throw away test repo dir
+			Assert.assertTrue(false);
+		}
+	}
+
+	private void disableOutput() {
+		// NOTE: not sure if this is working properly...
+		// disable stdout stderr (App.main is echoing)
+		if(!VERBOSE){
+			_stdout = System.out;
+			System.setOut(new PrintStream(new ByteArrayOutputStream()));
+			_stderr = System.err;
+			System.setErr(new PrintStream(new ByteArrayOutputStream()));
+		} else {
+		}
+	}
+
+	private void enableOutput() {
+		if(!VERBOSE){
+			// re-enable stdout, stderr
+			System.setOut(_stdout);
+			System.setErr(_stderr);
 		}
 	}
 
