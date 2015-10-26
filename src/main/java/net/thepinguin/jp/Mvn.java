@@ -32,6 +32,7 @@ public class Mvn {
 		// silent output
 		Invoker invoker = new DefaultInvoker();
 		invoker.setMavenHome(Common.M3_HOME);
+		invoker.setMavenExecutable(new File(Common.M3_HOME, "bin"));
 		System.out.println("M3_HOME " + Common.M3_HOME.getAbsolutePath());
 		// silent output
 		if(!App.verbose()){
@@ -58,6 +59,7 @@ public class Mvn {
 		}
 		Invoker invoker = new DefaultInvoker();
 		invoker.setMavenHome(Common.M3_HOME);
+		invoker.setMavenExecutable(new File(Common.M3_HOME, "bin"));
 		System.out.println("M3_HOME2 " + Common.M3_HOME.getAbsolutePath());
 		try {
 			invoker.execute( request );
