@@ -1,12 +1,17 @@
 language: java
+sudo: false
 
+os:
+  - linux
+  
 jdk:
   - oraclejdk8
   - oraclejdk7
   - openjdk6
   - openjdk7
 
-before_install:
+before_script:
+  - which mvn
   - mvn --version
   - export M3_HOME="/usr/local/maven"
   - export JP_TRAVIS="true"
