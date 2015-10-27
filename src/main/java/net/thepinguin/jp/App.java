@@ -120,4 +120,9 @@ public class App {
 		Verbose v = (Verbose) cmd;
 		return v.isActive();
 	}
+	
+	public static String getVersion() {
+		// TODO: get version from pom.xml file
+		return "0.2";
+	}
 }

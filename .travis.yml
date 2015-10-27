@@ -13,5 +13,5 @@ before_install:
   - export M3_HOME="/usr/local/maven"
 
 script:
-  - make
+  - make build-no-test
   - sudo make install

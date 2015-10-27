@@ -133,6 +133,31 @@ public class TestCommands extends TestCase {
 			Assert.assertTrue(false);
 		}
 	}
+	
+	public void testEmptyOptionWithArgumentVersion() {
+		try {
+			String[] argv = new String[] { "/some/path/to/repo/", "-V" };
+			disableOutput();
+			App.main(argv);
+			enableOutput();
+			Assert.assertTrue(true);
+		} catch (ExitException e) {
+			Assert.assertTrue(false);
+		}
+	}
+	
+	public void testEmptyOptionWithoutArgumentVersion() {
+		try {
+			String[] argv = new String[] { "/some/path/to/repo/", "version" };
+			disableOutput();
+			App.main(argv);
+			enableOutput();
+			Assert.assertTrue(true);
+		} catch (ExitException e) {
+			Assert.assertTrue(false);
+		}
+	}
+
 
 	// TODO: add option specific tests (new, collect)
 	
@@ -160,7 +185,7 @@ public class TestCommands extends TestCase {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
-//			Assert.assertTrue(false);
+			Assert.assertTrue(false);
 		} catch (IOException e) {
 			enableOutput();
 			// cannot throw away test repo dir
@@ -169,7 +194,7 @@ public class TestCommands extends TestCase {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
-//			Assert.assertTrue(false);
+			Assert.assertTrue(false);
 		}
 	}
 	
@@ -196,7 +221,7 @@ public class TestCommands extends TestCase {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
-//			Assert.assertTrue(false);
+			Assert.assertTrue(false);
 		} catch (IOException e) {
 			enableOutput();
 			// cannot throw away test repo dir
@@ -205,10 +230,10 @@ public class TestCommands extends TestCase {
 				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
-//			Assert.assertTrue(false);
+			Assert.assertTrue(false);
 		}
 	}
-
+	
 	private void disableOutput() {
 		// NOTE: not sure if this is working properly...
 		// disable stdout stderr (App.main is echoing)

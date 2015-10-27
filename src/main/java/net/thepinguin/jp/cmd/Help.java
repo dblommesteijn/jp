@@ -63,8 +63,8 @@ public class Help implements ICommand {
 		//TODO: fix sorting!
 		Collections.sort(cmds);
 			
+		StringBuilder commands = new StringBuilder();
 		StringBuilder options = new StringBuilder();
-		StringBuilder arguments = new StringBuilder();
 		
 		for (ICommand cmd : cmds) {
 			if(!cmd.isEnabled())
@@ -77,30 +77,31 @@ public class Help implements ICommand {
 					opt.append(" ");
 				}
 				opt.append(cmd.getDescription());
-				options.append(opt).append("\r\n");
+				commands.append(opt).append("\r\n");
 			}
 			if(cmd.hasArguments()){
 				// append arguments
-				StringBuilder arg = new StringBuilder();
+				StringBuilder opt = new StringBuilder();
 				if(cmd.getOptString().length() <= 0)
 					continue;
-				arg.append("    -").append(cmd.getOptVowel());
-				while(arg.length() < 15){
-					arg.append(" ");
+				opt.append("    -").append(cmd.getOptVowel());
+				opt.append(" --").append(cmd.getId());
+				while(opt.length() < 20){
+					opt.append(" ");
 				}
-				arg.append(cmd.getDescription());
-				arguments.append(arg).append("\r\n");
+				opt.append(cmd.getDescription());
+				options.append(opt).append("\r\n");
 			}
 		}
 		
-		System.out.println("Usage: jp [-options] [args...]");
+		System.out.println("Usage: jp [-options] [commands...]");
+		if(commands.length() > 0){
+			System.out.println("  Commands:");
+			System.out.print(commands.toString());
+		}
 		if(options.length() > 0){
 			System.out.println("  Options:");
 			System.out.print(options.toString());
-		}
-		if(arguments.length() > 0){
-			System.out.println("  Arguments:");
-			System.out.print(arguments.toString());
 		}
 		return true;
 	}
