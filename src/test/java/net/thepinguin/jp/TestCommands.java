@@ -40,9 +40,6 @@ public class TestCommands extends TestCase {
 		String t = System.getenv("JP_TRAVIS");
 		if(t != null)
 			TRAVIS = (t.equals("true"));
-		
-		System.out.println("TRAVIS: " + TRAVIS);
-		
 	}
 
 	/**
