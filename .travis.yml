@@ -10,9 +10,10 @@ jdk:
   - openjdk6
   - openjdk7
 
-before_script:
+before_install:
   - which mvn
   - mvn --version
   - export M3_HOME="/usr/local/maven"
-  - export JP_TRAVIS="true"
-  - export JP_VERBOSE="true"
+
+install:
+  - make test
