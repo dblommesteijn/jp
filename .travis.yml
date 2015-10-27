@@ -1,5 +1,4 @@
 language: java
-sudo: false
 
 os:
   - linux
@@ -12,3 +11,7 @@ jdk:
 
 before_install:
   - export M3_HOME="/usr/local/maven"
+
+script:
+  - make
+  - sudo make install
