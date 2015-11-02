@@ -85,7 +85,7 @@ public class JPackerTest extends TestCase {
 		Assert.assertTrue(hatta.isFile());
 		Dependency hatta_github = deps.get(1);
 		Assert.assertEquals(hatta_github.name, "net.thepinguin.hatta#hatta#0.1");
-		Assert.assertEquals(hatta_github.github, "https://github.com/dblommesteijn/hatta");
+		Assert.assertEquals(hatta_github.git, "https://github.com/dblommesteijn/hatta");
 		Assert.assertTrue(hatta_github.isGithub());
     }
     

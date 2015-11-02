@@ -1,30 +1,17 @@
 package net.thepinguin.jp.json.jpacker;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import net.thepinguin.jp.Common;
+import net.thepinguin.jp.App;
 import net.thepinguin.jp.Mvn;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.Invoker;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.CredentialsProvider;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -40,8 +27,8 @@ public class Dependency {
 	@SerializedName("file")
 	public String file = "";
 	
-	@SerializedName("github")
-	public String github = "";
+	@SerializedName("git")
+	public String git = "";
 	
 //	@SerializedName("version")
 //	public String version = "";
@@ -98,7 +85,7 @@ public class Dependency {
 		sb.append("artifactId: `").append(this.getArtifactId()).append("`, ");
 		sb.append("groupId: `").append(this.getGroupId()).append("`, ");
 		sb.append("file: `").append(file).append("`, ");
-		sb.append("github: `").append(github).append("`, ");
+		sb.append("git: `").append(git).append("`, ");
 		sb.append("version: `").append(this.getVersion()).append("`, ");
 		sb.append("commit: `").append(commit).append("`");
 		sb.append(" ]");
@@ -109,7 +96,7 @@ public class Dependency {
 		if(this.isFile()){
 			return " " + this.getArtifactId() + " (.jar)";
 		} else if(this.isGithub()){
-			return " " + this.getArtifactId() + " (" + github + ")";
+			return " " + this.getArtifactId() + " (" + git + ")";
  		}
 		return "";
 	}
@@ -131,7 +118,7 @@ public class Dependency {
 	}
 	
 	public boolean isGithub(){
-		boolean https = github.startsWith("http");
+		boolean https = git.startsWith("http");
 		boolean fileEmpty = file.isEmpty();
 		boolean targetEmpty = target.isEmpty();
 		boolean goalEmpty = goal.isEmpty();
@@ -167,7 +154,7 @@ public class Dependency {
 	
 	public File cloneRepository() throws Exception{
 		String ref = this.getCommit();
-		if(github.startsWith("git")){
+		if(git.startsWith("git")){
 			_errorMessages.add("cannot clone git via ssh");
 			throw new Exception("cannot clone git via ssh");
 		}
@@ -175,7 +162,7 @@ public class Dependency {
 		String artifactId = this.getArtifactId();
 		String uuid = UUID.randomUUID().toString();
 		groupId = "deps/" + groupId.replace('.', '/') + "/" + artifactId + "/" + this.getVersion() + "/";
-		File deps = new File(Common.JP_HOME, groupId);
+		File deps = new File(App.JP_HOME, groupId);
 		if(!deps.isDirectory() && !deps.mkdirs()){
 			_errorMessages.add("cannot create home: `" + deps + "`");
 			throw new Exception("cannot create home: `" + deps + "`");
@@ -183,20 +170,20 @@ public class Dependency {
 		// set tmp clone directory
 		File tmpClone = new File(deps, uuid);
 		// clone repository
-		Git git = Git.cloneRepository().setURI(github).setDirectory(tmpClone).call();
-		Repository repo = git.getRepository();
+		Git gg = Git.cloneRepository().setURI(git).setDirectory(tmpClone).call();
+		Repository repo = gg.getRepository();
 		repo.getRef(ref);
 		// get last commit, and rename folder
-		String name = repo.resolve(ref).name();		
+		String name = repo.resolve(ref).name();
 		File newClone = new File(deps, name);
-		if(!newClone.exists()){
+		if (!newClone.exists()) {
 			// rename to commit ref
 			tmpClone.renameTo(newClone);
-		}else{
-			// remove, already 
+		} else {
+			// remove, already
 			FileUtils.deleteDirectory(tmpClone);
 		}
-		git.close();
+		gg.close();
 		
 		// build cloned repo
 		List<String> goals = Arrays.asList( goal );
@@ -240,11 +227,7 @@ public class Dependency {
 		boolean invoke = Mvn.invokeMaven(new File(pomXml), goals);
 		_errorMessages.addAll(Mvn.getErrorMessages());
 		Mvn.resetErrorMessages();
-		if(invoke)
-			return true;
-		else{
-			return false;
-		}
+		return invoke;
 	}
 
 

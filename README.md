@@ -1,16 +1,20 @@
-## Java Packer
-
-Java Packer (JP) is a toolkit for Java that automates packing Maven Central dependencies, and local JARs into a single project. JP manages your `pom.xml` dependencies, integrates with local, and [Github](http://github.com) projects (jars)!
-
-JPacker is inspired by Ruby's [Bundler](http://bundler.io/), Python's [virtualenv](https://virtualenv.readthedocs.org/en/latest/) and [Pip](https://pip.readthedocs.org/en/latest/).
+## Java Packer - JP
 
 [![Build Status](https://travis-ci.org/java-packer/jp.svg?branch=master)](https://travis-ci.org/java-packer/jp)
+
+Java Packer (JP) is a toolkit for Java that automates packing Maven Central dependencies, and local JARs into a single project. JP manages your `pom.xml` dependencies, integrates with local, and [Git](https://git-scm.com)/ [Github](http://github.com) projects!
+
+JPacker is inspired by Ruby's [Bundler](http://bundler.io/), Python's [virtualenv](https://virtualenv.readthedocs.org/en/latest/), and [Pip](https://pip.readthedocs.org/en/latest/).
+
+JPacker's projects are based on Maven3, thus all your `mvn` commands will run as expected.
 
 **Prerequisites**
 
 * Unix based OS
 * Java (6,7,8)
 * Maven 3
+* Environment variables `M3_HOME` and `JAVA_HOME` set
+
 
 ### Installation
 
@@ -18,7 +22,7 @@ Clone the github repository and install it.
 
 ```bash
 git clone git@github.com:java-packer/jp.git
-cd jp
+cd jp/
 make
 sudo make install
 MAVEN_OPTS=-Xmx512m # to speedup the build (a little)
@@ -29,7 +33,7 @@ MAVEN_OPTS=-Xmx512m # to speedup the build (a little)
 
 ### Usage
 
-This requires JP to be installed onto your system.
+This requires JP to be installed onto your system. Or you can run jp from the `scripts/` folder directly, but this is not recommended.
 
 **Create Project**
 
@@ -37,63 +41,84 @@ Creating a JP project in the current folder named `myproject` with groupId `net.
 
 ```bash
 cd /path/to/your/repos
-# jp new `groupId` [`artifactId`]
-jp new net.domain.myproject (myproject-alt)
-cd myproject/
+jp new net.domain.myproject myproject_alt_name
+cd myproject_alt_name/
+# OR
+jp new net.domain.myproject
+cd myproject
 ```
 
-*NOTE: all JPacker projects are based on Maven 3, thus all your `mvn` commands will run.*
-*NOTE2: optionally you can set an alternate name for the artifactId, it defaults to the least siginificant namespace of your groupId.*
+*NOTE: you can set an alternate name for the artifactId, it defaults to the least significant namespace of your groupId.*
 
-#### Initialize existing Project
+**JP Help**
 
-* Not available.
+JP help is available with a list of all applicable commands.
+
+```bash
+jp help
+```
 
 
 #### JPacker Metadata File
 
-JP generates an JPacker metadata file, which will contain all your dependencies. By appending JSON objects to the dependency list they will become available in your project.
+JP generates an JPacker metadata file (JSON), which will contain all your dependencies. By appending to the dependency list they will become available in your project. Below you can find the default structure.
 
-*NOTE: jp has a default dependency on junit.*
+*NOTE: JP generated projects have a default dependency on `junit`, loaded from maven-central, and is always included.*
 
 ```json
 { "dependencies": [
-	{"name": "junit#junit#4.12"}
+  { "name": "junit#junit#4.12" }
 ] }
 ```
 
-**Maven Central deps**
+#### Setting JPacker Dependencies
+
+JP supports `maven-central`, `git`, and local `jar` dependencies. For each you can find examples below.
+
+**Maven-Central**
+
+Maven-central dependencies require the `name` field only. The basic structure is described below.
 
 ```json
 {
-	"name": "groupId#artifactId#version",
-	"scope": "test"
+  "name": "groupId#artifactId#version"
 }
 ```
 
-**Github integration**
+**Git**
 
-*NOTE: github https supported only, optional `"commit": "hash"`.*
+Git dependencies need a reference to the repository, which needs to be cloned (jp does this for you). Below, the basic structure is described.
 
 ```json
 {
-	"name": "groupId#artifactId#version",
-	"github": "https://github.com/username/yourproject",
-	"target": "target/yourproject-version.jar",
-	"scope": "compile",
-	"goal": "the mvn goal to build yourproject-version.jar file"
+  "name": "groupId#artifactId#version",
+  "github": "https://github.com/username/yourproject",
+  "target": "target/yourproject-version.jar",
+  "goal": "the mvn goal to build yourproject-version.jar file"
 }
 ```
 
-**Local JAR**
+*NOTE: github HTTPS supported only*
+*NOTE2: optional `"commit": "hash"`.*
+
+**JAR File**
 
 ```json
 {
-	"name": "groupId#artifactId#version",
-	"file": "/path/to/your/jarfile.jar",
-	"scope": "compile"
+  "name": "groupId#artifactId#version",
+  "file": "/path/to/your/jarfile.jar"
 }
 ```
+#### JPacker specification
+
+```json
+{"dependencies": [
+  {
+    "name": "groudId#ArtifactId#version"
+  }
+]}
+```
+
 
 #### Collect Dependencies
 

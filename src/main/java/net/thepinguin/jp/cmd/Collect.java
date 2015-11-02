@@ -93,7 +93,7 @@ public class Collect implements ICommand {
 				continue;
 			System.out.print("  " + d.getArtifactId() + " ");
 			if (d.isGithub()) {
-				System.out.print("(" + d.github + "#" + d.getCommit() + ")");
+				System.out.print("(" + d.git + "#" + d.getCommit() + ")");
 			} else if (d.isFile()) {
 				System.out.print("(" + d.file + ")");
 			} else if (d.isBuildIn()) {

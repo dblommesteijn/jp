@@ -29,7 +29,7 @@ public class TestCommands extends TestCase {
 	 */
 	public TestCommands(String testName) {
 		super(testName);
-		_testRepos = new File(Common.JP_HOME, "test/repos/").getAbsoluteFile();
+		_testRepos = new File(App.JP_HOME, "test/repos/").getAbsoluteFile();
 		if(!_testRepos.exists())
 			_testRepos.mkdirs();
 		if(!_testRepos.isDirectory())
@@ -157,9 +157,6 @@ public class TestCommands extends TestCase {
 			Assert.assertTrue(false);
 		}
 	}
-
-
-	// TODO: add option specific tests (new, collect)
 	
 	public void testOptionNewWithoutArtifactId() {
 		
@@ -180,20 +177,10 @@ public class TestCommands extends TestCase {
 		} catch (ExitException e) {
 			enableOutput();
 			// main cannot throw exit -1
-			if(TRAVIS){
-				System.out.println("------------- TRAVIS");
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
 			Assert.assertTrue(false);
 		} catch (IOException e) {
 			enableOutput();
 			// cannot throw away test repo dir
-			if(TRAVIS){
-				System.out.println("------------- TRAVIS");
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
 			Assert.assertTrue(false);
 		}
 	}
@@ -216,21 +203,28 @@ public class TestCommands extends TestCase {
 		} catch (ExitException e) {
 			enableOutput();
 			// main cannot exit with -1
-			if(TRAVIS){
-				System.out.println("------------- TRAVIS");
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
 			Assert.assertTrue(false);
 		} catch (IOException e) {
 			enableOutput();
 			// cannot throw away test repo dir
-			if(TRAVIS){
-				System.out.println("------------- TRAVIS");
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
 			Assert.assertTrue(false);
+		}
+	}
+	
+	public void testOptionNewWithoutparameters() {
+//		long now = System.currentTimeMillis();
+		String target = _testRepos.getAbsolutePath();
+		try {
+			String[] argv = new String[] { target, "new" };
+			disableOutput();
+			App.main(argv);
+			enableOutput();
+			// test newly created project
+			Assert.assertTrue(false);
+		} catch (ExitException e) {
+			enableOutput();
+			// main should exit with != 0
+			Assert.assertTrue(true);
 		}
 	}
 	

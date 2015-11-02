@@ -2,7 +2,7 @@
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 LIB_PREFIX=$CURRENT_DIR/../lib
-BINARY="jp-0.1-jar-with-dependencies.jar"
+BINARY="jp-0.2-jar-with-dependencies.jar"
 MAIN_CLASS="net.thepinguin.jp.App"
 if [ -z $JAVA_HOME ]; then
     echo "jp: JAVA_HOME not set!"

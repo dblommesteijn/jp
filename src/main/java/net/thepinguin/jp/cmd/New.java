@@ -1,9 +1,13 @@
 package net.thepinguin.jp.cmd;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import gnu.getopt.LongOpt;
+import net.thepinguin.jp.App;
 import net.thepinguin.jp.Mvn;
 
 public class New implements ICommand {
@@ -40,8 +44,10 @@ public class New implements ICommand {
 	}
 	
 	public void handle(List<String> args) throws Exception {
+		if(args.size() <= 2){
+			throw new Exception("new: missing argument");
+		}
 		String pwd = args.get(0);
-		System.out.println("pwd: " + pwd);
 		String groupId = args.get(2).toLowerCase();
 		String artifactId = "";
 		// has no artifactId, only groupId (net.thepinguin.artifactId -> artifactId)
@@ -59,21 +65,38 @@ public class New implements ICommand {
 			// TODO: add regex for valid namespacing
 			artifactId = args.get(3).toLowerCase();
 		}
-		System.out.println("groupId:    " + groupId);
-		System.out.println("artifactId: " + artifactId);
-		
-		
+		if(App.verbose()) {
+			System.out.println("groupId:    " + groupId);
+			System.out.println("artifactId: " + artifactId);
+		}
+		// create maven project
 		if(Mvn.newProject(pwd, groupId, artifactId)){
 			_handled = true;
 		} else {
 			throw new Exception("maven error");
 		}
-		
-//		 mvn archetype:generate -DgroupId=$GROUP_ID \
-//		          -DartifactId=$PROJECT_NAME -DarchetypeArtifactId=maven-archetype-quickstart \
-//		          -DinteractiveMode=false &> /dev/null
-		
-		
+		// create JPacker file
+		try{
+			// build basic dependency (default)
+			StringBuilder sb = new StringBuilder();
+			sb.append("{\"dependencies\": [");
+			sb.append(App.EOL);
+			sb.append("  { \"name\": \"junit#junit#4.12\", \"scope\": \"test\" }");
+			sb.append(App.EOL);
+			sb.append("]}");
+			// write to JPacker file
+			PrintWriter wrt = new PrintWriter(new File(pwd, artifactId+"/JPacker"));
+			wrt.println(sb);
+			wrt.close();
+		} catch(FileNotFoundException e){
+			throw new Exception("unable to create JPacker file");
+		}
+		System.out.println("... project created: " + artifactId);
+		System.out.println("... collecting deps for: " + artifactId);
+		// load new command
+		Collect c = (Collect) App.getCommands().get("collect");
+		// call jp collect with [0] = /path/to/jp/enabled/repo
+		c.handle(Arrays.asList(new String[]{new File(pwd, artifactId).getAbsolutePath()}));
 	}
 
 	public String getOptString() {
@@ -89,7 +112,6 @@ public class New implements ICommand {
 	}
 	
 	public boolean handleOpt(String optarg) {
-		System.out.println(optarg);
 		return true;
 	}
 	

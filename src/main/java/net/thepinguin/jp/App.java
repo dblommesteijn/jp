@@ -1,5 +1,6 @@
 package net.thepinguin.jp;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,9 @@ import net.thepinguin.jp.cmd.Verbose;
  * Main entry point
  */
 public class App {
+	public static final File JP_HOME = new File(System.getProperty("user.home"), ".jp");
+	public static final String EOL = System.getProperty("line.separator");
+	
 	private static Map<String, ICommand> _cmds;
 
 	public static Map<String, ICommand> getCommands() {
@@ -95,14 +99,14 @@ public class App {
 			// throw exception when unknown command is given
 			if(!handled) {
 				if(args.size() <= 1)
-					throw new Exception("option missing");
+					throw new Exception("command/ options missing");
 				else
-					throw new Exception("invalid option: " + args.get(1));
+					throw new Exception("invalid command/ option: " + args.get(1));
 			}
 		} catch(Exception e) {
 			if(App.verbose()) {
 				System.out.println(" ### -> ");
-				System.out.println(e.getMessage());
+				System.out.println("`" + e.getMessage() + "`");
 				e.printStackTrace();
 				System.out.println(" ### <- ");
 			}
