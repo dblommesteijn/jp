@@ -41,7 +41,7 @@ public class RepositoryTest extends TestCase {
     public void testCloneGithubCommit(){
     	String jpacker = "{\"dependencies\": ["
             	+ "{\"name\": \"net.thepinguin.jp#jp#0.1\","
-            	+ "\"github\": \"https://github.com/java-packer/jp\","
+            	+ "\"git\": \"https://github.com/java-packer/jp\","
             	+ "\"target\": \"target/jp-0.1-jar-with-dependencies.jar\","
             	+ "\"commit\": \"558a7b5e52edeb4165d32c306ee145b71df5b0a7\","
             	+ "\"goal\": \"assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true\""
