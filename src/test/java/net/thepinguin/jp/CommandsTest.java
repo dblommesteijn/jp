@@ -12,10 +12,12 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import net.thepinguin.jp.helper.OutputFilter;
 
-public class TestCommands extends TestCase {
+public class CommandsTest extends TestCase {
 	
 	private File _testRepos;
+	private OutputFilter _of;
 	
 	public static boolean VERBOSE = false;
 	public static boolean TRAVIS = false;
@@ -27,7 +29,7 @@ public class TestCommands extends TestCase {
 	 * @param testName
 	 *            name of the test case
 	 */
-	public TestCommands(String testName) {
+	public CommandsTest(String testName) {
 		super(testName);
 		_testRepos = new File(App.JP_HOME, "test/repos/").getAbsoluteFile();
 		if(!_testRepos.exists())
@@ -40,17 +42,16 @@ public class TestCommands extends TestCase {
 		String t = System.getenv("JP_TRAVIS");
 		if(t != null)
 			TRAVIS = (t.equals("true"));
+		
+		_of = new OutputFilter(); 
 	}
 
 	/**
 	 * @return the suite of tests being tested
 	 */
 	public static Test suite() {
-		return new TestSuite(TestCommands.class);
+		return new TestSuite(CommandsTest.class);
 	}
-
-	private PrintStream _stdout;
-	private PrintStream _stderr;
 
 	public void setUp() throws Exception {
 		super.setUp();
@@ -91,97 +92,146 @@ public class TestCommands extends TestCase {
 	public void testEmptyOptionWithoutArguments() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/" };
-			disableOutput();
+			_of.capture();
 			App.main(argv);
-			enableOutput();
+			
 		} catch (ExitException e) {
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			_of.release();
 			Assert.assertEquals(e.status, 1);
+			Assert.assertEquals("jp: command/ options missing (try -h)\n", out);
+			Assert.assertEquals("", err);
+		} finally {
+			_of.release();
 		}
 	}
 
 	public void testEmptyOptionWithArgumentVerbose() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/", "-v" };
-			disableOutput();
+			_of.capture();
 			App.main(argv);
-			enableOutput();
 		} catch (ExitException e) {
-			Assert.assertEquals(e.status, 1);
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			_of.release();
+			Assert.assertEquals(1, e.status);
+			StringBuilder sb = new StringBuilder();
+			sb.append(" ### VERBOSE output").append(App.EOL);
+			sb.append(" ### -> ").append(App.EOL);
+			sb.append("`command/ options missing`").append(App.EOL);
+			sb.append(" ### <- ").append(App.EOL);
+			sb.append("jp: command/ options missing (try -h)").append(App.EOL);
+			Assert.assertEquals(sb.toString(), out);
+			Assert.assertTrue(err.startsWith("java.lang.Exception: command/ options missing"));
+		} finally {
+			_of.release();
 		}
 	}
 
 	public void testEmptyOptionWithArgumentHelp() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/", "-h" };
-			disableOutput();
+			_of.capture();
 			App.main(argv);
-			enableOutput();
-			Assert.assertTrue(true);
+			_of.release();
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			Assert.assertTrue(out.startsWith("Usage: jp [-options] [commands...]"));
+			Assert.assertEquals("", err);
 		} catch (ExitException e) {
-			Assert.assertTrue(false);
+			Assert.assertEquals("", e.getMessage());
+		} finally {
+			_of.release();
 		}
 	}
 
 	public void testOptionWithoutArgumentHelp() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/", "help" };
-			disableOutput();
+			_of.capture();
 			App.main(argv);
-			enableOutput();
-			Assert.assertTrue(true);
+			_of.release();
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			Assert.assertTrue(out.startsWith("Usage: jp [-options] [commands...]"));
+			Assert.assertEquals("", err);
 		} catch (ExitException e) {
-			Assert.assertTrue(false);
+			Assert.assertEquals("", e.getMessage());
+		} finally {
+			_of.release();
 		}
 	}
 	
 	public void testEmptyOptionWithArgumentVersion() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/", "-V" };
-			disableOutput();
+			_of.capture();
 			App.main(argv);
-			enableOutput();
-			Assert.assertTrue(true);
+			_of.release();
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			Assert.assertEquals(out, "jp: version: 0.2\n");
+			Assert.assertEquals("", err);
 		} catch (ExitException e) {
-			Assert.assertTrue(false);
+			Assert.assertEquals("", e.getMessage());
+		} finally {
+			_of.release();
 		}
 	}
 	
 	public void testEmptyOptionWithoutArgumentVersion() {
 		try {
 			String[] argv = new String[] { "/some/path/to/repo/", "version" };
-			disableOutput();
+			_of.capture();
 			App.main(argv);
-			enableOutput();
-			Assert.assertTrue(true);
+			_of.release();
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			Assert.assertEquals(out, "jp: version: 0.2\n");
+			Assert.assertEquals("", err);
 		} catch (ExitException e) {
-			Assert.assertTrue(false);
+			Assert.assertEquals("", e.getMessage());
+		} finally {
+			_of.release();
 		}
 	}
 	
 	public void testOptionNewWithoutArtifactId() {
-		
 		long now = System.currentTimeMillis();
 		String target = _testRepos.getAbsolutePath();
 		String artifactId = "testoptionnewwithoutartifactid" + now;
 		String groupId = "net.thepinguin.jp." + artifactId;
 		File testOptionNew = new File(target, artifactId);
 		try {
-			String[] argv = new String[] { target, "new",  groupId};
-			disableOutput();
+			String[] argv = new String[] { target, "new",  groupId };
+			_of.capture();
 			App.main(argv);
-			enableOutput();
+			_of.release();
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			StringBuilder sb = new StringBuilder();
+			sb.append("... project created: testoptionnewwithoutartifactid" + now).append(App.EOL);
+			sb.append("... collecting deps for: testoptionnewwithoutartifactid" +now).append(App.EOL);
+			sb.append("jp: collecting...").append(App.EOL);
+			sb.append("  junit (buildin).. OK").append(App.EOL);
+			sb.append("jp: finished").append(App.EOL);
+			Assert.assertEquals(sb.toString(), out);
+			Assert.assertEquals("", err);
 			// test newly created project
 			Assert.assertTrue(testOptionNew.exists());
 			Assert.assertTrue(testOptionNew.isDirectory());
 			FileUtils.deleteDirectory(testOptionNew);
+			
 		} catch (ExitException e) {
-			enableOutput();
 			// main cannot throw exit -1
-			Assert.assertTrue(false);
+			Assert.assertEquals("", e.getMessage());
 		} catch (IOException e) {
-			enableOutput();
 			// cannot throw away test repo dir
-			Assert.assertTrue(false);
+			Assert.assertEquals("", e.getMessage());
+		} finally {
+			_of.release();
 		}
 	}
 	
@@ -192,22 +242,32 @@ public class TestCommands extends TestCase {
 		String artifactId = "testaltartifactid" + now;
 		File testOptionNew = new File(target, artifactId);
 		try {
-			String[] argv = new String[] { target, "new",  groupId, artifactId};
-			disableOutput();
+			String[] argv = new String[] { target, "new",  groupId, artifactId };
+			_of.capture();
 			App.main(argv);
-			enableOutput();
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			_of.release();
+			StringBuilder sb = new StringBuilder();
+			sb.append("... project created: testaltartifactid" + now).append(App.EOL);
+			sb.append("... collecting deps for: testaltartifactid" +now).append(App.EOL);
+			sb.append("jp: collecting...").append(App.EOL);
+			sb.append("  junit (buildin).. OK").append(App.EOL);
+			sb.append("jp: finished").append(App.EOL);
+			Assert.assertEquals(sb.toString(), out);
+			Assert.assertEquals("", err);		
 			// test newly created project
 			Assert.assertTrue(testOptionNew.exists());
 			Assert.assertTrue(testOptionNew.isDirectory());
 			FileUtils.deleteDirectory(testOptionNew);
 		} catch (ExitException e) {
-			enableOutput();
 			// main cannot exit with -1
-			Assert.assertTrue(false);
+			Assert.assertEquals("", e.getMessage());
 		} catch (IOException e) {
-			enableOutput();
 			// cannot throw away test repo dir
-			Assert.assertTrue(false);
+			Assert.assertEquals("", e.getMessage());
+		} finally {
+			_of.release();
 		}
 	}
 	
@@ -216,36 +276,21 @@ public class TestCommands extends TestCase {
 		String target = _testRepos.getAbsolutePath();
 		try {
 			String[] argv = new String[] { target, "new" };
-			disableOutput();
+			_of.capture();
 			App.main(argv);
-			enableOutput();
-			// test newly created project
 			Assert.assertTrue(false);
+			// test newly created project
 		} catch (ExitException e) {
-			enableOutput();
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			_of.release();
 			// main should exit with != 0
-			Assert.assertTrue(true);
+			Assert.assertEquals(1, e.status);			
+			Assert.assertEquals("jp: new: missing argument (try -h)\n", out);
+			Assert.assertEquals("", err);
+		} finally {
+			_of.release();
 		}
 	}
-	
-	private void disableOutput() {
-		// NOTE: not sure if this is working properly...
-		// disable stdout stderr (App.main is echoing)
-		if(!VERBOSE){
-			_stdout = System.out;
-			System.setOut(new PrintStream(new ByteArrayOutputStream()));
-			_stderr = System.err;
-			System.setErr(new PrintStream(new ByteArrayOutputStream()));
-		} else {
-		}
-	}
-
-	private void enableOutput() {
-		if(!VERBOSE){
-			// re-enable stdout, stderr
-			System.setOut(_stdout);
-			System.setErr(_stderr);
-		}
-	}
-
+ 
 }
