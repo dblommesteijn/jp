@@ -70,57 +70,89 @@ public class OutputFilterTest extends TestCase {
 		}
 	}
 	
-	public void testEchoing() throws IOException {
+	public void testStdOutEchoing() throws IOException {
 		OutputFilter of = new OutputFilter();
 		// start capture
 		of.capture();
-		
-		// print to out
-		System.out.print("123");
-		Assert.assertEquals(of.getStdOutStr(), "123");
-		Assert.assertEquals(of.getStdOutStr(), "");
-		// print to err
-		System.err.print("456");
-		Assert.assertEquals(of.getStdErrStr(), "456");
-		Assert.assertEquals(of.getStdErrStr(), "");
-		
-		// reload resources
 		System.out.print("abc");
-		System.err.print("abc");
+		Assert.assertEquals(of.getStdOutStr(), "abc");
+		Assert.assertEquals(of.getStdOutStr(), "");
+		// stop capture (release)
+		of.release();
+	}
+	
+	public void testStdErrEchoing() throws IOException {
+		OutputFilter of = new OutputFilter();
+		// start capture
+		of.capture();
+		// print to err
+		System.err.print("123");
+		Assert.assertEquals(of.getStdErrStr(), "123");
+		Assert.assertEquals(of.getStdErrStr(), "");
+		// stop capture (release)
+		of.release();
+	}
+	
+	public void testClearAndEchoing() throws IOException {
+		OutputFilter of = new OutputFilter();
+		// start capture
+		of.capture();
+		System.out.print("abc");
+		System.err.print("123");
 		of.clear();
 		Assert.assertEquals(of.getStdOutStr(), "");
 		Assert.assertEquals(of.getStdErrStr(), "");
 		of.release();
-		
-		// reuse same object
+	}
+	
+	public void testObjectReuse() throws IOException {
+		OutputFilter of = new OutputFilter();
 		of.capture();
-		System.out.print("789");
-		Assert.assertEquals(of.getStdOutStr(), "789");
+		System.out.print("abc");
+		Assert.assertEquals(of.getStdOutStr(), "abc");
 		Assert.assertEquals(of.getStdOutStr(), "");
-		System.err.print("012");
-		Assert.assertEquals(of.getStdErrStr(), "012");
-		Assert.assertEquals(of.getStdErrStr(), "");
-		of.release();
-		
-		// try incorrect use of capture/ release
 		of.release();
 		of.capture();
-		System.out.print("def");
-		System.err.print("def");
-		Assert.assertEquals(of.getStdOutStr(), "def");
+		System.out.print("abc");
+		Assert.assertEquals(of.getStdOutStr(), "abc");
 		Assert.assertEquals(of.getStdOutStr(), "");
-		Assert.assertEquals(of.getStdErrStr(), "def");
-		Assert.assertEquals(of.getStdErrStr(), "");
-		of.release();
-		
-		of.capture();
-		of.capture();
-		System.out.print("ghi");
-		System.err.print("ghi");
-		Assert.assertEquals(of.getStdOutStr(), "ghi");
-		Assert.assertEquals(of.getStdOutStr(), "");
-		Assert.assertEquals(of.getStdErrStr(), "ghi");
-		Assert.assertEquals(of.getStdErrStr(), "");
 		of.release();
 	}
+	
+	public void testMultiCapture() throws IOException {
+		OutputFilter of = new OutputFilter();
+		of.capture();
+		of.capture();
+		System.out.print("abc");
+		Assert.assertEquals(of.getStdOutStr(), "abc");
+		Assert.assertEquals(of.getStdOutStr(), "");
+		// double release
+		of.release();
+		of.release();
+		// double capture
+		of.capture();
+		of.capture();
+		System.out.print("abc");
+		Assert.assertEquals(of.getStdOutStr(), "abc");
+		Assert.assertEquals(of.getStdOutStr(), "");
+		of.release();
+	}
+	
+	public void testMultiObject() throws IOException {
+		OutputFilter of = new OutputFilter();
+		of.capture();
+		System.out.print("abc");
+		Assert.assertEquals(of.getStdOutStr(), "abc");
+		Assert.assertEquals(of.getStdOutStr(), "");
+		of.release();
+		// overwrite of with new instance
+		of = new OutputFilter();
+		of.capture();
+		System.out.print("abc");
+		Assert.assertEquals(of.getStdOutStr(), "abc");
+		Assert.assertEquals(of.getStdOutStr(), "");
+		of.release();
+	}
+	
+
 }

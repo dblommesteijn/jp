@@ -272,7 +272,6 @@ public class CommandsTest extends TestCase {
 	}
 	
 	public void testOptionNewWithoutparameters() {
-//		long now = System.currentTimeMillis();
 		String target = _testRepos.getAbsolutePath();
 		try {
 			String[] argv = new String[] { target, "new" };
@@ -281,11 +280,13 @@ public class CommandsTest extends TestCase {
 			Assert.assertTrue(false);
 			// test newly created project
 		} catch (ExitException e) {
+			_of.release();
 			String out = _of.getStdOutStr();
 			String err = _of.getStdErrStr();
-			_of.release();
+			
 			// main should exit with != 0
-			Assert.assertEquals(1, e.status);			
+			Assert.assertEquals(1, e.status);
+			// main should echo missing argument statement
 			Assert.assertEquals("jp: new: missing argument (try -h)\n", out);
 			Assert.assertEquals("", err);
 		} finally {
