@@ -12,29 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-VERSION=0.2
-
 PREFIX=/usr/local
 INSTALLDIR=$(PREFIX)
 INSTALL=install
 TARGETS=
 
 build:
-	mvn assembly:assembly -DdescriptorId=jar-with-dependencies
+	mvn assembly:assembly
 	
 build-no-test:
-	mvn assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true
+	mvn assembly:assembly -DskipTests=true
 
 test:
 	mvn test
 
 install:
 	$(INSTALL) -c -v -g 0 -m 0755 -o root scripts/jp $(INSTALLDIR)/bin
-	$(INSTALL) -c -v -g 0 -m 0755 -o root target/jp-$(VERSION)-jar-with-dependencies.jar $(INSTALLDIR)/lib
+	$(INSTALL) -c -v -g 0 -m 0755 -o root target/jp.jar $(INSTALLDIR)/lib
 
 uninstall:
 	rm $(INSTALLDIR)/bin/jp
-	rm $(INSTALLDIR)/lib/jp-$(VERSION)-jar-with-dependencies.jar
+	rm $(INSTALLDIR)/lib/jp.jar
 	
 deploy:
 	make && sudo make install

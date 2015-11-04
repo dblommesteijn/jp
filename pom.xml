@@ -61,6 +61,8 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<finalName>jp</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 			</plugin>
 		</plugins>
