@@ -29,14 +29,14 @@ public class Mvn {
 		request.setPomFile( pomLocation );
 		request.setGoals( goals );
 		// silent output
-		if(!App.verbose()){
+		if(!App.isVerbose()){
 			request.setOutputHandler(null);
 		}
 		Invoker invoker = new DefaultInvoker();
 		invoker.setMavenHome(M3_HOME);
 		invoker.setMavenExecutable(new File(M3_HOME, "bin/mvn"));
 		// silent output
-		if(!App.verbose()){
+		if(!App.isVerbose()){
 			invoker.setOutputHandler(null);
 		}
 		try {
@@ -56,14 +56,14 @@ public class Mvn {
 		request.setBaseDirectory(new File(basedir));
 		request.setGoals(Arrays.asList(goals));
 		// silent output
-		if(!App.verbose()){
+		if(!App.isVerbose()){
 			request.setOutputHandler(null);
 		}
 		Invoker invoker = new DefaultInvoker();
 		invoker.setMavenHome(M3_HOME);
 		invoker.setMavenExecutable(new File(M3_HOME, "bin/mvn"));
 		// silent output
-		if(!App.verbose()){
+		if(!App.isVerbose()){
 			invoker.setOutputHandler(null);
 		}
 		try {

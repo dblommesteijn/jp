@@ -172,7 +172,7 @@ public class CommandsTest extends TestCase {
 			_of.release();
 			String out = _of.getStdOutStr();
 			String err = _of.getStdErrStr();
-			Assert.assertEquals(out, "jp: version: 0.2\n");
+			Assert.assertEquals(out, "jp: version: 0.2.1\n");
 			Assert.assertEquals("", err);
 		} catch (ExitException e) {
 			Assert.assertEquals("", e.getMessage());
@@ -189,7 +189,7 @@ public class CommandsTest extends TestCase {
 			_of.release();
 			String out = _of.getStdOutStr();
 			String err = _of.getStdErrStr();
-			Assert.assertEquals(out, "jp: version: 0.2\n");
+			Assert.assertEquals(out, "jp: version: 0.2.1\n");
 			Assert.assertEquals("", err);
 		} catch (ExitException e) {
 			Assert.assertEquals("", e.getMessage());

@@ -1,10 +1,13 @@
 package net.thepinguin.jp;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import org.reflections.Reflections;
 
@@ -12,6 +15,7 @@ import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 import net.thepinguin.jp.cmd.ICommand;
 import net.thepinguin.jp.cmd.Verbose;
+
 
 /**
  * Main entry point
@@ -74,7 +78,7 @@ public class App {
 				}
 			}
 			// message on verbosity
-			if(App.verbose()) {
+			if(App.isVerbose()) {
 				System.out.println(" ### VERBOSE output");
 			}
 			// get cli arguments
@@ -88,7 +92,7 @@ public class App {
 				if(cmd.canHandle(args)){
 					cmd.handle(args);
 					if(cmd.isHandled()){
-						if(App.verbose()){
+						if(App.isVerbose()){
 							System.out.println(" ### handling cmd found: " + cmd.getId());
 						}
 						handled = true;
@@ -104,7 +108,7 @@ public class App {
 					throw new Exception("invalid command/ option: " + args.get(1));
 			}
 		} catch(Exception e) {
-			if(App.verbose()) {
+			if(App.isVerbose()) {
 				System.out.println(" ### -> ");
 				System.out.println("`" + e.getMessage() + "`");
 				e.printStackTrace();
@@ -115,7 +119,11 @@ public class App {
 		}
 	}
 
-	public static boolean verbose() {
+	/**
+	 * Get application verbosity state
+	 * @return verbose state
+	 */
+	public static boolean isVerbose() {
 		if(_cmds == null)
 			return false;
 		ICommand cmd = _cmds.get("verbose");
@@ -125,8 +133,19 @@ public class App {
 		return v.isActive();
 	}
 	
+	/**
+	 * Get version of the application
+	 * @return version number of application
+	 */
 	public static String getVersion() {
-		// TODO: get version from pom.xml file
-		return "0.2";
+		try{
+			InputStream is = Thread.currentThread().getClass().getResourceAsStream("/jp.properties");
+			Properties p = new Properties();
+			p.load(is);
+			return p.getProperty("version");
+		} catch(IOException e) {
+			// TODO: this should never fail!
+		}
+		return "";
 	}
 }

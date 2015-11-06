@@ -4,7 +4,7 @@
 	<groupId>net.thepinguin.jp</groupId>
 	<artifactId>jp</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2</version>
+	<version>0.2.1</version>
 	<name>jp</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
@@ -44,6 +44,11 @@
 			<artifactId>reflections</artifactId>
 			<version>0.9.9</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<version>2.6</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -63,8 +68,23 @@
 					</descriptorRefs>
 					<finalName>jp</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
+					<classifier>jar-with-dependencies</classifier>
+					<archive>
+						<manifest>
+							<mainClass>net.thepinguin.jp.App</mainClass>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>jp.properties</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 </project>

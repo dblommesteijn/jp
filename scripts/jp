@@ -3,7 +3,6 @@
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 LIB_PREFIX=$CURRENT_DIR/../lib
 BINARY="jp.jar"
-MAIN_CLASS="net.thepinguin.jp.App"
 if [ -z $JAVA_HOME ]; then
     echo "jp: JAVA_HOME not set!"
     exit 1
@@ -25,7 +24,7 @@ if [ -z $M3_HOME ]; then
     echo "jp: M3_HOME not set!"
     exit 1
 fi
-java -cp $LIB_PREFIX/$BINARY $MAIN_CLASS "$(pwd)" $@
+java -jar $LIB_PREFIX/$BINARY "$(pwd)" $@
 exit $?
 
 

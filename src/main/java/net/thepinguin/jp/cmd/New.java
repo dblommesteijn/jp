@@ -65,7 +65,7 @@ public class New implements ICommand {
 			// TODO: add regex for valid namespacing
 			artifactId = args.get(3).toLowerCase();
 		}
-		if(App.verbose()) {
+		if(App.isVerbose()) {
 			System.out.println("groupId:    " + groupId);
 			System.out.println("artifactId: " + artifactId);
 		}
