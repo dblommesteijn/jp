@@ -98,6 +98,10 @@
 			            </goals>
 		          </execution>
 				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+		        </configuration>
 			</plugin>
 		</plugins>
 		<resources>
