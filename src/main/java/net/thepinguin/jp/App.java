@@ -148,4 +148,21 @@ public class App {
 		}
 		return "";
 	}
+	
+	/**
+	 * Get build of the application (git commit)
+	 * @return build number of application
+	 */
+	public static String getBuild() {
+		try{
+			InputStream is = Thread.currentThread().getClass().getResourceAsStream("/jp.properties");
+			Properties p = new Properties();
+			p.load(is);
+			return p.getProperty("build");
+		} catch(IOException e) {
+			// TODO: this should never fail!
+		}
+		return "";
+	}
+	
 }

@@ -77,6 +77,8 @@ public class Version implements ICommand {
 
 	@Override
 	public boolean handleOpt(String optarg) {
+		if(App.isVerbose())
+			System.out.println(" ... build: " + App.getBuild());
 		System.out.println("jp: version: " + App.getVersion());
 		return true;
 	}
