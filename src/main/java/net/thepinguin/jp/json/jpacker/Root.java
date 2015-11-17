@@ -29,6 +29,8 @@ public class Root {
 	@SerializedName("dependencies")
 	public List<Dependency> dependencies;
 	
+//	public List<Repository>
+	
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		sb.append("[ ");

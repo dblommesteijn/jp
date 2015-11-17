@@ -293,7 +293,7 @@ public class CommandsTest extends TestCase {
 		}
 	}
 	
-	public void testOptionNewWithoutparameters() {
+	public void testOptionNewWithoutParameters() {
 		String target = _testRepos.getAbsolutePath();
 		try {
 			String[] argv = new String[] { target, "new" };
@@ -315,5 +315,78 @@ public class CommandsTest extends TestCase {
 			_of.release();
 		}
 	}
+	
+	public void testWrongOptionWithoutParameters() {
+		String target = _testRepos.getAbsolutePath();
+		String[] cmds = new String[]{ "invalid", "invalid2", "1", "12", "invalid invalid" };
+		for(String cmd : cmds){
+			try {
+				String[] argv = new String[] { target, cmd };
+				_of.capture();
+				App.main(argv);
+				_of.release();
+			} catch (ExitException e) {
+				// no forced exit!
+				String out = _of.getStdOutStr();
+				_of.release();
+				StringBuilder sb = new StringBuilder();
+				sb.append("jp: invalid command/ option: ").append(cmd).append(" (try -h)").append(App.EOL);
+				Assert.assertEquals(sb.toString(), out);
+				Assert.assertEquals(1, e.status);
+			} finally {
+				_of.release();
+			}
+		}
+	}
+	
+	public void testOptionInitIncorrectPath() {
+		String target = _testRepos.getAbsolutePath();
+		try {
+			String[] argv = new String[] { target, "init" };
+			_of.capture();
+			App.main(argv);
+			// not reaching here!
+			Assert.assertTrue(false);
+		} catch (ExitException e) {
+			String out = _of.getStdOutStr();
+			String err = _of.getStdErrStr();
+			_of.release();
+			StringBuilder sb = new StringBuilder();
+			sb.append("jp: pom.xml not found (try -h)").append(App.EOL);
+			Assert.assertEquals(sb.toString(), out);
+			Assert.assertEquals("", err);
+			Assert.assertEquals(1, e.status);
+		} finally {
+			_of.release();
+		}
+	}
+	
+//	public void testOptionInitWithoutParameters() {
+//		String target = _testRepos.getAbsolutePath();
+//		String newProject = "";
+//		try {
+//			String[] argv = new String[] { target, "init" };
+//			_of.capture();
+//			App.main(argv);
+//			String out = _of.getStdOutStr();
+//			String err = _of.getStdErrStr();
+//			_of.release();
+//			System.out.println("-+------------");
+//			System.out.println(out);
+//			System.out.println("-+------------");
+//			
+//			// test newly created project
+//		} catch (ExitException e) {
+//			String out = _of.getStdOutStr();
+//			_of.release();
+//			System.out.println("-+------------");
+//			System.out.println(out);
+//			System.out.println("-+------------");
+//			// any error here is invalid
+////			Assert.assertTrue(false);
+//		} finally {
+//			_of.release();
+//		}
+//	}
  
 }

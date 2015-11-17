@@ -65,6 +65,7 @@ public class Collect implements ICommand {
 		if (pss.isEmpty()) {
 			throw new Exception("invalid pom!");
 		}
+		// append dependencies
 		Element project = pss.get(0);
 		List<Element> dss = project.findElement("dependencies");
 		Element deps = null;
@@ -76,7 +77,6 @@ public class Collect implements ICommand {
 			// use found repositories element
 			deps = dss.get(0);
 		}
-
 		deps.removeAll();
 		// parse jpacker file
 		Root root = ParseJP.parseFromFile(jpacker);
@@ -133,7 +133,21 @@ public class Collect implements ICommand {
 				System.out.println("error");
 			}
 		}
-		// write pom.xml with dependencies
+		
+		List<Element> rss = project.findElement("repositories");
+		Element rs = null;
+		if(rss.isEmpty()){
+			// create new repositories element
+			rs = new Element("repositories");
+			project.addElement(project, rs);
+		}
+		else{
+			// use found repositories element
+			rs = rss.get(0);
+		}
+		
+		
+		// write pom.xml with dependencies & repositories
 		if (doc.write()) {
 			// build pom.xml
 			List<String> goals = Arrays.asList("install");

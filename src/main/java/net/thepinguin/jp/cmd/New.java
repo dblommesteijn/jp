@@ -73,6 +73,7 @@ public class New implements ICommand {
 		if(Mvn.newProject(pwd, groupId, artifactId)){
 			_handled = true;
 		} else {
+			//TODO: throw maven errors here?
 			throw new Exception("maven error");
 		}
 		// create JPacker file
@@ -91,6 +92,11 @@ public class New implements ICommand {
 		} catch(FileNotFoundException e){
 			throw new Exception("unable to create JPacker file");
 		}
+		
+		Repository r = (Repository) App.getCommands().get("repo");
+		// call jp repo with [0] = /path/to/jp/enabled/repo
+		r.handle(Arrays.asList(new String[]{new File(pwd, artifactId).getAbsolutePath()}));
+		
 		System.out.println("... project created: " + artifactId);
 		System.out.println("... collecting deps for: " + artifactId);
 		// load new command
