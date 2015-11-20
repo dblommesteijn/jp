@@ -1,4 +1,4 @@
-package net.thepinguin.jp;
+package net.thepinguin.jp.internal;
 
 import java.io.File;
 import java.util.Arrays;

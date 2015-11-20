@@ -193,5 +193,9 @@ public class Collect implements ICommand {
 	public boolean hasArguments() {
 		return false;
 	}
+	
+	public boolean isCallable() {
+		return this.hasOptions() || this.hasArguments();
+	}
 
 }

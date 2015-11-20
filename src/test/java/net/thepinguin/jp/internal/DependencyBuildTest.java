@@ -1,4 +1,4 @@
-package net.thepinguin.jp;
+package net.thepinguin.jp.internal;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

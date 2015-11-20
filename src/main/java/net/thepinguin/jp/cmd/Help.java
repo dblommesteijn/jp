@@ -59,7 +59,7 @@ public class Help implements ICommand {
 	}
 
 	public boolean handleOpt(String optarg) {
-		List<ICommand> cmds = new ArrayList<ICommand>(App.getCommands().values());
+		List<ICommand> cmds = new ArrayList<ICommand>(App.getCallableCommands().values());
 		//TODO: fix sorting!
 		Collections.sort(cmds);
 			
@@ -117,6 +117,9 @@ public class Help implements ICommand {
 	public boolean hasArguments() {
 		return true;
 	}
-
+	
+	public boolean isCallable() {
+		return this.hasOptions() || this.hasArguments();
+	}
 
 }

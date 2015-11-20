@@ -82,5 +82,9 @@ public class Initialize implements ICommand {
 	public boolean exitAfterHandleOpt() {
 		return false;
 	}
+	
+	public boolean isCallable() {
+		return this.hasOptions() || this.hasArguments();
+	}
 
 }

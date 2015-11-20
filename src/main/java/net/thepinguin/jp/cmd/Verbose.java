@@ -73,4 +73,8 @@ public class Verbose implements ICommand {
 		return _active;
 	}
 	
+	public boolean isCallable() {
+		return this.hasOptions() || this.hasArguments();
+	}
+	
 }

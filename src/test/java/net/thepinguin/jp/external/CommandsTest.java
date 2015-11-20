@@ -1,8 +1,9 @@
-package net.thepinguin.jp;
+package net.thepinguin.jp.external;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.Permission;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 
@@ -10,6 +11,8 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import net.thepinguin.jp.App;
+import net.thepinguin.jp.cmd.ICommand;
 import net.thepinguin.jp.helper.OutputFilter;
 
 public class CommandsTest extends TestCase {
@@ -86,6 +89,8 @@ public class CommandsTest extends TestCase {
 			throw new ExitException(status);
 		}
 	}
+	
+
 
 	public void testEmptyOptionWithoutArguments() {
 		try {

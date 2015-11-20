@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import org.reflections.Reflections;
@@ -21,38 +22,84 @@ import net.thepinguin.jp.cmd.Verbose;
  * Main entry point
  */
 public class App {
+	// common values
 	public static final File JP_HOME = new File(System.getProperty("user.home"), ".jp");
 	public static final String EOL = System.getProperty("line.separator");
 	
-	private static Map<String, ICommand> _cmds;
-
-	public static Map<String, ICommand> getCommands() {
-		return _cmds;
+	// global command lookup
+	private static Map<String, ICommand> _commands;
+	
+	/**
+	 * List of available commands (internal use only); for cli use getCallableCommands() instead
+	 * @return list of available commands
+	 */
+	public static Map<String, ICommand> getAllCommands() {
+		return _commands;
+	}
+	
+	/**
+	 * Filtered list of commands, only callable returned
+	 * @return callable commands
+	 */
+	public static Map<String, ICommand> getCallableCommands() {
+		Map<String, ICommand> ret = new HashMap<String, ICommand>(_commands.size());
+		for (Entry<String, ICommand> es : _commands.entrySet()){
+			if(es.getValue().isCallable()) {
+				ret.put(es.getKey(), es.getValue());
+			}
+		}
+		return ret;
+	}
+	
+	/**
+	 * Get list of commands by reflecting on specific package
+	 * @return invoked list of commands with string lookup index
+	 */
+	private static Map<String, ICommand> getReflectedCommands() {
+		Map<String, ICommand> ret;
+		// get commands via reflection
+		Reflections reflections = new Reflections("net.thepinguin.jp.cmd");
+		Set<Class<? extends ICommand>> classes = reflections.getSubTypesOf(ICommand.class);
+		ret = new HashMap<String, ICommand>(classes.size());
+		// iterate classes
+		for (Class<? extends ICommand> cmd : classes) {
+			// invoke and append to command list
+			try {
+				ICommand q = cmd.newInstance();
+				ret.put(q.getId(), q);
+			} catch (InstantiationException e) {
+//					e.printStackTrace();
+			} catch (IllegalAccessException e) {
+//					e.printStackTrace();
+			}
+		}
+		return ret;
 	}
 
+	/**
+	 * Application entry point
+	 * @param argv cli commands
+	 */
 	public static void main(String[] argv) {
 		try {
+			// collect commands via reflection
+			_commands = getReflectedCommands();
 			List<LongOpt> longopts = new ArrayList<LongOpt>();
 			String optstring = "";
-			// get commands via reflection
-			Reflections reflections = new Reflections("net.thepinguin.jp.cmd");
-			Set<Class<? extends ICommand>> classes = reflections.getSubTypesOf(ICommand.class);
-			_cmds = new HashMap<String, ICommand>(classes.size());
-			// iterate classes
-			for (Class<? extends ICommand> cmd : classes) {
-				// invoke and append to command list
-				ICommand q = cmd.newInstance();
-				// filter disabled commands
-				if (q.isEnabled()) {
-					_cmds.put(q.getId(), q);
-					LongOpt l = q.getLongOptInstance();
-					if(l != null) {
+			// iterate available commands
+			for(Entry<String, ICommand> cmd : _commands.entrySet()) {
+				ICommand c = cmd.getValue();
+				// only use callable
+				if(c.isCallable()){
+					LongOpt l = c.getLongOptInstance();
+					if(l != null){
 						longopts.add(l);
-						optstring += q.getOptString();
+						optstring += c.getOptString();
 						//TODO: check for vowel collisions
 					}
 				}
 			}
+			
 			// handle cli arguments/ command here
 			Getopt g = new Getopt("jp", argv, optstring, longopts.toArray(new LongOpt[0]));
 			g.setOpterr(false);
@@ -61,7 +108,7 @@ public class App {
 				boolean handled = false;
 				if(c != '?'){
 					// iterate commands
-					for(ICommand cmd : _cmds.values() ){	
+					for(ICommand cmd : _commands.values() ){	
 						if(cmd.getOptVowel() == c){
 							handled = cmd.handleOpt(g.getOptarg());
 						}
@@ -88,7 +135,7 @@ public class App {
 			}
 			// iterate implemented commands, pass cli args to them
 			boolean handled = false;
-			for(ICommand cmd : _cmds.values()){
+			for(ICommand cmd : _commands.values()){
 				if(cmd.canHandle(args)){
 					cmd.handle(args);
 					if(cmd.isHandled()){
@@ -124,9 +171,10 @@ public class App {
 	 * @return verbose state
 	 */
 	public static boolean isVerbose() {
-		if(_cmds == null)
+		Map<String, ICommand> cs = getCallableCommands();
+		if(cs == null)
 			return false;
-		ICommand cmd = _cmds.get("verbose");
+		ICommand cmd = cs.get("verbose");
 		if(cmd == null)
 			return false;
 		Verbose v = (Verbose) cmd;

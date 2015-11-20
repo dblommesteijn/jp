@@ -54,6 +54,8 @@ public class Repository implements ICommand {
 		// TODO Auto-generated method stub
 //		_handled = true;
 		
+		String pomXml = args.get(0);
+		
 	}
 
 	public LongOpt getLongOptInstance() {
@@ -78,6 +80,10 @@ public class Repository implements ICommand {
 
 	public boolean exitAfterHandleOpt() {
 		return false;
+	}
+	
+	public boolean isCallable() {
+		return this.hasOptions() || this.hasArguments();
 	}
 
 }

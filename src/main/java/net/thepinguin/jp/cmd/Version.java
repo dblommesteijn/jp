@@ -87,5 +87,9 @@ public class Version implements ICommand {
 	public boolean exitAfterHandleOpt() {
 		return true;
 	}
+	
+	public boolean isCallable() {
+		return this.hasOptions() || this.hasArguments();
+	}
 
 }

@@ -93,14 +93,14 @@ public class New implements ICommand {
 			throw new Exception("unable to create JPacker file");
 		}
 		
-		Repository r = (Repository) App.getCommands().get("repo");
+		Repository r = (Repository) App.getAllCommands().get("repo");
 		// call jp repo with [0] = /path/to/jp/enabled/repo
 		r.handle(Arrays.asList(new String[]{new File(pwd, artifactId).getAbsolutePath()}));
 		
 		System.out.println("... project created: " + artifactId);
 		System.out.println("... collecting deps for: " + artifactId);
 		// load new command
-		Collect c = (Collect) App.getCommands().get("collect");
+		Collect c = (Collect) App.getAllCommands().get("collect");
 		// call jp collect with [0] = /path/to/jp/enabled/repo
 		c.handle(Arrays.asList(new String[]{new File(pwd, artifactId).getAbsolutePath()}));
 	}
@@ -135,6 +135,10 @@ public class New implements ICommand {
 	
 	public String toString() {
 		return "{" + this.getId() + ":"+ this.getDescription() + "}";
+	}
+	
+	public boolean isCallable() {
+		return this.hasOptions() || this.hasArguments();
 	}
 	
 }

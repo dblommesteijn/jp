@@ -1,4 +1,4 @@
-package net.thepinguin.jp;
+package net.thepinguin.jp.helper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,11 +28,6 @@ public class OutputFilterTest extends TestCase {
 	public static Test suite() {
 		return new TestSuite(OutputFilterTest.class);
 	}
-
-	private PrintStream _stdout;
-	private ByteArrayOutputStream _newByteOut;
-	private PrintStream _stderr;
-	private ByteArrayOutputStream _newByteErr;
 
 	public void setUp() throws Exception {
 		super.setUp();

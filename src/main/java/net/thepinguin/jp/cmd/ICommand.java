@@ -13,6 +13,8 @@ public interface ICommand extends Comparable<ICommand> {
 	public boolean hasOptions();
 	public boolean hasArguments();
 	
+	public boolean isCallable();
+	
 	// command specific info
 	public String getId();
 	public String getDescription();
