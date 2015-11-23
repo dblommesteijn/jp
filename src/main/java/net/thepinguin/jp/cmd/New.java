@@ -8,7 +8,7 @@ import java.util.List;
 
 import gnu.getopt.LongOpt;
 import net.thepinguin.jp.App;
-import net.thepinguin.jp.Mvn;
+import net.thepinguin.jp.helper.Mvn;
 
 public class New implements ICommand {
 	

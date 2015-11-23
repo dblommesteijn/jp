@@ -1,4 +1,4 @@
-package net.thepinguin.jp;
+package net.thepinguin.jp.helper;
 
 import java.io.File;
 import java.util.Arrays;
@@ -10,6 +10,8 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
+
+import net.thepinguin.jp.App;
 
 public class Mvn {
 	
@@ -71,11 +73,10 @@ public class Mvn {
 			return true;
 		} catch (MavenInvocationException e) {
 			System.out.println(e.getMessage());
-			e.printStackTrace();
+//			e.printStackTrace();
 			_errors.add(e.getMessage());
 			return false;
 		}
 	}
 	
-//	 mvn archetype:generate -DgroupId=net.thepinguin.jptest-1 -DartifactId=jptest-1 -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
 }

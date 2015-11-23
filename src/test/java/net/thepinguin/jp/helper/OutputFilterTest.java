@@ -1,8 +1,6 @@
 package net.thepinguin.jp.helper;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.security.Permission;
 
 import junit.framework.Assert;

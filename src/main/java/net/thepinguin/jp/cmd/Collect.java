@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import net.thepinguin.jp.Mvn;
+import net.thepinguin.jp.helper.Mvn;
 import net.thepinguin.jp.json.ParseJP;
 import net.thepinguin.jp.json.jpacker.Dependency;
 import net.thepinguin.jp.json.jpacker.Root;
@@ -92,7 +92,7 @@ public class Collect implements ICommand {
 			if (d == null)
 				continue;
 			System.out.print("  " + d.getArtifactId() + " ");
-			if (d.isGithub()) {
+			if (d.isGit()) {
 				System.out.print("(" + d.git + "#" + d.getCommit() + ")");
 			} else if (d.isFile()) {
 				System.out.print("(" + d.file + ")");
@@ -150,8 +150,7 @@ public class Collect implements ICommand {
 		// write pom.xml with dependencies & repositories
 		if (doc.write()) {
 			// build pom.xml
-			List<String> goals = Arrays.asList("install");
-			boolean b = Mvn.invokeMaven(new File(pomXml), goals);
+			boolean b = Mvn.invokeMaven(new File(pomXml), Arrays.asList("install"));
 			if (b) {
 				System.out.println("jp: finished");
 			} else {

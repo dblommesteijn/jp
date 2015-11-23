@@ -53,7 +53,7 @@ public class RepositoryTest extends TestCase {
     	List<Dependency> deps = root.dependencies;
     	Dependency jp = deps.get(0);
     	Assert.assertFalse(jp.isFile());
-    	Assert.assertTrue(jp.isGithub());
+    	Assert.assertTrue(jp.isGit());
     	try {
 			File repo = jp.cloneRepository();
 			Assert.assertEquals(repo.getName(), "558a7b5e52edeb4165d32c306ee145b71df5b0a7");
@@ -76,7 +76,7 @@ public class RepositoryTest extends TestCase {
     	Root root = ParseJP.parseFromString(jpacker);
     	Assert.assertNotNull(root);
     	Assert.assertFalse(root.isValid());
-    	Assert.assertEquals(root.getErrorMessages().get(0), "github ssh not supported (use https)");
+    	Assert.assertEquals(root.getErrorMessages().get(0), "git ssh not supported (use https)");
     }
     
     public void testCloneGithubBranch(){
@@ -99,7 +99,7 @@ public class RepositoryTest extends TestCase {
     	List<Dependency> deps = root.dependencies;
     	Dependency jp = deps.get(0);
     	Assert.assertTrue(jp.isFile());
-    	Assert.assertFalse(jp.isGithub());
+    	Assert.assertFalse(jp.isGit());
 
     	// TODO: lookup local jar and add to classpath!
     	

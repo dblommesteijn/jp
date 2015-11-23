@@ -34,6 +34,7 @@ public class JPackerTest extends TestCase {
     
     private static final String __VALID_JSON = "{\"dependencies\": []}";
     private static final String __INVALID_JSON = "{\" []}";
+    //TODO: link to jp project
     private static final String __VALID_LARGE_JSON = "{\"dependencies\": ["
     	+ "{\"name\": \"net.thepinguin.hatta#hatta#0.1\","
     	+ "\"file\": \"/Users/dennisb/Programming/github/hatta/target/hatta-0.1.jar\""
@@ -86,7 +87,7 @@ public class JPackerTest extends TestCase {
 		Dependency hatta_github = deps.get(1);
 		Assert.assertEquals(hatta_github.name, "net.thepinguin.hatta#hatta#0.1");
 		Assert.assertEquals(hatta_github.git, "https://github.com/dblommesteijn/hatta");
-		Assert.assertTrue(hatta_github.isGithub());
+		Assert.assertTrue(hatta_github.isGit());
     }
     
     public void testParseMissingDependencies(){

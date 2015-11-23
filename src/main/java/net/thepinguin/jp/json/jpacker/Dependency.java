@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.thepinguin.jp.App;
-import net.thepinguin.jp.Mvn;
+import net.thepinguin.jp.helper.Mvn;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
@@ -95,14 +95,14 @@ public class Dependency {
 	public String getCannonicalName(){
 		if(this.isFile()){
 			return " " + this.getArtifactId() + " (.jar)";
-		} else if(this.isGithub()){
+		} else if(this.isGit()){
 			return " " + this.getArtifactId() + " (" + git + ")";
  		}
 		return "";
 	}
 
 	public boolean resolve() {
-		if(this.isGithub()){
+		if(this.isGit()){
 			try{
 				File repo = this.cloneRepository();
 				_jarLocation = new File(repo, target);
@@ -117,17 +117,17 @@ public class Dependency {
 		return false;
 	}
 	
-	public boolean isGithub(){
+	public boolean isGit(){
 		boolean https = git.startsWith("http");
 		boolean fileEmpty = file.isEmpty();
 		boolean targetEmpty = target.isEmpty();
 		boolean goalEmpty = goal.isEmpty();
-		// github specific error messages
+		// git specific error messages
 		boolean ret = fileEmpty && !targetEmpty && !goalEmpty;
 		if(ret){
-			if(fileEmpty && targetEmpty) _errorMessages.add("github requires `target` key");
-			if(fileEmpty && goalEmpty) _errorMessages.add("github requires `goal` key");
-			if(fileEmpty && !https) _errorMessages.add("github ssh not supported (use https)");
+			if(fileEmpty && targetEmpty) _errorMessages.add("git requires `target` key");
+			if(fileEmpty && goalEmpty) _errorMessages.add("git requires `goal` key");
+			if(fileEmpty && !https) _errorMessages.add("git ssh not supported (use https)");
 		}
 		return ret && https;
 	}
@@ -194,7 +194,7 @@ public class Dependency {
 
 	public boolean isValid() {
 		this.reset();
-		if(this.isFile() || this.isGithub() || this.isBuildIn()){
+		if(this.isFile() || this.isGit() || this.isBuildIn()){
 			boolean nameEmpty = name.isEmpty();
 			boolean versionEmpty = this.getVersion().isEmpty();
 			if(nameEmpty) _errorMessages.add("dep. requires `name` key");

@@ -11,6 +11,9 @@ import junit.framework.TestCase;
 import net.thepinguin.jp.App;
 import net.thepinguin.jp.cmd.ICommand;
 
+/**
+ * These tests determine the accessibility of Commands
+ */
 public class CommandLoadingTest extends TestCase {
 
 	/**
