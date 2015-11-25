@@ -1,4 +1,4 @@
-package net.thepinguin.jp.external;
+package net.thepinguin.jp.external.abst;
 
 import java.io.File;
 import java.security.Permission;
@@ -102,6 +102,41 @@ public abstract class AbstractCommandTest extends TestCase {
 		super.tearDown();
 		System.setSecurityManager(null); // or save and restore original
 	}
+
 	
+
+	/**
+	 * Calls App.main(String[] argv) and catch all system exit codes via ExitException
+	 * - no exceptions will be thrown, execution path can be determined according to CallDelta object
+	 * @param argv arguments to past to main
+	 * @return object that wraps: stdout, stderr, and exit status
+	 */
+	public static CallDelta callMain(String[] argv) {
+		CallDelta ret = new CallDelta();
+		OutputFilter of = new OutputFilter();
+		try {
+			// start output capturing
+			of.capture();
+			App.main(argv);
+			// collect output as a string
+			ret.setStdOut(of.getStdOutStr());
+			ret.setStdErr(of.getStdErrStr());
+			// stop output capturing
+			of.release();
+			ret.setStatus(0);
+		} catch(ExitException e) {
+			// collect output as a string
+			ret.setStdOut(of.getStdOutStr());
+			ret.setStdErr(of.getStdErrStr());
+			// stop output capturing
+			of.release();
+			// collect exit status
+			ret.setStatus(e.status);
+		}
+		return ret;
+	}
+	
+	
+
 	
 }

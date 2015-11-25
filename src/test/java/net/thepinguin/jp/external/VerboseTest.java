@@ -6,6 +6,8 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import net.thepinguin.jp.App;
+import net.thepinguin.jp.external.abst.AbstractCommandTest;
+import net.thepinguin.jp.external.abst.CallDelta;
 import net.thepinguin.jp.helper.OutputFilter;
 
 public class VerboseTest extends AbstractCommandTest {
@@ -22,26 +24,19 @@ public class VerboseTest extends AbstractCommandTest {
 	}
 	
 	public void testWithArgumentVerbose() {
-		try {
-			String[] argv = new String[] { "/some/path/to/repo/", "-v" };
-			_of.capture();
-			App.main(argv);
-		} catch (ExitException e) {
-			String out = _of.getStdOutStr();
-			String err = _of.getStdErrStr();
-			_of.release();
-			Assert.assertEquals(1, e.status);
-			StringBuilder sb = new StringBuilder();
-			sb.append(" ### VERBOSE output").append(App.EOL);
-			sb.append(" ### -> ").append(App.EOL);
-			sb.append("`command/ options missing`").append(App.EOL);
-			sb.append(" ### <- ").append(App.EOL);
-			sb.append("jp: command/ options missing (try -h)").append(App.EOL);
-			Assert.assertEquals(sb.toString(), out);
-			Assert.assertTrue(err.startsWith("java.lang.Exception: command/ options missing"));
-		} finally {
-			_of.release();
-		}
+		String[] argv = new String[] { "/some/path/to/repo/", "-v" };
+		CallDelta cd = AbstractCommandTest.callMain(argv);
+		String out = cd.getStdOutStr();
+		String err = cd.getStdErrStr();
+		Assert.assertEquals(1, cd.getStatus());
+		StringBuilder sb = new StringBuilder();
+		sb.append(" ### VERBOSE output").append(App.EOL);
+		sb.append(" ### -> ").append(App.EOL);
+		sb.append("`command/ options missing`").append(App.EOL);
+		sb.append(" ### <- ").append(App.EOL);
+		sb.append("jp: command/ options missing (try -h)").append(App.EOL);
+		Assert.assertEquals(sb.toString(), out);
+		Assert.assertTrue(err.startsWith("java.lang.Exception: command/ options missing"));
 	}
 	
 }

@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import net.thepinguin.jp.App;
 import net.thepinguin.jp.cmd.ICommand;
+import net.thepinguin.jp.external.abst.AbstractCommandTest;
 import net.thepinguin.jp.helper.OutputFilter;
 
 public class GenericCmdTest extends AbstractCommandTest {

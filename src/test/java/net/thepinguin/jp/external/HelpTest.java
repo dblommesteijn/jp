@@ -4,12 +4,10 @@ package net.thepinguin.jp.external;
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import net.thepinguin.jp.App;
-import net.thepinguin.jp.helper.OutputFilter;
+import net.thepinguin.jp.external.abst.AbstractCommandTest;
+import net.thepinguin.jp.external.abst.CallDelta;
 
 public class HelpTest extends AbstractCommandTest {
-
-	private OutputFilter _of;
 	
 	public static Test suite() {
 		return new TestSuite(HelpTest.class);
@@ -17,57 +15,29 @@ public class HelpTest extends AbstractCommandTest {
 	
 	public HelpTest(String testName) {
 		super(testName);
-		_of = super.getOutputFilter();
 	}
 
 	public void testEmptyOptionWithArgumentHelp() {
-		try {
-			String[] argv = new String[] { "/some/path/to/repo/", "-h" };
-			_of.capture();
-			App.main(argv);
-			_of.release();
-			String out = _of.getStdOutStr();
-			String err = _of.getStdErrStr();
-			Assert.assertTrue(out.startsWith("Usage: jp [-options] [commands...]"));
-			Assert.assertEquals("", err);
-		} catch (ExitException e) {
-			Assert.assertEquals("", e.getMessage());
-		} finally {
-			_of.release();
-		}
+		String[] argv = new String[] { "/some/path/to/repo/", "-h" };
+		CallDelta cd = AbstractCommandTest.callMain(argv);
+		Assert.assertTrue(cd.getStdOutStr().startsWith("Usage: jp [-options] [commands...]"));
+		Assert.assertEquals("", cd.getStdErrStr());
+		Assert.assertEquals(0, cd.getStatus());		
 	}
-	
+
 	public void testOptionWithoutArgumentHelp() {
-		try {
-			String[] argv = new String[] { "/some/path/to/repo/", "help" };
-			_of.capture();
-			App.main(argv);
-			_of.release();
-			String out = _of.getStdOutStr();
-			String err = _of.getStdErrStr();
-			Assert.assertTrue(out.startsWith("Usage: jp [-options] [commands...]"));
-			Assert.assertEquals("", err);
-		} catch (ExitException e) {
-			Assert.assertEquals("", e.getMessage());
-		} finally {
-			_of.release();
-		}
+		String[] argv = new String[] { "/some/path/to/repo/", "help" };
+		CallDelta cd = AbstractCommandTest.callMain(argv);
+		Assert.assertTrue(cd.getStdOutStr().startsWith("Usage: jp [-options] [commands...]"));
+		Assert.assertEquals("", cd.getStdErrStr());
+		Assert.assertEquals(0, cd.getStatus());
 	}
 	
 	public void testOptionHelpWithArgumentHelp() {
-		try {
-			String[] argv = new String[] { "/some/path/to/repo/", "help", "-h" };
-			_of.capture();
-			App.main(argv);
-			_of.release();
-			String out = _of.getStdOutStr();
-			String err = _of.getStdErrStr();
-			Assert.assertTrue(out.startsWith("Usage: jp [-options] [commands...]"));
-			Assert.assertEquals("", err);
-		} catch (ExitException e) {
-			Assert.assertEquals("", e.getMessage());
-		} finally {
-			_of.release();
-		}
+		String[] argv = new String[] { "/some/path/to/repo/", "help", "-h" };
+		CallDelta cd = AbstractCommandTest.callMain(argv);
+		Assert.assertTrue(cd.getStdOutStr().startsWith("Usage: jp [-options] [commands...]"));
+		Assert.assertEquals("", cd.getStdErrStr());
+		Assert.assertEquals(0, cd.getStatus());
 	}
 }
