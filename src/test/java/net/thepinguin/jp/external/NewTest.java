@@ -11,7 +11,6 @@ import junit.framework.TestSuite;
 import net.thepinguin.jp.App;
 import net.thepinguin.jp.external.abst.AbstractCommandTest;
 import net.thepinguin.jp.external.abst.CallDelta;
-import net.thepinguin.jp.helper.OutputFilter;
 
 public class NewTest extends AbstractCommandTest {
 
@@ -22,7 +21,7 @@ public class NewTest extends AbstractCommandTest {
 		return new TestSuite(NewTest.class);
 	}
 	
-	public NewTest(String testName) {
+	public NewTest(String testName) throws Exception {
 		super(testName);
 //		_of = super.getOutputFilter();
 		_testRepos = super.getTestRepos();

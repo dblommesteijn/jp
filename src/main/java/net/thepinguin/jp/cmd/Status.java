@@ -5,6 +5,7 @@ import java.util.List;
 
 import gnu.getopt.LongOpt;
 import net.thepinguin.jp.App;
+import net.thepinguin.jp.model.JP;
 
 public class Status implements ICommand {
 
@@ -51,20 +52,20 @@ public class Status implements ICommand {
 		if(args.size() <= 1){
 			throw new Exception("status: missing argument");
 		}
-		String pwd = args.get(0);		
-		File target = new File(pwd, "JPacker");
+		// load jp model
+		JP jp = new JP(new File(args.get(0)));
+		File jpacker = jp.getJPacker();
+		// verbose output
 		if(App.isVerbose()) {
-			System.out.println(" ... pwd: " + pwd);
-			System.out.println(" ... target: " + target.getName());
+			System.out.println(" ... pwd: " + jp.getCwd().getAbsolutePath());
+			System.out.println(" ... target: " + jpacker.getName());
 		}
-		if(!target.exists())
-			throw new Exception("not a jp repository, missing: JPacker");
-		
-		
-		
-		System.out.println("asdf");
-		// TODO: implement status output!
-		
+		// validation
+//		jp.isValidOrThrowException();
+		if(!jpacker.exists())
+			throw new Exception("not a jp repository");
+		// print status
+		System.out.println(jp.getStatus());
 		_handled = true;
 	}
 

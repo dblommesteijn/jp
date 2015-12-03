@@ -50,12 +50,12 @@ public class Mvn {
 		}
 	}
 	
-	public static boolean newProject(String basedir, String groupId, String artifactId) {
+	public static boolean newProject(File basedir, String groupId, String artifactId) {
 		InvocationRequest request = new DefaultInvocationRequest();
 		String[] goals = new String[]{"archetype:generate", "-DgroupId="+groupId, 
 			"-DartifactId="+artifactId, "-DarchetypeArtifactId=maven-archetype-quickstart",
 			"-DinteractiveMode=false"};
-		request.setBaseDirectory(new File(basedir));
+		request.setBaseDirectory(basedir);
 		request.setGoals(Arrays.asList(goals));
 		// silent output
 		if(!App.isVerbose()){
@@ -73,7 +73,7 @@ public class Mvn {
 			return true;
 		} catch (MavenInvocationException e) {
 			System.out.println(e.getMessage());
-//			e.printStackTrace();
+			e.printStackTrace();
 			_errors.add(e.getMessage());
 			return false;
 		}

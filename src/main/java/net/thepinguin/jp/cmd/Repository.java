@@ -26,40 +26,31 @@ public class Repository implements ICommand {
 	}
 
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	public boolean hasOptions() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public boolean hasArguments() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public String getId() {
-		// TODO Auto-generated method stub
 		return "repo";
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void handle(List<String> args) throws Exception {
-		// TODO Auto-generated method stub
-//		_handled = true;
-		
 		String pomXml = args.get(0);
 		
 	}
 
 	public LongOpt getLongOptInstance() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

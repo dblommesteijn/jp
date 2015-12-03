@@ -1,5 +1,6 @@
 package net.thepinguin.jp.cmd;
 
+import java.io.File;
 import java.util.List;
 
 import gnu.getopt.LongOpt;
@@ -30,7 +31,7 @@ public class AddDefaultRepository implements ICommand {
 	
 	public void handle(List<String> args) throws Exception {
 //    	String pomXml = args.get(1);
-		String pomXml = args.get(0);
+		File pomXml = new File(args.get(0));
     	
 		// parse file
 		Walker walker = Walker.parseFromFile(pomXml);

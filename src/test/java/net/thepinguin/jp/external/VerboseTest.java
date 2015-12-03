@@ -18,7 +18,7 @@ public class VerboseTest extends AbstractCommandTest {
 		return new TestSuite(VerboseTest.class);
 	}
 	
-	public VerboseTest(String testName) {
+	public VerboseTest(String testName) throws Exception {
 		super(testName);
 		_of = super.getOutputFilter();
 	}

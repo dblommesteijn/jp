@@ -42,6 +42,8 @@ public class App {
 	 * @return callable commands
 	 */
 	public static Map<String, ICommand> getCallableCommands() {
+		if(_commands == null)
+			return null;
 		Map<String, ICommand> ret = new HashMap<String, ICommand>(_commands.size());
 		for (Entry<String, ICommand> es : _commands.entrySet()){
 			if(es.getValue().isCallable()) {

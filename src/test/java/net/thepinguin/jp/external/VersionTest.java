@@ -17,7 +17,7 @@ public class VersionTest extends AbstractCommandTest {
 		return new TestSuite(VersionTest.class);
 	}
 	
-	public VersionTest(String testName) {
+	public VersionTest(String testName) throws Exception {
 		super(testName);
 	}
 	

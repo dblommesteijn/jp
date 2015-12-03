@@ -26,8 +26,9 @@ public class GenericCmdTest extends AbstractCommandTest {
 	 *
 	 * @param testName
 	 *            name of the test case
+	 * @throws Exception 
 	 */
-	public GenericCmdTest(String testName) {
+	public GenericCmdTest(String testName) throws Exception {
 		super(testName);
 		_of = super.getOutputFilter();
 		_testRepos = super.getTestRepos();

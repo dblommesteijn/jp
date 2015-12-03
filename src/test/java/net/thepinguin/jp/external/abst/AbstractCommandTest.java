@@ -3,6 +3,8 @@ package net.thepinguin.jp.external.abst;
 import java.io.File;
 import java.security.Permission;
 
+import com.google.common.base.Strings;
+
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -17,6 +19,7 @@ import net.thepinguin.jp.helper.OutputFilter;
  */
 public abstract class AbstractCommandTest extends TestCase {
 	private File _testRepos;
+	
 	/**
 	 * Path to test repo directory 
 	 * @return file to test repo directory
@@ -76,8 +79,19 @@ public abstract class AbstractCommandTest extends TestCase {
 		}
 	}
 	
-	public AbstractCommandTest(String testName) {
+	/**
+	 * Default constructor
+	 * @param testName name of the test case
+	 * @throws Exception
+	 */
+	public AbstractCommandTest(String testName) throws Exception {
 		super(testName);
+		// check if M3_HOME is set on calling test suite! (will cause weird init exceptions)
+		String e = System.getenv("M3_HOME");
+		if (Strings.isNullOrEmpty(e)){
+			throw new Exception("M3_HOME not set!");
+		}
+		// setup defaults
 		_testRepos = new File(App.JP_HOME, "test/repos/").getAbsoluteFile();
 		if(!_testRepos.exists())
 			_testRepos.mkdirs();
@@ -89,7 +103,7 @@ public abstract class AbstractCommandTest extends TestCase {
 		String t = System.getenv("JP_TRAVIS");
 		if(t != null)
 			TRAVIS = (t.equals("true"));
-		
+		// init output filter helper
 		_of = new OutputFilter(); 
 	}
 

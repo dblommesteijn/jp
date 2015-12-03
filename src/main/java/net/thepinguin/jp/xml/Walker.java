@@ -1,5 +1,6 @@
 package net.thepinguin.jp.xml;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
@@ -13,8 +14,12 @@ import net.thepinguin.jp.xml.base.Document;
 import net.thepinguin.jp.xml.pom.Visitable;
 
 public class Walker {
+	
+//	public static Walker parseFromFile(File pom) {
+//		
+//	}
 
-	public static Walker parseFromFile(String pomXml) {
+	public static Walker parseFromFile(File pomXml) {
 		try{
 			//TODO: push sax parser into Document
 			// read xml from file

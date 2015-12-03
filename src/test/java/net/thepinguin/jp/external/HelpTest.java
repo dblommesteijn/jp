@@ -13,7 +13,7 @@ public class HelpTest extends AbstractCommandTest {
 		return new TestSuite(HelpTest.class);
 	}
 	
-	public HelpTest(String testName) {
+	public HelpTest(String testName) throws Exception {
 		super(testName);
 	}
 

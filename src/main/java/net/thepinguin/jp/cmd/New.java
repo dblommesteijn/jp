@@ -9,6 +9,7 @@ import java.util.List;
 import gnu.getopt.LongOpt;
 import net.thepinguin.jp.App;
 import net.thepinguin.jp.helper.Mvn;
+import net.thepinguin.jp.model.JP;
 
 public class New implements ICommand {
 	
@@ -48,61 +49,54 @@ public class New implements ICommand {
 			throw new Exception("new: missing argument");
 		}
 		String pwd = args.get(0);
-		String groupId = args.get(2).toLowerCase();
-		String artifactId = "";
+		JP jp = new JP(new File(pwd));
+//		JP jp = JP.createNewProject(new File(pwd), "");
+		jp.setGroupId(args.get(2).toLowerCase());
+		jp.setArtifactId("");
 		// has no artifactId, only groupId (net.thepinguin.artifactId -> artifactId)
 		if(args.size() <= 3) {
-			String[] ns = groupId.split("[.]");
+			String[] ns = jp.getGroupDomain();
 			if(ns.length <= 1){
-				throw new Exception("unexpected groupId: " + groupId);
+				throw new Exception("unexpected groupId: " + jp.getGroupId());
 			}
 			// TODO: add regex for valid namespacing
 //			String regx = "[a-zA-Z]+\\.?";
 //			Pattern pattern = Pattern.compile(regx);
 //			System.out.println(pattern);
-			artifactId = ns[ns.length -1];
+			jp.setArtifactId(ns[ns.length -1]);
 		} else {
 			// TODO: add regex for valid namespacing
-			artifactId = args.get(3).toLowerCase();
+			jp.setArtifactId(args.get(3).toLowerCase());
 		}
+		
+//		jp.setCwd(new File(pwd, jp.getArtifactId()));
 		if(App.isVerbose()) {
-			System.out.println("groupId:    " + groupId);
-			System.out.println("artifactId: " + artifactId);
+			System.out.println(" ... groupId:    " + jp.getGroupId());
+			System.out.println(" ... artifactId: " + jp.getArtifactId());
 		}
 		// create maven project
-		if(Mvn.newProject(pwd, groupId, artifactId)){
+		if(jp.createNewProject()){
 			_handled = true;
 		} else {
 			//TODO: throw maven errors here?
 			throw new Exception("maven error");
 		}
-		// create JPacker file
-		try{
-			// build basic dependency (default)
-			StringBuilder sb = new StringBuilder();
-			sb.append("{\"dependencies\": [");
-			sb.append(App.EOL);
-			sb.append("  { \"name\": \"junit#junit#4.12\", \"scope\": \"test\" }");
-			sb.append(App.EOL);
-			sb.append("]}");
-			// write to JPacker file
-			PrintWriter wrt = new PrintWriter(new File(pwd, artifactId+"/JPacker"));
-			wrt.println(sb);
-			wrt.close();
-		} catch(FileNotFoundException e){
-			throw new Exception("unable to create JPacker file");
-		}
+		// reload jp with new basedir (pwd/ cwd)
+		jp = jp.factory(new File(pwd, jp.getArtifactId()));
+		// create target JPacker file
+		jp.createJPacker();
 		
 		Repository r = (Repository) App.getAllCommands().get("repo");
 		// call jp repo with [0] = /path/to/jp/enabled/repo
-		r.handle(Arrays.asList(new String[]{new File(pwd, artifactId).getAbsolutePath()}));
+		r.handle(Arrays.asList(new String[]{new File(pwd, jp.getArtifactId()).getAbsolutePath()}));
 		
-		System.out.println("... project created: " + artifactId);
-		System.out.println("... collecting deps for: " + artifactId);
+		System.out.println("... project created: " + jp.getArtifactId());
+		System.out.println("... collecting deps for: " + jp.getArtifactId());
+		
 		// load new command
 		Collect c = (Collect) App.getAllCommands().get("collect");
 		// call jp collect with [0] = /path/to/jp/enabled/repo
-		c.handle(Arrays.asList(new String[]{new File(pwd, artifactId).getAbsolutePath()}));
+		c.handle(Arrays.asList(new String[]{new File(pwd, jp.getArtifactId()).getAbsolutePath()}));
 	}
 
 	public String getOptString() {

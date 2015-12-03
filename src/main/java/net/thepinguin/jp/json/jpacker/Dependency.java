@@ -216,7 +216,7 @@ public class Dependency {
 		_errorMessages.clear();
 	}
 
-	public boolean deployToProjectRepo(String pomXml, String base) {
+	public boolean deployToProjectRepo(File pom, String base) {
 		String target = this.getFile().toString();
 		List<String> goals = Arrays.asList( "deploy:deploy-file", "-Durl=file://" + base + "repo/ ",
 				"-Dfile=" + target,
@@ -224,7 +224,7 @@ public class Dependency {
 				"-DartifactId=" + this.getArtifactId(), 
 				"-Dpackaging=jar",
 				"-Dversion=" + this.getVersion());
-		boolean invoke = Mvn.invokeMaven(new File(pomXml), goals);
+		boolean invoke = Mvn.invokeMaven(pom, goals);
 		_errorMessages.addAll(Mvn.getErrorMessages());
 		Mvn.resetErrorMessages();
 		return invoke;

@@ -51,11 +51,11 @@ public class Collect implements ICommand {
 
 	public void handle(List<String> args) throws Exception {
 		String pwd = args.get(0);
-		String pomXml = pwd + "/pom.xml";
-		String jpacker = pwd + "/JPacker";
+		File pomXml = new File(pwd, "pom.xml");
+		File jpacker = new File(pwd, "JPacker");
 				
 		// parse pom file
-		if(!new File(pomXml).exists()){
+		if(!pomXml.exists()){
 			throw new Exception("pom.xml file not found");
 		}
 		Walker walker = Walker.parseFromFile(pomXml);
@@ -110,7 +110,7 @@ public class Collect implements ICommand {
 			// deploy dependency to local repository
 			if (d.getFile() != null
 					&& d.deployToProjectRepo(pomXml,
-							FilenameUtils.getFullPath(jpacker))) {
+							FilenameUtils.getFullPath(jpacker.getAbsolutePath()))) {
 				System.out.print(".");
 				// add dependency to pom.xml (if not found)
 				Element tmp = new Element("dependency");
@@ -150,7 +150,7 @@ public class Collect implements ICommand {
 		// write pom.xml with dependencies & repositories
 		if (doc.write()) {
 			// build pom.xml
-			boolean b = Mvn.invokeMaven(new File(pomXml), Arrays.asList("install"));
+			boolean b = Mvn.invokeMaven(pomXml, Arrays.asList("install"));
 			if (b) {
 				System.out.println("jp: finished");
 			} else {

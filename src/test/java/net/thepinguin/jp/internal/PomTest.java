@@ -102,7 +102,7 @@ public class PomTest extends TestCase {
 	public void testParseValidXmlFile(){
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("valid_pom.xml").getFile());
-		Walker walker = Walker.parseFromFile(file.toString());
+		Walker walker = Walker.parseFromFile(file);
 		Assert.assertNotNull(walker);
     	Document doc = walker.getDocument();
     	Assert.assertNotNull(doc);
@@ -111,7 +111,7 @@ public class PomTest extends TestCase {
 	public void testParseInvalidXmlFile(){
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("invalid_pom.xml").getFile());
-		Walker walker = Walker.parseFromFile(file.toString());
+		Walker walker = Walker.parseFromFile(file);
 		Assert.assertNull(walker);
 	}
 	

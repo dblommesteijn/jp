@@ -54,14 +54,14 @@ public class JPackerTest extends TestCase {
     public void testParseValidJsonFile(){
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("valid_jpacker.json").getFile());
-		Root root = ParseJP.parseFromFile(file.toString());
+		Root root = ParseJP.parseFromFile(file);
     	Assert.assertNotNull(root);
     }
     
     public void testParseInvalidJsonFile(){
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("invalid_jpacker.json").getFile());
-		Root root = ParseJP.parseFromFile(file.toString());
+		Root root = ParseJP.parseFromFile(file);
     	Assert.assertNull(root);
     }
     

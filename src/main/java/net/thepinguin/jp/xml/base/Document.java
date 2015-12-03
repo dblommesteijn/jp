@@ -1,5 +1,6 @@
 package net.thepinguin.jp.xml.base;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Deque;
@@ -25,6 +26,10 @@ public class Document extends DefaultHandler {
 	
 	public Document(String xml) {
 		_xml = xml;
+	}
+	
+	public Document(File xml) {
+		_xml = xml.getAbsolutePath();
 	}
 
 	public void startDocument() throws SAXException {
