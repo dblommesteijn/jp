@@ -5,9 +5,7 @@ os:
   
 jdk:
   - oraclejdk8
-  - oraclejdk7
-  - openjdk6
-  - openjdk7
+  - openjdk8
 
 before_install:
   - export M3_HOME="/usr/local/maven"
